@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+      body {
+        padding: 50px;
+      }
+      button {
+        padding: 2px 6px;
+      }
+      .paper {
+        display: flex;
+      }
+      .panel_parent {
+        width: 300px;
+        height: 300px;
+        border: 1px solid #333;
+        overflow: hidden;
+        position: relative;
+      }
+      .panel_child {
+        width: 276px;
+        height: 276px;
+        margin: 12px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+        animation-duration: 0.3s;
+      }
+      .panel_child.on {
+        display: block;
+      }
+      .tab {
+        margin-left: 30px;
+        flex: 1;
+      }
+      .leftOut {
+        animation-name: leftout;
+        animation-fill-mode: forwards;
+      }
+      .leftIn {
+        animation-name: leftin;
+      }
+      @keyframes leftout {
+        from {
+          transform: translateX(0%);
+        }
+        to {
+          transform: translateX(-110%);
+        }
+      }
+      @keyframes leftin {
+        from {
+          transform: translateX(100%);
+        }
+        to {
+          transform: translateX(0%);
+        }
+      }
+      .rightOut {
+        animation-name: rightout;
+        animation-fill-mode: forwards;
+      }
+      .rightIn {
+        animation-name: rightin;
+      }
+      @keyframes rightout {
+        from {
+          transform: translateX(0%);
+        }
+        to {
+          transform: translateX(110%);
+        }
+      }
+      @keyframes rightin {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(0%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="paper">
+      <div class="panel_parent">
+        <div class="panel_child">
+          <h2>Panel 1</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
+            nesciunt quae aperiam quasi, ex nihil repellat molestias doloremque
+            praesentium fuga labore nam autem repellendus reiciendis, deserunt
+            architecto.
+          </p>
+          <button onclick="addStack();">add</button>
+          <button class="close" onclick="closeStack();">close</button>
+        </div>
+      </div>
+      <div class="tab">
+        <span>현재 누적 스택 수 : <span id="stack_count">1</span></span
+        ><br />
+        <a href="./">Home</a>
+      </div>
+    </div>
+    <script>
+      let stack = 1,
+        isAnim = false;
+      const parent = document.querySelector('.panel_parent');
+      const child = document.querySelector('.panel_child');
+      const clones = child.cloneNode(true);
+      const count = document.querySelector('#stack_count');
+      child.querySelector('.close').style.display = 'none';
+      child.classList.add('on');
+      function addStack() {
+        if (isAnim) return;
+        isAnim = true;
+        let clone = clones.cloneNode(true);
+        clone.classList.add('leftIn');
+        clone.classList.add('on');
+        clone.querySelector('h2').textContent = 'Panel ' + ++stack;
+        let last = parent.lastElementChild;
+        last.classList.add('leftOut');
+        parent.appendChild(clone);
+        setTimeout(() => {
+          last.classList.remove('on');
+          last.classList.remove('leftOut');
+          clone.classList.remove('leftIn');
+          isAnim = false;
+        }, 300);
+        count.textContent = stack;
+      }
+      function closeStack() {
+        if (isAnim) {
+          console.log('wait');
+          return;
+        }
+        isAnim = true;
+        stack--;
+        let last = parent.lastElementChild;
+        let secLast = last.previousElementSibling;
+        last.classList.add('rightOut');
+        secLast.classList.add('on');
+        secLast.classList.add('rightIn');
+        setTimeout(() => {
+          parent.removeChild(last);
+          secLast.classList.remove('rightIn');
+          isAnim = false;
+        }, 300);
+        count.textContent = stack;
+      }
+    </script>
+  </body>
+</html>

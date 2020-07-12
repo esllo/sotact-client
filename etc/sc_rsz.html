@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--dark1);
+      }
+      .parent {
+        width: 100vw;
+        min-height: 200px;
+        display:flex;
+        min-width: 600px;
+      }
+      .child {
+        background: var(--plain);
+        min-width: 200px;
+        width: calc(100vw / 3);
+      }
+      .split {
+        -webkit-user-select: none;
+        user-select: none;
+        background: #000;
+        cursor: ew-resize;
+      }
+      .v {
+        margin-left: -3px;
+        width: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="parent">
+      <div class="child"></div>
+      <div class="split v"></div>
+      <div class="child"></div>
+      <div class="split v"></div>
+      <div class="child"></div>
+    </div>
+    <a href="./">Home</a>
+    <script>
+      const childs = document.querySelectorAll('.child');
+      const splits = document.querySelectorAll('.split');
+      const parent = document.querySelector('.parent');
+      for (let child of childs) {
+        let width = parseFloat(computeSize(child).width);
+        width /= getParentWidth(child.parentElement);
+        child.style.width = width * 100 + '%';
+      }
+      function computeSize(elem) {
+        let prop = window.getComputedStyle(elem, null);
+        return {
+          width: prop.width,
+          height: prop.height,
+          minWidth: prop.minWidth,
+        };
+      }
+      function computeCursor(elem) {
+        return window.getComputedStyle(elem, null).cursor;
+      }
+      function getParentWidth(elem) {
+        let prop = window.getComputedStyle(elem, null);
+        return parseFloat(prop.width);
+      }
+      let tmpWidth = [];
+      let startX = 0;
+      let resizeTarget = [];
+      let maxWidth = 0;
+      let minWidth = 0;
+      function resize(e) {
+        endX = e.x;
+        let width = [tmpWidth[0] + endX - startX, tmpWidth[1] - endX + startX];
+        if (width[0] < minWidth || width[0] > maxWidth) return;
+        pWidth = getParentWidth(e.target.parentElement);
+        resizeTarget[0].style.width = (width[0] / pWidth) * 100.0 + '%';
+        resizeTarget[1].style.width = (width[1] / pWidth) * 100.0 + '%';
+      }
+      for (const split of splits) {
+        split.addEventListener('mousedown', (e) => {
+          resizeTarget = [
+            e.target.previousElementSibling,
+            e.target.nextElementSibling,
+          ];
+          let size = [
+            computeSize(resizeTarget[0]),
+            computeSize(resizeTarget[1]),
+          ];
+          tmpWidth = [parseFloat(size[0].width), parseFloat(size[1].width)];
+          minWidth = parseFloat(size[0].minWidth);
+          maxWidth = tmpWidth[0] + tmpWidth[1] - parseFloat(size[1].minWidth);
+          startX = e.x;
+          document.body.style.cursor = computeCursor(e.target);
+          document.addEventListener('mousemove', resize);
+        });
+      }
+      document.addEventListener('mouseup', () => {
+        document.body.style.cursor = 'auto';
+        document.removeEventListener('mousemove', resize);
+      });
+    </script>
+  </body>
+</html>

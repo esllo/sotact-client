@@ -1,0 +1,20 @@
+:root {
+  --dark3: #151515;
+  --dark2: #303131;
+  --dark1: #4F4F4F;
+  --plain: #828282;
+  --bright1: #949494;
+  --bright2: #a3a3a3;
+  --bright3: #bababa;
+  --gray5: #ddd;
+  --gray4: #bbb;
+  --gray3: #999;
+  --gray2: #777;
+  --gray1: #555;
+  --accent1: #36416f;
+  --accent2: #25335e;
+  --accent3: #15224d;
+  --accent4: #0C173F;
+  --accent5: #021036;
+}
+/* 151515 > 303131 > 4F4F4F > 828282 */

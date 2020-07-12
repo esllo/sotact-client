@@ -1,0 +1,111 @@
+/* :root {
+  --dark3: #060607;
+  --dark2: #0e1014;
+  --dark1: #14181c;
+  --plain: #1c2228;
+  --bright1: #202830;
+  --bright2: #222B33;
+  --bright3: #26323C;
+  --gray5: #ddd;
+  --gray4: #bbb;
+  --gray3: #999;
+  --gray2: #777;
+  --gray1: #555;
+} */
+/* :root {
+  --dark3: #060607;
+  --dark2: #0d0e0f;
+  --dark1: #111315;
+  --plain: #16191d;
+  --bright1: #15171f;
+  --bright2: #1e212b;
+  --bright3: #222530;
+  --gray5: #ddd;
+  --gray4: #bbb;
+  --gray3: #999;
+  --gray2: #777;
+  --gray1: #555;
+  --accent1: #36416f;
+  --accent2: #25335e;
+  --accent3: #15224d;
+  --accent4: #0C173F;
+  --accent5: #021036;
+} */
+@import "palette_dark.css";
+/* 151515 > 303131 > 4F4F4F > 828282 */
+* {
+  margin: 0;
+  padding: 0;
+}
+.dark3 {
+  background: var(--dark3);
+}
+.dark2 {
+  background: var(--dark2);
+}
+.dark1 {
+  background: var(--dark1);
+}
+.plain {
+  background: var(--plain);
+}
+.bright1 {
+  background: var(--bright1);
+}
+.bright2 {
+  background: var(--bright2);
+}
+.bright3 {
+  background: var(--bright3);
+}
+.gray1 {
+  background: var(--gray1);
+}
+.gray2 {
+  background: var(--gray2);
+}
+.gray3 {
+  background: var(--gray3);
+}
+.gray4 {
+  background: var(--gray4);
+}
+.gray5 {
+  background: var(--gray5);
+}
+.dark3_ {
+  color: var(--dark3);
+}
+.dark2_ {
+  color: var(--dark2);
+}
+.dark1_ {
+  color: var(--dark1);
+}
+.plain_ {
+  color: var(--plain);
+}
+.bright1_ {
+  color: var(--bright1);
+}
+.bright2_ {
+  color: var(--bright2);
+}
+.bright3_ {
+  color: var(--bright3);
+}
+.gray1_ {
+  color: var(--gray1);
+}
+.gray2_ {
+  color: var(--gray2);
+}
+.gray3_ {
+  color: var(--gray3);
+}
+.gray4_ {
+  color: var(--gray4);
+}
+.gray5_ {
+  color: var(--gray5);
+}
