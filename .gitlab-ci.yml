@@ -6,8 +6,6 @@ stages:
 dev:
   stage: dev
   script:
-  - npm install yarn
-  - npm install -g next
-  - npm install
   - yarn install
-  - next build
+  - yarn build
+  
