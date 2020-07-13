@@ -16,3 +16,4 @@ https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
 
 NextJS 생성 및 .gitignore 추가
 
+.gitlab-ci.yml추가
