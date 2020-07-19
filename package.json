@@ -2,14 +2,26 @@
   "name": "taw-client",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next export",
+    "electron": "electron .",
+    "dex": "next dev && electron .",
+    "rex": "next build && next export && electron ."
   },
   "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "electron-react-titlebar": "^0.8.2",
+    "konva": "^7.0.3",
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1"
+  },
+  "devDependencies": {
+    "electron": "^9.1.0"
   }
 }
