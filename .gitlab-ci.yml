@@ -1,0 +1,11 @@
+image: node:latest
+
+stages:
+- dev
+
+dev:
+  stage: dev
+  script:
+  - yarn install
+  - yarn build
+  
