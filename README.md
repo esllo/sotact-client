@@ -10,10 +10,6 @@ https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
 
 ---
 
-**2020-07-13**
+**진행 상황**
 
-
-
-NextJS 생성 및 .gitignore 추가
-
-.gitlab-ci.yml추가
+https://www.notion.so/Dev-Log-Client-e9fb36b03a4a47f4847e2a3e2c58a9cf
