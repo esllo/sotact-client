@@ -10,12 +10,14 @@ const Home = (props) => {
   let layer = null;
   let objs = [];
   useEffect(() => {
+    window.Konva = Konva;
     stage = new Konva.Stage({
       container: 'container',
-      width: 500,
-      height: 500,
+      width: 1000,
+      height: 1000,
     });
     console.log(stage);
+    window.stage = stage;
   }, []);
   const randColor = () => {
     let color = '#';
@@ -29,6 +31,7 @@ const Home = (props) => {
     if (layer == null) {
       layer = new Konva.Layer();
       stage.add(layer);
+      window.layer = layer;
     }
     let rect = new Konva.Rect({
       x: Math.random() * 400 + 50,
@@ -111,13 +114,13 @@ const Home = (props) => {
   return (
     <div className="page">
       <Head>
-        <title>Create Next App</title>
+        <title>TAW</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
         <TitleBar></TitleBar>
         <FlexBox dir="column">
-          <FlexBox className="top" dir="row"></FlexBox>
+          <FlexBox className="top" dir="row" minHeight="34px"></FlexBox>
           <Split dir="horizontal"></Split>
           <FlexBox className="middle" dir="row">
             <FlexBox className="left" dir="column">
@@ -130,6 +133,7 @@ const Home = (props) => {
               <button onClick={rightButton}>Move Right</button>
               <button onClick={diagButton}>Move Diagonal</button>
               <button onClick={resButton}>Reset</button>
+              <input type="file" />
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox className="center" dir="row">

@@ -1,10 +1,11 @@
-const { app, protocol, BrowserWindow } = require('electron');
+const { app, protocol, BrowserWindow, screen} = require('electron');
 
 let win;
 function createWindow() {
+  const {width, height} = screen.getPrimaryDisplay().workAreaSize;
   const _win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: width,
+    height: height,
     show: true,
     frame:false,
     webPreferences: {
@@ -14,7 +15,6 @@ function createWindow() {
 
   return _win;
 }
-
 
 app.whenReady().then(() => {
   protocol.registerFileProtocol('*', (req, cb) => {

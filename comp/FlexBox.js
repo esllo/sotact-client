@@ -5,6 +5,7 @@ const Flex = styled.div((props) => ({
   display: 'flex',
   flexDirection: props.dir,
   minWidth: props.minWidth,
+  minHeight: props.minHeight,
   label: 'flex-box',
 }));
 
@@ -71,7 +72,8 @@ const FlexBox = (props) => {
     <Flex
       id={compID}
       dir={props.dir || 'column'}
-      minWidth={props.minWidth || '80px'}>
+      minWidth={props.minWidth || '60px'}
+      minHeight={props.minHeight || '60px'}>
       {props.children}
     </Flex>
   );
