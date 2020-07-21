@@ -19,6 +19,7 @@ const toImage = (png) => {
     return p;
 }
 let clayer = null;
+let tr = null;
 let input = document.querySelector("[type=file]");
 if (input != null) {
     console.log('add event');
@@ -26,7 +27,19 @@ if (input != null) {
         console.log('changed');
         if (clayer == null) {
             clayer = new Kv.Layer();
+            tr = new Kv.Transformer();
+            tr.zIndex(999);
+            clayer.add(tr);
             window.stage.add(clayer);
+            window.stage.on('click tap', e => {
+                // if(e.target === window.stage){
+                //     tr.nodes([]);
+                //     clayer.draw();
+                //     return;
+                // }
+                // tr.nodes([e.target]);
+                // clayer.draw();
+            });
         }
         if (e.target.value == '') {
 
@@ -37,23 +50,25 @@ if (input != null) {
             psdFile.parse();
             window.psdFile = psdFile;
             let childs = psdFile.tree()._children;
-            let v = 0;
-            for (const child of childs) {
+            for (const child of childs.reverse()) {
                 let lay = child.layer;
-                if (v == 6)
-                    break;
                 testImage = toImage(lay.image.toPng());
                 if (testImage != null) {
                     let konvaImage = new Kv.Image({
-                        x: v++ * 20,
+                        x: 0,
                         y: 0,
                         image: testImage,
-                        draggable: true
+                        draggable: true,
+                        scaleX: 0.3,
+                        scaleY: 0.3,
                     });
                     clayer.add(konvaImage);
                     clayer.batchDraw();
                 }
             }
+            tr.remove();
+            clayer.add(tr);
+            clayer.draw();
         }
     });
 }
