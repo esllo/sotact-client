@@ -15,9 +15,9 @@
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
-    "electron-react-titlebar": "^0.8.2",
     "konva": "^7.0.3",
     "next": "9.4.4",
+    "psd": "^3.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   },

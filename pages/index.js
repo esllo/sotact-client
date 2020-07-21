@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import FlexBox from '../comp/FlexBox';
 import Konva from 'konva';
 import TitleBar from '../comp/TitleBar';
+import FlexBox from '../comp/FlexBox';
+import Split from '../comp/Split';
 
 const Home = (props) => {
   let stage;
@@ -15,7 +16,7 @@ const Home = (props) => {
       height: 500,
     });
     console.log(stage);
-  });
+  }, []);
   const randColor = () => {
     let color = '#';
     color += Math.floor(Math.random() * 256).toString(16);
@@ -117,6 +118,7 @@ const Home = (props) => {
         <TitleBar></TitleBar>
         <FlexBox dir="column">
           <FlexBox className="top" dir="row"></FlexBox>
+          <Split dir="horizontal"></Split>
           <FlexBox className="middle" dir="row">
             <FlexBox className="left" dir="column">
               <button onClick={addButton}>addRect</button>
@@ -129,13 +131,17 @@ const Home = (props) => {
               <button onClick={diagButton}>Move Diagonal</button>
               <button onClick={resButton}>Reset</button>
             </FlexBox>
+            <Split dir="vertical"></Split>
             <FlexBox className="center" dir="row">
               <div id="container"></div>
             </FlexBox>
+            <Split dir="vertical"></Split>
             <FlexBox className="right" dir="column"></FlexBox>
           </FlexBox>
+          <Split dir="horizontal"></Split>
           <FlexBox className="bottom" dir="row">
             <FlexBox className="properties" dir="row"></FlexBox>
+            <Split dir="vertical"></Split>
             <FlexBox className="timeline" dir="row"></FlexBox>
           </FlexBox>
         </FlexBox>
