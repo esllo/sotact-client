@@ -120,6 +120,11 @@ const TitleBar = (props) => {
     let color = props.color || '#313131';
     return color;
   };
+  const callWindowEvent = (c) => {
+    return function(){
+      windowEvent(c);
+    }
+  }
   return (
     <Titlebar style={{ background: getBackground() }}>
       <Menubar css={menuBar}>
@@ -133,13 +138,13 @@ const TitleBar = (props) => {
       <div style={{ flex: 1 }} css={draggable}></div>
       <Title>TAW - Canvas Animate Tool</Title>
       <div css={buttons}>
-        <div css={buttonMinimize}>
+        <div onClick={callWindowEvent(2)} css={buttonMinimize}>
           <div></div>
         </div>
-        <div css={buttonMaximize}>
+        <div onClick={callWindowEvent(1)} css={buttonMaximize}>
           <div></div>
         </div>
-        <div css={buttonClose}>
+        <div onClick={callWindowEvent(0)} css={buttonClose}>
           <div></div>
         </div>
       </div>
