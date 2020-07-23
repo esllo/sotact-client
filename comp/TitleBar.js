@@ -15,9 +15,10 @@ const Menubar = styled.div((props) => ({
 }));
 const menuBar = css`
   p {
-    padding: 0 5px;
+    padding: 0 6px;
     display: inline-block;
     cursor: default;
+    color: #ececec;
     :hover{
       background: rgba(200, 200, 200, 0.2);
     }
@@ -30,6 +31,7 @@ const Title = styled.p((props) => ({
   lineHeight: '30px',
   fontSize: '13px',
   userSelect: 'none',
+  color: '#ececec',
 }));
 const buttons = css`
   width: 138px;

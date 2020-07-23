@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 
 const Flex = styled.div((props) => ({
   display: 'flex',
-  flexDirection: props.dir,
+  flexDirection: props.dir || 'column',
   minWidth: props.minWidth,
   minHeight: props.minHeight,
+  flex: props.weight || 'none',
   label: 'flex-box',
 }));
 
@@ -73,7 +74,9 @@ const FlexBox = (props) => {
       id={compID}
       dir={props.dir || 'column'}
       minWidth={props.minWidth || '60px'}
-      minHeight={props.minHeight || '60px'}>
+      minHeight={props.minHeight || '60px'}
+      style={props.style}
+      weight={props.weight}>
       {props.children}
     </Flex>
   );

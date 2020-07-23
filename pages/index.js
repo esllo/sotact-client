@@ -13,8 +13,8 @@ const Home = (props) => {
     window.Konva = Konva;
     stage = new Konva.Stage({
       container: 'container',
-      width: 1000,
-      height: 1000,
+      width: 500,
+      height: 500,
     });
     console.log(stage);
     window.stage = stage;
@@ -119,11 +119,11 @@ const Home = (props) => {
       </Head>
       <main>
         <TitleBar></TitleBar>
-        <FlexBox dir="column">
+        <FlexBox dir="column" style={{height:'calc(100vh - 30px)'}}>
           <FlexBox className="top" dir="row" minHeight="34px"></FlexBox>
           <Split dir="horizontal"></Split>
-          <FlexBox className="middle" dir="row">
-            <FlexBox className="left" dir="column">
+          <FlexBox className="middle" dir="row" weight={1}>
+            <FlexBox className="left" dir="column" style={{width:'280px'}}>
               <button onClick={addButton}>addRect</button>
               <button onClick={logButton}>Log Objs</button>
               <button onClick={rotButton}>Rotate 360</button>
@@ -136,15 +136,15 @@ const Home = (props) => {
               <input type="file" />
             </FlexBox>
             <Split dir="vertical"></Split>
-            <FlexBox className="center" dir="row">
+            <FlexBox className="center" dir="row" weight={1}>
               <div id="container"></div>
             </FlexBox>
             <Split dir="vertical"></Split>
-            <FlexBox className="right" dir="column"></FlexBox>
+            <FlexBox className="right" dir="column" style={{width:'280px'}}></FlexBox>
           </FlexBox>
           <Split dir="horizontal"></Split>
-          <FlexBox className="bottom" dir="row">
-            <FlexBox className="properties" dir="row"></FlexBox>
+          <FlexBox className="bottom" dir="row" style={{height:'260px'}}>
+            <FlexBox className="properties" dir="row" style={{width:'440px'}}></FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox className="timeline" dir="row"></FlexBox>
           </FlexBox>
