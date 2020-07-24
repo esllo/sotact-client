@@ -18,7 +18,7 @@ const menuBar = css`
     padding: 0 6px;
     display: inline-block;
     cursor: default;
-    color: #ececec;
+    color: #ddd;
     :hover{
       background: rgba(200, 200, 200, 0.2);
     }
@@ -31,7 +31,7 @@ const Title = styled.p((props) => ({
   lineHeight: '30px',
   fontSize: '13px',
   userSelect: 'none',
-  color: '#ececec',
+  color: '#ddd',
 }));
 const buttons = css`
   width: 138px;
@@ -119,7 +119,7 @@ const topNonDrag = css`
 
 const TitleBar = (props) => {
   const getBackground = () => {
-    let color = props.color || '#313131';
+    let color = props.color || '#151515';
     return color;
   };
   const callWindowEvent = (c) => {

@@ -16,6 +16,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <script src="./out/static/parse.js"></script>
           <script src="./out/static/ipc.js"></script>
         </body>
       </html>

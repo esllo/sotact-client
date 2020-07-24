@@ -1,7 +1,7 @@
-let { ipcRenderer } = require('electron');
-let psd = require('psd');
-let cvs = document.createElement('canvas');
-let ctx = cvs.getContext('2d');
+var { ipcRenderer } = require('electron');
+if (typeof psd === 'undefined') var psd = require('psd');
+var cvs = document.createElement('canvas');
+var ctx = cvs.getContext('2d');
 const toImage = (png) => {
   let width = png.width || 0;
   let height = png.height || 0;
@@ -27,34 +27,33 @@ if (input != null) {
       file = e.target.files[0];
       console.log(file.path);
       e.target.value = '';
-      let psdFile = psd.fromFile(file.path);
-      psdFile.parse();
-      window.psdFile = psdFile;
-      let childs = psdFile.tree()._children;
-      for (const child of childs.reverse()) {
-        let lay = child.layer;
-        testImage = toImage(lay.image.toPng());
-        if (testImage != null) {
-          let konvaImage = new Konva.Image({
-            x: 0,
-            y: 0,
-            image: testImage,
-            draggable: true,
-            scaleX: 0.5,
-            scaleY: 0.5,
-          });
-          konvaImage.opacity(lay.image.obj.opacity);
-          let clayer = new Konva.Layer();
-          window.stage.add(clayer);
-          clayer.add(konvaImage);
-          clayer.batchDraw();
-        }
-      }
-      stage.draw();
+      // let psdFile = psd.fromFile(file.path);
+      // psdFile.parse();
+      // window.psdFile = psdFile;
+      // let childs = psdFile.tree()._children;
+      // for (const child of childs.reverse()) {
+      //   let lay = child.layer;
+      //   testImage = toImage(lay.image.toPng());
+      //   if (testImage != null) {
+      //     let konvaImage = new Konva.Image({
+      //       x: 0,
+      //       y: 0,
+      //       image: testImage,
+      //       draggable: true,
+      //       scaleX: 0.5,
+      //       scaleY: 0.5,
+      //     });
+      //     konvaImage.opacity(lay.image.obj.opacity);
+      //     let clayer = new Konva.Layer();
+      //     window.stage.add(clayer);
+      //     clayer.add(konvaImage);
+      //     clayer.batchDraw();
+      //   }
+      // }
+      // stage.draw();
     }
   });
 }
-
 function windowEvent(code) {
   ipcRenderer.send('windowEvent', code);
 }

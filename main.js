@@ -12,6 +12,7 @@ function createWindow() {
       nodeIntegration: true,
     },
   });
+  _win.webContents.openDevTools();
 
   return _win;
 }
@@ -20,7 +21,7 @@ app.whenReady().then(() => {
   protocol.registerFileProtocol('*', (req, cb) => {
     alert(req);
     alert(req.url);
-  })
+  });
   win = createWindow();
   win.loadURL(`file://${__dirname}/out/index.html`);
 });
@@ -41,9 +42,8 @@ ipcMain.on('windowEvent', (e, c) => {
   if (c == 0) {
     app.quit();
   } else if (c == 1) {
-    win.isMaximized() ? win.unmaximize() :
-      win.maximize();
+    win.isMaximized() ? win.unmaximize() : win.maximize();
   } else if (c == 2) {
     win.minimize();
   }
-})
+});

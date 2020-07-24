@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 const DirSplit = styled.div((props) => ({
   userSelect: 'none',
-  background: '#000',
+  background: '#060607',
   label: 'flex-box-split',
   zIndex: 999,
 }));

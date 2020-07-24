@@ -8,6 +8,7 @@ const Flex = styled.div((props) => ({
   minHeight: props.minHeight,
   flex: props.weight || 'none',
   label: 'flex-box',
+  background: props.background,
 }));
 
 const FlexBox = (props) => {
@@ -67,11 +68,13 @@ const FlexBox = (props) => {
     document.addEventListener('mouseup', () => {
       document.body.style.cursor = 'auto';
       document.removeEventListener('mousemove', resize);
-    }); 
+    });
   }, []);
   return (
     <Flex
       id={compID}
+      className={props.className}
+      background={props.background || '#4F4F4F'}
       dir={props.dir || 'column'}
       minWidth={props.minWidth || '60px'}
       minHeight={props.minHeight || '60px'}
