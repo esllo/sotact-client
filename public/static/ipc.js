@@ -27,6 +27,12 @@ if (input != null) {
       file = e.target.files[0];
       console.log(file.path);
       e.target.value = '';
+      const tree = parser.parse(file.path);
+      parser.waitForLoad(() => {
+        const layer = new Konva.Layer();
+        layer.add(tree);
+        stage.add(layer);
+      });
       // let psdFile = psd.fromFile(file.path);
       // psdFile.parse();
       // window.psdFile = psdFile;
@@ -56,4 +62,16 @@ if (input != null) {
 }
 function windowEvent(code) {
   ipcRenderer.send('windowEvent', code);
+}
+const resizeCanvas = () => {
+  const center = document.querySelector('.center');
+  stage.width(center.offsetWidth);
+  stage.height(center.offsetHeight);
+}
+window.addEventListener('resize', resizeCanvas);
+
+const scaleCanvas = (x, y) => {
+  stage.scaleX(x);
+  stage.scaleY(y);
+  stage.draw();
 }
