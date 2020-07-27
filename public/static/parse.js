@@ -17,6 +17,7 @@ const parser = (() => {
   const parse = (path) => {
     let ctx = psd.fromFile(path);
     ctx.parse();
+    console.log(ctx);
     totalLoad = totalCount = 0;
     return parseChilds(ctx.tree(), '');
   };
@@ -42,6 +43,7 @@ const parser = (() => {
     let childs = from._children;
     let i = 0;
     let group = new Konva.Group();
+    group.name(from.name || "이름없음");
     for (const child of childs.reverse()) {
       console.log(hier + ' ' + ++i + ' / ' + childs.length);
       if (child.constructor.name === 'Group') {

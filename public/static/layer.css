@@ -1,0 +1,11 @@
+.layer{
+    background: #ececec;
+    border-bottom: 1px solid #333;
+}
+.layer > p{
+    height: 24px;
+    line-height: 24px;
+}
+.layer-level-1, .layer-level-2, .layer-level-3, .layer-level-4{
+    margin-left: 12px;
+}

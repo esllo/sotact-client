@@ -52,3 +52,30 @@ const scaleCanvas = (x, y) => {
   stage.draw();
 };
 
+function applyLayers() {
+  const layers = stage.getLayers()[0];
+  let r = parseLayer(layers, "layer", 0);
+  document.getElementById("flexbox-6").innerHTML = r;
+}
+function parseLayer(child, hier, level) {
+  if (child.children.length != 0) {
+    var returnText = `<div id=${hier} class="layer layer-level-${level}" onclick="event.stopPropagation();layerSelect(this);"><p>${child.name()}</p>`;
+    child.children.map((v, i) => {
+      returnText += parseLayer(v, hier + "-" + i, level + 1);
+    });
+    return returnText + "</div>";
+  } else {
+    // item
+    return `<div id="${hier}" class="layer layer-level-${level}" onclick="event.stopPropagation();layerSelect(this);">
+      <p>${child.name()}</p>
+    </div>`;
+  }
+}
+function layerSelect(obj) {
+  let layHier = obj.id.substr(6).split("-");
+  let layer = stage.getLayers()[0];
+  let item = layer;
+  for (const hier of layHier)
+    item = item.children[hier];
+  console.log(item);
+}

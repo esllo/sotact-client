@@ -10,7 +10,8 @@ class MyDocument extends Document {
           <link rel="shortcut icon" href="/static/img/favicon.ico" />
           <style>{`body { margin: 0;padding: 0; overflow-x:hidden; }`}</style>
           <base href="../"></base>
-          <link rel="stylesheet" href="./out/static/reset.css"/>
+          <link rel="stylesheet" href="./out/static/reset.css" />
+          <link rel="stylesheet" href="./out/static/layer.css" />
           {this.props.styleTags}
         </Head>
         <body>
