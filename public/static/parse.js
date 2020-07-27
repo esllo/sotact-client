@@ -33,7 +33,6 @@ const parser = (() => {
       kImage.name(name);
       kImage.opacity(opacity);
       kImage.visible(visible);
-      kImage.draggable(true);
       console.log('L:' + totalLoad + ' / ' + totalCount);
     };
     image.src = imageURL;

@@ -33,30 +33,6 @@ if (input != null) {
         layer.add(tree);
         stage.add(layer);
       });
-      // let psdFile = psd.fromFile(file.path);
-      // psdFile.parse();
-      // window.psdFile = psdFile;
-      // let childs = psdFile.tree()._children;
-      // for (const child of childs.reverse()) {
-      //   let lay = child.layer;
-      //   testImage = toImage(lay.image.toPng());
-      //   if (testImage != null) {
-      //     let konvaImage = new Konva.Image({
-      //       x: 0,
-      //       y: 0,
-      //       image: testImage,
-      //       draggable: true,
-      //       scaleX: 0.5,
-      //       scaleY: 0.5,
-      //     });
-      //     konvaImage.opacity(lay.image.obj.opacity);
-      //     let clayer = new Konva.Layer();
-      //     window.stage.add(clayer);
-      //     clayer.add(konvaImage);
-      //     clayer.batchDraw();
-      //   }
-      // }
-      // stage.draw();
     }
   });
 }
@@ -67,11 +43,12 @@ const resizeCanvas = () => {
   const center = document.querySelector('.center');
   stage.width(center.offsetWidth);
   stage.height(center.offsetHeight);
-}
+};
 window.addEventListener('resize', resizeCanvas);
 
 const scaleCanvas = (x, y) => {
   stage.scaleX(x);
   stage.scaleY(y);
   stage.draw();
-}
+};
+
