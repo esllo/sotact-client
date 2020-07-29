@@ -36,7 +36,8 @@ if (input != null) {
         }
         pr.add(tree);
         applyLayers();
-        initTimeline();
+        pr.draw();
+        tm.draw();
         stage.draw();
       });
     }
@@ -59,7 +60,7 @@ const scaleCanvas = (x, y) => {
 };
 
 function applyLayers() {
-  const layers = stage.getLayers()[0];
+  const layers = pr;
   let r = parseLayer(layers, 'layer', 0);
   document.getElementById('flexbox-6').style.overflowY = 'scroll';
   document.getElementById('flexbox-6').innerHTML = r;
@@ -81,7 +82,7 @@ function parseLayer(child, hier, level) {
 var lastSelect = null;
 function findItem(id) {
   let layHier = id.substr(6).split('-');
-  let layer = stage.getLayers()[0];
+  let layer = pr;
   let item = layer;
   for (const hier of layHier) item = item.children[hier];
   return item;
@@ -92,15 +93,13 @@ function layerSelect(obj) {
     lastSelect[0].style.opacity = 1;
     lastSelect[1].draggable(false);
     lastSelect[1].listening(false);
-    // lastSelect[1].zIndex(lastSelect[2]);
   }
   if (lastSelect != null && item == lastSelect[1]) {
   } else {
-    lastSelect = [obj, item, item.zIndex()];
+    lastSelect = [obj, item];
     obj.style.opacity = 0.5;
     item.draggable(true);
     item.listening(true);
-    // item.zIndex(999);
     stage.draw();
   }
 }
@@ -118,6 +117,16 @@ function initTimeline() {
   });
   tm.hide();
   stage.add(tm);
+}
+
+const tl_body = document.getElementById('flexbox-11');
+function useEffectOccured() {
+  initTimeline();
+  createTimebar();
+}
+
+function createTimebar(){
+  
 }
 
 document.getElementById('tm_toggle').addEventListener('change', (e) => {
@@ -154,9 +163,13 @@ const xv = document.getElementById('xval');
 const yv = document.getElementById('yval');
 function moveSelectListener(e) {
   mvSel = e.currentTarget;
+  if (selIntv != null)
+    clearInterval(selIntv);
   selIntv = setInterval(updateSel, 100);
+  console.log("select");
 }
 function updateSel() {
+  console.log("intv");
   if (mvSel != null) {
     nv.value = mvSel.name();
     xv.value = mvSel.x();
@@ -167,6 +180,7 @@ function moveReleaseListener(e) {
   updateSel();
   mvSel = null;
   clearInterval(selIntv);
+  console.log("release");
 }
 
 function copyItemToTimeline(item) {

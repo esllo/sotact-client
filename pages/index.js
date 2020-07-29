@@ -18,6 +18,7 @@ const Home = (props) => {
     const center = document.querySelector('.center');
     stage.width(center.offsetWidth);
     stage.height(center.offsetHeight);
+    useEffectOccured();
   }, []);
 
   // animate with path
