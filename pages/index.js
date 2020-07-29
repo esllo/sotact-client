@@ -36,6 +36,11 @@ const Home = (props) => {
           <FlexBox className="middle" dir="row" weight={1}>
             <FlexBox className="left" dir="column" style={{ width: '280px' }}>
               <input type="file" />
+              <input type="range" min="1" max="200" id="scale" />
+              <label>
+                <input type="checkbox" id="tm_toggle" />
+                타임라인
+              </label>
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox
@@ -55,10 +60,29 @@ const Home = (props) => {
           <FlexBox className="bottom" dir="row" style={{ height: '260px' }}>
             <FlexBox
               className="properties"
-              dir="row"
-              style={{ width: '440px' }}></FlexBox>
+              dir="column"
+              style={{ width: '440px' }}>
+              <lable>
+                name :&nbsp;
+                <input id="nval" />
+              </lable>
+              <lable>
+                x :&nbsp;
+                <input id="xval" />
+              </lable>
+              <lable>
+                y :&nbsp;
+                <input id="yval" />
+              </lable>
+            </FlexBox>
             <Split dir="vertical"></Split>
-            <FlexBox className="timeline" dir="row"></FlexBox>
+            <FlexBox className="timeline" dir="row" weight={1}>
+              <FlexBox
+                className="timeline_head"
+                style={{ width: '220px' }}></FlexBox>
+              <Split dir="vertical"></Split>
+              <FlexBox className="timeline_body" weight={1}></FlexBox>
+            </FlexBox>
           </FlexBox>
         </FlexBox>
       </main>
