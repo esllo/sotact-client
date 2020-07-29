@@ -125,10 +125,6 @@ function useEffectOccured() {
   createTimebar();
 }
 
-function createTimebar(){
-  
-}
-
 document.getElementById('tm_toggle').addEventListener('change', (e) => {
   if (e.target.checked) {
     pr.hide();
@@ -199,3 +195,56 @@ function copyItemToTimeline(item) {
   tm.add(img);
   stage.draw();
 }
+
+
+var bar = null;
+function createTimebar() {
+  bar = document.createElement('div');
+  const sty = document.createElement('style');
+  sty.textContent = `
+    #flexbox-11{
+      position:relative;
+    }
+    .timebar{
+      width: 1px;
+      height: 100%;
+      background: #00f;
+      position: absolute;
+      top: 0;
+      left: 10px;
+    }
+  `;
+  document.head.appendChild(sty);
+  bar.className = "timebar";
+  tl_body.appendChild(bar);
+}
+
+function moveTimebar(offset) {
+  bar.style.left = 10 + offset + "px";
+}
+
+var timeIntv = null;
+function startTimebar() {
+  if (timeIntv != null) {
+    clearInterval(timeIntv);
+  }
+  timeIntv = setInterval(tickTime, 50);
+}
+
+function stopTimebar() {
+  clearInterval(timeIntv);
+}
+
+function resetTimebar() {
+  moveTimebar(time = 0);
+}
+
+var time = 0;
+function tickTime() {
+  time += 2;
+  moveTimebar(time);
+}
+
+document.getElementById('tb0').onclick = startTimebar;
+document.getElementById('tb1').onclick = stopTimebar;
+document.getElementById('tb2').onclick = resetTimebar;

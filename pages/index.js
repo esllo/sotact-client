@@ -75,6 +75,9 @@ const Home = (props) => {
                 y :&nbsp;
                 <input id="yval" />
               </lable>
+              <button id="tb0">Start Timebar</button>
+              <button id="tb1">Stop Timebar</button>
+              <button id="tb2">Reset Timebar</button>
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox className="timeline" dir="row" weight={1}>
