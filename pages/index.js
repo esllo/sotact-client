@@ -85,7 +85,12 @@ const Home = (props) => {
                 className="timeline_head"
                 style={{ width: '220px' }}></FlexBox>
               <Split dir="vertical"></Split>
-              <FlexBox className="timeline_body" weight={1}></FlexBox>
+              <FlexBox
+                className="timeline_body"
+                weight={1}
+                style={{ position: 'relative' }}>
+                <div className="timebar"></div>
+              </FlexBox>
             </FlexBox>
           </FlexBox>
         </FlexBox>

@@ -78,14 +78,3 @@ const parser = (() => {
 
   return { parse: parse, waitForLoad: waitForLoad };
 })();
-
-// test code
-// let path = 'C:\\Users\\worke\\Downloads\\jjjjjjjjjjj.psd';
-// document.body.onload = () => {
-//   const tree = parser.parse(path);
-//   parser.waitForLoad(() => {
-//     const layer = new Konva.Layer();
-//     layer.add(tree);
-//     stage.add(layer);
-//   });
-// };

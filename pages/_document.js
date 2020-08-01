@@ -3,22 +3,25 @@ import { useEffect } from 'react';
 
 class MyDocument extends Document {
   render() {
+    const css_list = ['reset', 'layer', 'timeline'];
+    const js_list = ['util', 'tool', 'parse', 'ipc', 'event'];
     return (
       <html>
         <Head>
           <meta charSet="utf-8" />
           <link rel="shortcut icon" href="/static/img/favicon.ico" />
-          <style>{`body { margin: 0;padding: 0; overflow-x:hidden; }`}</style>
           <base href="../"></base>
-          <link rel="stylesheet" href="./out/static/reset.css" />
-          <link rel="stylesheet" href="./out/static/layer.css" />
+          {css_list.map((v) => (
+            <link rel="stylesheet" href={'./out/static/' + v + '.css'}></link>
+          ))}
           {this.props.styleTags}
         </Head>
         <body>
           <Main />
           <NextScript />
-          <script src="./out/static/parse.js"></script>
-          <script src="./out/static/ipc.js"></script>
+          {js_list.map((v) => (
+            <script src={'./out/static/' + v + '.js'}></script>
+          ))}
         </body>
       </html>
     );
