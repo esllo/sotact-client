@@ -6,18 +6,7 @@ import FlexBox from '../comp/FlexBox';
 import Split from '../comp/Split';
 
 const Home = (props) => {
-  let stage;
   useEffect(() => {
-    window.Konva = Konva;
-    stage = new Konva.Stage({
-      container: 'container',
-      width: 500,
-      height: 500,
-    });
-    window.stage = stage;
-    const center = document.querySelector('.center');
-    stage.width(center.offsetWidth);
-    stage.height(center.offsetHeight);
     useEffectOccured();
   }, []);
 
@@ -81,15 +70,15 @@ const Home = (props) => {
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox className="timeline" dir="row" weight={1}>
-              <FlexBox
-                className="timeline_head"
-                style={{ width: '220px' }}></FlexBox>
+              <FlexBox className="timeline_head" style={{ width: '220px' }}>
+                <div id="timehead_head"></div>
+              </FlexBox>
               <Split dir="vertical"></Split>
-              <FlexBox
-                className="timeline_body"
-                weight={1}
-                style={{ position: 'relative' }}>
-                <div className="timebar"></div>
+              <FlexBox className="timeline_body" weight={1}>
+                <div id="timebody_scroll" style={{ position: 'relative' }}>
+                  <div className="timebar"></div>
+                  <div id="timebody_head"></div>
+                </div>
               </FlexBox>
             </FlexBox>
           </FlexBox>

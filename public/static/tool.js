@@ -5,6 +5,9 @@ const Tool = (() => {
   const _b = byQuery('.timebar');
   const _th = byID('flexbox-10');
   const _tb = byID('flexbox-11');
+  const _ts = byID('timebody_scroll');
+  const _thh = byID('timehead_head');
+  const _tbh = byID('timebody_head');
   const _nv = byID('nval');
   const _xv = byID('xval');
   const _yv = byID('yval');
@@ -34,13 +37,59 @@ const Tool = (() => {
     _th.ondrop = (e) => {
       const id = e.dataTransfer.getData('target');
       let item = findItem(id);
-      _th.innerHTML += `<div droppable="false">${item.name()}</div>`;
-      copyItemToTimeline(item);
+      let did = nextUDID();
+      _th.innerHTML += `<div did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
+      data[did] = { src: id, timeline: { t0: { x: item.x(), y: item.y() } } };
+      copyItemToTimeline(did, item);
       e.preventDefault();
     };
+    _b.onmousedown = (e) => {};
+    _b.onmouseup = (e) => {};
+    _tb.onmousemove = (e) => {};
+    initBar();
   }
 
-  function copyItemToTimeline(i) {
+  let udid = 0;
+  let data = {};
+  let flow = {};
+
+  const getData = () => data;
+
+  function makeFlowData() {
+    sortData();
+    flow = {};
+    for (const k of Object.keys(data)) {
+      const tmp = {};
+      let o = data[k];
+      const tl = Array.from(Object.keys(o.timeline), (x) =>
+        parseInt(x.substr(1))
+      );
+      if (tl.length == 1) continue;
+      tmp.src = o.src;
+      for (let i = 0; i < tl.length - 1; i++) {
+        
+      }
+      flow[k] = tmp;
+    }
+  }
+
+  function sortData() {
+    for (const o of Object.values(data)) {
+      const tmp = {};
+      const arr = Array.from(Object.keys(o.timeline), (x) =>
+        parseInt(x.substr(1))
+      )
+        .sort((a, b) => a - b)
+        .map((e) => (tmp['t' + e] = o.timeline['t' + e]));
+      o.timeline = tmp;
+    }
+  }
+
+  function nextUDID() {
+    return udid++;
+  }
+
+  function copyItemToTimeline(d, i) {
     const img = new Konva.Image({
       x: i.x(),
       y: i.y(),
@@ -50,12 +99,14 @@ const Tool = (() => {
       name: i.name(),
       image: i.image(),
     });
+    img.setAttr('did', d);
     img.on('mousedown', moveSelectListener);
     img.on('mouseup', moveReleaseListener);
     addTl(img);
     redrawAll();
   }
 
+  let currentUDID = 0;
   function moveSelectListener(e) {
     ms = e.currentTarget;
     if (si != null) clearInterval(si);
@@ -63,6 +114,8 @@ const Tool = (() => {
   }
   function updateSel() {
     if (ms != null) {
+      let dat = data[ms.getAttr('did')];
+      dat.timeline['t' + getTimebar()] = { x: ms.x(), y: ms.y() };
       _nv.value = ms.name();
       _xv.value = ms.x();
       _yv.value = ms.y();
@@ -169,14 +222,53 @@ const Tool = (() => {
     }
   }
 
-  const moveTimebar = (o) => (_b.style.left = 10 + o + 'px');
+  const TB_PAD = 20;
+  const moveTimebar = (o) => (_b.style.left = TB_PAD + o + 'px');
   function startTimebar() {
     if (ti != null) clearInterval(ti);
     ti = setInterval(tickTime, 33);
   }
   const stopTimebar = () => clearInterval(ti);
   const resetTimebar = () => moveTimebar((time = 0));
-  const tickTime = () => moveTimebar((time += 2));
+  const tickTime = () => moveTimebar((time += 1));
+  const getTimebar = () =>
+    Math.round(((parseInt(computedStyle(_b).left) - TB_PAD) / size) * 1000);
+
+  let lastX = -1;
+  let lastL = -1;
+  const size = parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
+  function initBar() {
+    _tb.onmousemove = (e) => {
+      let dist = lastL + e.x - lastX;
+      if (lastX != -1 && dist >= 0 && dist <= size) {
+        moveTimebar(dist);
+      }
+    };
+    _b.onmousedown = (e) => {
+      lastL = parseInt(computedStyle(_b).left) - TB_PAD;
+      lastX = e.x;
+    };
+    _tb.onmouseleave = _tb.onmouseup = (e) => (lastX = lastL = -1);
+
+    addTimebodyCalib();
+  }
+
+  const CALIB_CNT = 11;
+  function addTimebodyCalib() {
+    _tbh.style.width = size + TB_PAD * 2 + 'px';
+    const dist = size / (CALIB_CNT - 1);
+    // 10 = calib count
+    for (let i = 0; i < CALIB_CNT; i++) {
+      const u = createElem('p');
+      u.className = 'time_calib_unit';
+      u.textContent = i * 10 + '%';
+      const d = createElem('div');
+      d.className = 'time_calib';
+      u.style.left = d.style.left = TB_PAD + dist * i + 'px';
+      _tbh.appendChild(u);
+      _tbh.appendChild(d);
+    }
+  }
 
   return {
     init: init,
@@ -185,6 +277,7 @@ const Tool = (() => {
     scale: scale,
     getStage: getStage,
     getParent: getParent,
+    getData: getData,
     toggleLayer: toggleLayer,
     showTimeline: showTimeline,
     showPredraw: showPredraw,
@@ -196,5 +289,6 @@ const Tool = (() => {
     stopTimebar: stopTimebar,
     resetTimebar: resetTimebar,
     moveTimebar: moveTimebar,
+    sortData: sortData,
   };
 })();

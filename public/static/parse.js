@@ -53,17 +53,17 @@ const parser = (() => {
         group.add(childGroup);
       } else {
         // Layer
-        let layer = child.layer;
-        let name = child.name;
+        let lay = child.layer;
+        let n = child.name;
         let t = child.top;
         let l = child.left;
         let w = child.width;
         let h = child.height;
-        let opacity = layer.opacity;
-        let visible = layer.visible;
-        let png = layer.image.toPng();
+        let o = lay.opacity;
+        let v = lay.visible;
+        let png = lay.image.toPng();
         let imageURL = parseImage(png, w, h);
-        let image = convertImage(imageURL, l, t, name, opacity, visible);
+        let image = convertImage(imageURL, l, t, n, o, v);
         group.add(image);
       }
     }
