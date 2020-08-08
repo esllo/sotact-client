@@ -15,18 +15,18 @@ const TAW = (() => {
       }
       if (fl.index != fl.max - 1)
         for (const key of Object.keys(fl.data[fl.index])) {
-          fl.obj[key](
-            fl.data[fl.index][key] +
-              ((fl.data[fl.index + 1][key] - fl.data[fl.index][key]) *
-                (p - fl.index)) /
-                (fl.time[fl.index + 1] - fl.time[fl.index])
-          );
+          let value = fl.data[fl.index][key];
+          let diffs = fl.data[fl.index + 1][key] - fl.data[fl.index][key];
+          let dists = fl.time[fl.index + 1] - fl.time[fl.index];
+          let prgrs = p - fl.time[fl.index];
+          value += diffs * (prgrs / dists);
+          fl.obj[key](value);
         }
       else {
         for (const key of Object.keys(fl.data[fl.index]))
           fl.obj[key](fl.data[fl.index][key]);
       }
-      fl.obj.draw();
+      lay.batchDraw();
     });
   }
 
