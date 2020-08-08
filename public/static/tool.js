@@ -36,7 +36,7 @@ const Tool = (() => {
     _th.ondragover = (e) => e.preventDefault();
     _th.ondrop = (e) => {
       const id = e.dataTransfer.getData('target');
-      let item = findItem(id);
+      let item = findItem(pl, id);
       let did = nextUDID();
       _th.innerHTML += `<div did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
       data[did] = { src: id, timeline: { t0: { x: item.x(), y: item.y() } } };
@@ -66,8 +66,13 @@ const Tool = (() => {
       );
       if (tl.length == 1) continue;
       tmp.src = o.src;
-      for (let i = 0; i < tl.length - 1; i++) {
-        
+      for (let i = 0; i < tl.length - 2; i++) {
+        let from = tl[i];
+        let to = tl[i + 1];
+        let keys = [...Object.keys(from), ...Object.keys(to)];
+        keys = keys.filter((i, p) => keys.indexOf(i) === p);
+        for (const key of keys) {
+        }
       }
       flow[k] = tmp;
     }
@@ -165,6 +170,8 @@ const Tool = (() => {
   };
 
   const getStage = () => stg;
+  const getPLayer = () => pl;
+  const getTLayer = () => tl;
   const getParent = () => _p;
 
   const redrawAll = () => {
@@ -198,16 +205,8 @@ const Tool = (() => {
     }
   };
 
-  function findItem(i) {
-    let lh = i.substr(6).split('-');
-    let l = pl;
-    let it = l;
-    for (const h of lh) it = it.children[h];
-    return it;
-  }
-
   function layerSelect(o) {
-    let i = findItem(o.id);
+    let i = findItem(pl, o.id);
     if (ls != null) {
       ls[0].style.opacity = 1;
       ls[1].draggable(false);
@@ -223,16 +222,31 @@ const Tool = (() => {
   }
 
   const TB_PAD = 20;
-  const moveTimebar = (o) => (_b.style.left = TB_PAD + o + 'px');
+  const TIME_TICK = 1000;
+  var currentTAW = null;
+  const setCurrentTAW = (taw) => (currentTAW = taw);
+  const moveTimebar = (o) => {
+    _b.style.left = TB_PAD + o + 'px';
+    if (getTimebar() >= TIME_TICK) {
+      stopTimebar();
+      _b.style.left = TB_PAD + size + 'px';
+    } else if (getTimebar() <= TB_PAD) {
+      _b.style.left = TB_PAD + 'px';
+    }
+    if (currentTAW != null) currentTAW.setProgress(getTimebar());
+  };
   function startTimebar() {
     if (ti != null) clearInterval(ti);
-    ti = setInterval(tickTime, 33);
+    ti = setInterval(tickTime, 50);
   }
   const stopTimebar = () => clearInterval(ti);
-  const resetTimebar = () => moveTimebar((time = 0));
-  const tickTime = () => moveTimebar((time += 1));
+  const resetTimebar = () => moveTimebar(0);
+  const tickTime = () =>
+    moveTimebar(parseInt(computedStyle(_b).left) + size * 0.001);
   const getTimebar = () =>
-    Math.round(((parseInt(computedStyle(_b).left) - TB_PAD) / size) * 1000);
+    Math.round(
+      ((parseInt(computedStyle(_b).left) - TB_PAD) / size) * TIME_TICK
+    );
 
   let lastX = -1;
   let lastL = -1;
@@ -249,8 +263,16 @@ const Tool = (() => {
       lastX = e.x;
     };
     _tb.onmouseleave = _tb.onmouseup = (e) => (lastX = lastL = -1);
-
     addTimebodyCalib();
+    _tbh.onclick = (e) => {
+      const pos = Math.round((e.offsetX - TB_PAD / size) * TIME_TICK);
+      moveTimebar(e.offsetX - TB_PAD);
+    };
+    _tbh.onmousedown = (e) => {
+      moveTimebar(e.offsetX - TB_PAD);
+      lastL = e.offsetX - TB_PAD;
+      lastX = e.x;
+    };
   }
 
   const CALIB_CNT = 11;
@@ -276,6 +298,8 @@ const Tool = (() => {
     resize: resize,
     scale: scale,
     getStage: getStage,
+    getPLayer: getPLayer,
+    getTLayer: getTLayer,
     getParent: getParent,
     getData: getData,
     toggleLayer: toggleLayer,
@@ -290,5 +314,6 @@ const Tool = (() => {
     resetTimebar: resetTimebar,
     moveTimebar: moveTimebar,
     sortData: sortData,
+    setCurrentTAW: setCurrentTAW,
   };
 })();

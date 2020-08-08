@@ -44,7 +44,7 @@ const parser = (() => {
     let childs = from._children;
     let i = 0;
     let group = new Konva.Group();
-    group.name(from.name || '이름없음');
+    group.name(escape(from.name) || '이름없음');
     for (const child of childs.reverse()) {
       console.log(hier + ' ' + ++i + ' / ' + childs.length);
       if (child.constructor.name === 'Group') {
@@ -54,7 +54,7 @@ const parser = (() => {
       } else {
         // Layer
         let lay = child.layer;
-        let n = child.name;
+        let n = escape(child.name);
         let t = child.top;
         let l = child.left;
         let w = child.width;
