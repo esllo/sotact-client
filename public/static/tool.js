@@ -223,6 +223,7 @@ const Tool = (() => {
 
   const TB_PAD = 20;
   const TIME_TICK = 1000;
+  const TICK_RATE = 16;
   var currentTAW = null;
   const setCurrentTAW = (taw) => (currentTAW = taw);
   const moveTimebar = (o) => {
@@ -237,12 +238,12 @@ const Tool = (() => {
   };
   function startTimebar() {
     if (ti != null) clearInterval(ti);
-    ti = setInterval(tickTime, 50);
+    ti = setInterval(tickTime, TICK_RATE);
   }
   const stopTimebar = () => clearInterval(ti);
   const resetTimebar = () => moveTimebar(0);
   const tickTime = () =>
-    moveTimebar(parseInt(computedStyle(_b).left) + size * 0.001);
+    moveTimebar(parseInt(computedStyle(_b).left) + size * 0.0005);
   const getTimebar = () =>
     Math.round(
       ((parseInt(computedStyle(_b).left) - TB_PAD) / size) * TIME_TICK
