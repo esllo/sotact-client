@@ -59,7 +59,7 @@ const parser = (() => {
         let l = child.left;
         let w = child.width;
         let h = child.height;
-        let o = lay.opacity;
+        let o = lay.opacity / 255;
         let v = lay.visible;
         let png = lay.image.toPng();
         let imageURL = parseImage(png, w, h);
