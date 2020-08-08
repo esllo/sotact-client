@@ -35,3 +35,10 @@ byID('tm_toggle').addEventListener('change', (e) => {
 byID('tb0').onclick = Tool.startTimebar;
 byID('tb1').onclick = Tool.stopTimebar;
 byID('tb2').onclick = Tool.resetTimebar;
+
+addOnOccured(() => {
+  byID('xval').addEventListener('keyup', Tool.xValChanged);
+  byID('yval').addEventListener('keyup', Tool.yValChanged);
+  byID('rval').addEventListener('keyup', Tool.rValChanged);
+  byID('oval').addEventListener('keyup', Tool.oValChanged);
+});
