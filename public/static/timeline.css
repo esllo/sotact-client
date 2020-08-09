@@ -1,0 +1,44 @@
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.timebar {
+  width: 2px;
+  height: 100%;
+  background: #00f;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  opacity: 0.8;
+  cursor: col-resize;
+}
+#timebody_scroll {
+  overflow-x: scroll;
+  height: 100%;
+}
+#timehead_head,
+#timebody_head {
+  height: 26px;
+  background: #3d3d3d;
+}
+#timehead_head {
+}
+#timebody_head {
+}
+.time_calib_unit {
+  height: 16px;
+  width: 36px;
+  position: absolute;
+  top: 0;
+  margin-left: -18px;
+  font-size: 12px;
+  text-align: center;
+}
+.time_calib {
+  height: 10px;
+  width: 2px;
+  background: #1b1b1b;
+  position: absolute;
+  top: 16px;
+}

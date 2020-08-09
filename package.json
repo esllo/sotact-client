@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "test",
   "version": "0.1.0",
   "private": true,
@@ -11,5 +12,32 @@
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1"
+=======
+  "name": "taw-client",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export",
+    "electron": "electron .",
+    "dex": "next dev && electron .",
+    "rex": "next build && next export && electron ."
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "konva": "^7.0.3",
+    "lodash": "^4.17.19",
+    "next": "9.4.4",
+    "psd": "^3.2.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  },
+  "devDependencies": {
+    "electron": "^9.1.0"
+>>>>>>> develop
   }
 }
