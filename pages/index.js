@@ -52,18 +52,26 @@ const Home = (props) => {
               className="properties"
               dir="column"
               style={{ width: '440px' }}>
-              <lable>
+              <label>
                 name :&nbsp;
-                <input id="nval" />
-              </lable>
-              <lable>
+                <input id="nval" disabled/>
+              </label>
+              <label>
                 x :&nbsp;
                 <input id="xval" />
-              </lable>
+              </label>
               <lable>
                 y :&nbsp;
                 <input id="yval" />
               </lable>
+              <label>
+                rotation :&nbsp;
+                <input id="rval" />
+              </label>
+              <label>
+                opacity :&nbsp;
+                <input id="oval" />
+              </label>
               <button id="tb0">Start Timebar</button>
               <button id="tb1">Stop Timebar</button>
               <button id="tb2">Reset Timebar</button>

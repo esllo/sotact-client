@@ -17,7 +17,6 @@ const parser = (() => {
   const parse = (path) => {
     let ctx = psd.fromFile(path);
     ctx.parse();
-    console.log(ctx);
     totalLoad = totalCount = 0;
     return parseChilds(ctx.tree(), '');
   };
@@ -35,7 +34,9 @@ const parser = (() => {
       kImage.name(name);
       kImage.opacity(opacity);
       kImage.visible(visible);
-      console.log('L:' + totalLoad + ' / ' + totalCount);
+      kImage.x(kImage.x() + kImage.width() / 2);
+      kImage.y(kImage.y() + kImage.height() / 2);
+      kImage.offset({ x: kImage.width() / 2, y: kImage.height() / 2 });
     };
     image.src = imageURL;
     return kImage;
@@ -46,7 +47,6 @@ const parser = (() => {
     let group = new Konva.Group();
     group.name(escape(from.name) || '이름없음');
     for (const child of childs.reverse()) {
-      console.log(hier + ' ' + ++i + ' / ' + childs.length);
       if (child.constructor.name === 'Group') {
         // Group
         let childGroup = parseChilds(child, '--' + hier);
