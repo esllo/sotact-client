@@ -11,6 +11,8 @@ const Tool = (() => {
   const _nv = byID('nval');
   const _xv = byID('xval');
   const _yv = byID('yval');
+  const _rv = byID('rval');
+  const _ov = byID('oval');
 
   // konva objects
   let stg = null;
@@ -39,14 +41,26 @@ const Tool = (() => {
       let item = findItem(pl, id);
       let did = nextUDID();
       _th.innerHTML += `<div did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
-      data[did] = { src: id, timeline: { t0: { x: item.x(), y: item.y() } } };
+      data[did] = {
+        src: id,
+        timeline: {
+          t0: {
+            x: item.x(),
+            y: item.y(),
+            rotation: item.rotation(),
+            opacity: item.opacity(),
+          },
+        },
+      };
       copyItemToTimeline(did, item);
       e.preventDefault();
     };
     _b.onmousedown = (e) => {};
     _b.onmouseup = (e) => {};
     _tb.onmousemove = (e) => {};
+    initTr();
     initBar();
+    initProp();
   }
 
   let udid = 0;
@@ -103,30 +117,116 @@ const Tool = (() => {
       visible: i.visible(),
       name: i.name(),
       image: i.image(),
+      offset: i.offset(),
     });
     img.setAttr('did', d);
     img.on('mousedown', moveSelectListener);
     img.on('mouseup', moveReleaseListener);
+    img.on('click', selectItem);
     addTl(img);
     redrawAll();
   }
 
-  let currentUDID = 0;
+  function xValChanged(e) {
+    let val = e.target.value.trim();
+    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+      lastTr.x(parseFloat(val));
+      applyUpdate(lastTr);
+      tl.draw();
+    }
+  }
+
+  function yValChanged(e) {
+    let val = e.target.value.trim();
+    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+      lastTr.y(parseFloat(val));
+      applyUpdate(lastTr);
+      tl.draw();
+    }
+  }
+
+  function rValChanged(e) {
+    let val = e.target.value.trim();
+    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+      lastTr.rotation(parseFloat(val));
+      applyUpdate(lastTr);
+      tl.draw();
+    }
+  }
+
+  function oValChanged(e) {
+    let val = e.target.value.trim();
+    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+      val = parseFloat(val);
+      if (val < 0) val = 0;
+      if (val > 100) val = 100;
+      lastTr.opacity(val / 100);
+      applyUpdate(lastTr);
+      tl.draw();
+    }
+  }
+
+  function initProp() {}
+
+  var lastTr = null;
+  var tr = null;
+
+  function initTr() {
+    tr = new Konva.Transformer({
+      anchorSize: 10,
+      anchorStrokeWidth: 1,
+      anchorCornerRadius: 5,
+      borderDash: [5, 5],
+      centerScaling: true,
+    });
+    tl.add(tr);
+  }
+
+  function selectItem(e) {
+    let target = e.currentTarget;
+    if (lastTr != target) {
+      lastTr = target;
+      tr.nodes([lastTr]);
+    } else {
+      lastTr = null;
+      tr.nodes([]);
+    }
+    tr.zIndex(tl.children.length - 1);
+    tl.batchDraw();
+  }
+
+  let dragged = false;
   function moveSelectListener(e) {
-    ms = e.currentTarget;
+    lastTr = ms = e.currentTarget;
+    tr.nodes([lastTr]);
+    tr.zIndex(tl.children.length - 1);
+    tl.batchDraw();
+    dragged = false;
     if (si != null) clearInterval(si);
     si = setInterval(updateSel, 100);
   }
+  function applyUpdate(o) {
+    let dat = data[o.getAttr('did')];
+    dat.timeline['t' + getTimebar()] = {
+      x: Math.round(o.x()),
+      y: Math.round(o.y()),
+      rotation: o.rotation(),
+      opacity: o.opacity(),
+    };
+  }
   function updateSel() {
     if (ms != null) {
-      let dat = data[ms.getAttr('did')];
-      dat.timeline['t' + getTimebar()] = { x: ms.x(), y: ms.y() };
+      dragged = true;
+      applyUpdate(ms);
       _nv.value = ms.name();
       _xv.value = ms.x();
       _yv.value = ms.y();
+      _rv.value = ms.rotation();
+      _ov.value = ms.opacity() * 100;
     }
   }
   function moveReleaseListener(e) {
+    if (!dragged) lastTr = null;
     updateSel();
     ms = null;
     clearInterval(si);
@@ -316,5 +416,9 @@ const Tool = (() => {
     moveTimebar: moveTimebar,
     sortData: sortData,
     setCurrentTAW: setCurrentTAW,
+    xValChanged: xValChanged,
+    yValChanged: yValChanged,
+    rValChanged: rValChanged,
+    oValChanged: oValChanged,
   };
 })();

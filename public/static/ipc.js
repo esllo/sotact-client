@@ -5,6 +5,12 @@ function windowEvent(code) {
   ipcRenderer.send('windowEvent', code);
 }
 
-function useEffectOccured() {
+var occurQueue = [];
+async function useEffectOccured() {
   Tool.init();
+  occurQueue.forEach(e => e());
+}
+
+function addOnOccured(cb){
+  occurQueue.push(cb);
 }
