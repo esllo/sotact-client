@@ -5,7 +5,7 @@ const TAW = (() => {
   var progress = 0;
 
   function setProgress(p) {
-    flow.forEach((fl) => {
+    return flow.map((fl) => {
       let from = p < fl.time[fl.index] ? 0 : fl.index;
       let to = p < fl.time[fl.index] ? fl.index : fl.max - 1;
       if (to > fl.max - 1) to = fl.max - 1;
@@ -13,6 +13,7 @@ const TAW = (() => {
         if (fl.time[fl.index + 1] > p) break;
         fl.index++;
       }
+      let f = {};
       if (fl.index != fl.max - 1)
         for (const key of Object.keys(fl.data[fl.index])) {
           let value = fl.data[fl.index][key];
@@ -23,10 +24,13 @@ const TAW = (() => {
           fl.obj[key](value);
         }
       else {
-        for (const key of Object.keys(fl.data[fl.index]))
+        for (const key of Object.keys(fl.data[fl.index])) {
+          f[key] = fl.data[fl.index][key];
           fl.obj[key](fl.data[fl.index][key]);
+        }
       }
       lay.batchDraw();
+      return f;
     });
   }
 

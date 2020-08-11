@@ -8,6 +8,8 @@ const Tool = (() => {
   const _ts = byID('timebody_scroll');
   const _thh = byID('timehead_head');
   const _tbh = byID('timebody_head');
+  const _tns = byID('tl_names');
+  const _tps = byID('tl_props');
   const _nv = byID('nval');
   const _xv = byID('xval');
   const _yv = byID('yval');
@@ -34,13 +36,13 @@ const Tool = (() => {
     stg.add(pl);
     stg.add(tl);
     resize(stg, _p.offsetWidth, _p.offsetHeight);
-    _th.setAttribute('droppable', true);
-    _th.ondragover = (e) => e.preventDefault();
-    _th.ondrop = (e) => {
+    _tns.setAttribute('droppable', true);
+    _tns.ondragover = (e) => e.preventDefault();
+    _tns.ondrop = (e) => {
       const id = e.dataTransfer.getData('target');
       let item = findItem(pl, id);
       let did = nextUDID();
-      _th.innerHTML += `<div did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
+      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
       data[did] = {
         src: id,
         timeline: {
@@ -52,7 +54,9 @@ const Tool = (() => {
           },
         },
       };
+      _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
       copyItemToTimeline(did, item);
+      maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
       e.preventDefault();
     };
     _b.onmousedown = (e) => {};
@@ -61,6 +65,16 @@ const Tool = (() => {
     initTr();
     initBar();
     initProp();
+  }
+
+  let maxDist = 0;
+  function scrollTimeline(e) {
+    e.preventDefault();
+    let targetScroll = _tns.scrollTop;
+    targetScroll += e.deltaY * 0.2;
+    if (targetScroll < 0) targetScroll = 0;
+    if (targetScroll > maxDist) targetScroll = maxDist;
+    _tps.scrollTop = _tns.scrollTop = targetScroll;
   }
 
   let udid = 0;
@@ -125,6 +139,18 @@ const Tool = (() => {
     img.on('click', selectItem);
     addTl(img);
     redrawAll();
+  }
+
+  function setPoint(did, progress) {
+    let d = byQuery(`div[udid="${did}"][progress="${progress}"]`);
+    if (d == null) {
+      d = createElem('div');
+      d.setAttribute('udid', did);
+      d.setAttribute('progress', progress);
+      d.className = 'tl_point';
+      d.style.left = (size * progress) / TIME_TICK + TB_PAD - 2 + 'px';
+      byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
+    }
   }
 
   function xValChanged(e) {
@@ -331,10 +357,12 @@ const Tool = (() => {
     if (getTimebar() >= TIME_TICK) {
       stopTimebar();
       _b.style.left = TB_PAD + size + 'px';
-    } else if (getTimebar() <= TB_PAD) {
+    } else if (getTimebar() <= 0) {
       _b.style.left = TB_PAD + 'px';
     }
-    if (currentTAW != null) currentTAW.setProgress(getTimebar());
+    if (currentTAW != null) {
+      let ret = currentTAW.setProgress(getTimebar());
+    }
   };
   function startTimebar() {
     if (ti != null) clearInterval(ti);
@@ -420,5 +448,7 @@ const Tool = (() => {
     yValChanged: yValChanged,
     rValChanged: rValChanged,
     oValChanged: oValChanged,
+    scrollTimeline: scrollTimeline,
+    setPoint: setPoint,
   };
 })();

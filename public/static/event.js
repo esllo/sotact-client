@@ -41,4 +41,6 @@ addOnOccured(() => {
   byID('yval').addEventListener('keyup', Tool.yValChanged);
   byID('rval').addEventListener('keyup', Tool.rValChanged);
   byID('oval').addEventListener('keyup', Tool.oValChanged);
+  byID('tl_names').addEventListener('wheel', Tool.scrollTimeline);
+  byID('tl_props').addEventListener('wheel', Tool.scrollTimeline);
 });

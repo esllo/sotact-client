@@ -3,6 +3,15 @@ body {
   -moz-user-select: none;
   user-select: none;
 }
+.nsb::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.nsb {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
 .timebar {
   width: 2px;
   height: 100%;
@@ -14,13 +23,53 @@ body {
   cursor: col-resize;
 }
 #timebody_scroll {
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
   height: 100%;
+}
+#flexbox-9 > div {
+  position: relative;
 }
 #timehead_head,
 #timebody_head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 26px;
   background: #3d3d3d;
+}
+#tl_names,
+#tl_props {
+  width: 100%;
+  height: 100%;
+  margin-top: 26px;
+  overflow-y: auto;
+}
+.tl_name {
+  height: 32px;
+  line-height: 32px;
+  padding: 0 8px;
+  border-bottom: 1px solid #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tl_prop {
+  width: 100%;
+  height: 32px;
+  border-bottom: 1px solid #333;
+}
+.tl_point{
+  width:4px;
+  height:4px;
+  border:1px solid #333;
+  background: #333;
+  border-radius: 2px;
+  position: absolute;
+  top:39px;
+}
+.tl_point:hover{
+  background: #222;
 }
 #timehead_head {
 }
