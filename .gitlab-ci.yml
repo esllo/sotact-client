@@ -8,7 +8,6 @@ dev:
   tags:
   - centos7
   script:
-  - npm install -g yarn
   - yarn install
   - yarn build
   
