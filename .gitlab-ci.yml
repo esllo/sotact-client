@@ -6,6 +6,9 @@ stages:
 dev:
   stage: dev
   script:
+  - ls
+  - rmdir -rf out
+  - rmdir -rf .next
   - yarn install
   - yarn build
   
