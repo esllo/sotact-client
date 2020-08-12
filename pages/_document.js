@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 class MyDocument extends Document {
   render() {
     const css_list = ['reset', 'layer', 'timeline'];
-    const js_list = ['util', 'tool', 'parse', 'ipc', 'event', 'view'];
+    const js_list = ['util', 'tool', 'parse', 'ipc', 'event', 'view', 'save'];
     return (
       <html>
         <Head>

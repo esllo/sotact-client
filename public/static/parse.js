@@ -3,6 +3,7 @@ var psd = require('psd');
 const parser = (() => {
   let cvs = document.createElement('canvas');
   let ctx = cvs.getContext('2d');
+  var _psd = null;
   var totalLoad = 0;
   var totalCount = 0;
   const parseImage = (png, width, height) => {
@@ -15,10 +16,11 @@ const parser = (() => {
     return cvs.toDataURL('image/png');
   };
   const parse = (path) => {
-    let ctx = psd.fromFile(path);
-    ctx.parse();
+    _psd = psd.fromFile(path);
+    _psd.parse();
+    console.log(_psd);
     totalLoad = totalCount = 0;
-    return parseChilds(ctx.tree(), '');
+    return parseChilds(_psd.tree(), '');
   };
   function convertImage(imageURL, l, t, name, opacity, visible) {
     let image = new Image();
@@ -73,7 +75,7 @@ const parser = (() => {
 
   const waitForLoad = async function (cb) {
     while (totalLoad != totalCount) await sleep(50);
-    cb();
+    cb(_psd);
   };
 
   return { parse: parse, waitForLoad: waitForLoad };

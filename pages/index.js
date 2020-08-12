@@ -54,7 +54,7 @@ const Home = (props) => {
               style={{ width: '440px' }}>
               <label>
                 name :&nbsp;
-                <input id="nval" disabled/>
+                <input id="nval" disabled />
               </label>
               <label>
                 x :&nbsp;
@@ -80,13 +80,13 @@ const Home = (props) => {
             <FlexBox className="timeline" dir="row" weight={1}>
               <FlexBox className="timeline_head" style={{ width: '220px' }}>
                 <div id="timehead_head"></div>
+                <div id="tl_names" className="nsb"></div>
               </FlexBox>
               <Split dir="vertical"></Split>
               <FlexBox className="timeline_body" weight={1}>
-                <div id="timebody_scroll" style={{ position: 'relative' }}>
-                  <div className="timebar"></div>
-                  <div id="timebody_head"></div>
-                </div>
+                <div className="timebar"></div>
+                <div id="timebody_head"></div>
+                <div id="tl_props" className="nsb"></div>
               </FlexBox>
             </FlexBox>
           </FlexBox>

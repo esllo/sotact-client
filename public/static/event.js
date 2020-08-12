@@ -6,7 +6,8 @@ if (input != null) {
       file = e.target.files[0];
       e.target.value = '';
       const tree = parser.parse(file.path);
-      parser.waitForLoad(() => {
+      parser.waitForLoad((ctx) => {
+        Tool.psd(ctx);
         Tool.addPr(tree);
         Tool.applyLayer();
         Tool.redrawAll();
@@ -41,4 +42,6 @@ addOnOccured(() => {
   byID('yval').addEventListener('keyup', Tool.yValChanged);
   byID('rval').addEventListener('keyup', Tool.rValChanged);
   byID('oval').addEventListener('keyup', Tool.oValChanged);
+  byID('tl_names').addEventListener('wheel', Tool.scrollTimeline);
+  byID('tl_props').addEventListener('wheel', Tool.scrollTimeline);
 });

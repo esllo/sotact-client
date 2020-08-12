@@ -5,6 +5,8 @@ stages:
 
 dev:
   stage: dev
+  tags:
+  - centos7
   script:
   - yarn install
   - yarn build
