@@ -23,11 +23,11 @@ function findItem(l, i) {
   return it;
 }
 var ETA = document.createElement('textarea');
-function escape(text){
+function escape(text) {
   ETA.textContent = text;
   return ETA.innerHTML;
 }
-function concatKeys(arr1, arr2){
+function concatKeys(arr1, arr2) {
   let k1 = Object.keys(arr1);
   let k2 = Object.keys(arr2);
   let arr = [...k1, ...k2];
