@@ -5,11 +5,10 @@ stages:
 
 dev:
   stage: dev
+  tags:
+  - centos7
   script:
-  - df -h
-  - ls
-  - rm -rf out
-  - rm -rf .next
+  - npm install -g yarn
   - yarn install
   - yarn build
   
