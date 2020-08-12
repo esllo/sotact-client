@@ -6,7 +6,8 @@ if (input != null) {
       file = e.target.files[0];
       e.target.value = '';
       const tree = parser.parse(file.path);
-      parser.waitForLoad(() => {
+      parser.waitForLoad((ctx) => {
+        Tool.psd(ctx);
         Tool.addPr(tree);
         Tool.applyLayer();
         Tool.redrawAll();

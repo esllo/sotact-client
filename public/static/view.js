@@ -9,7 +9,7 @@ const TAW = (() => {
       let from = p < fl.time[fl.index] ? 0 : fl.index;
       let to = p < fl.time[fl.index] ? fl.index : fl.max - 1;
       if (to > fl.max - 1) to = fl.max - 1;
-      for (fl.index = from; fl.index < to; ) {
+      for (fl.index = from; fl.index < to;) {
         if (fl.time[fl.index + 1] > p) break;
         fl.index++;
       }
@@ -46,6 +46,7 @@ const TAW = (() => {
       let dt = [];
       tl.forEach((e) => df.push(o.timeline['t' + dt[dt.push(e) - 1]]));
       let ds = {
+        src: o.src,
         obj: i,
         time: dt,
         data: df,

@@ -20,6 +20,12 @@ const Tool = (() => {
   let stg = null;
   let pl = null;
   let tl = null;
+  let ctx = null;
+  const psd = (_psd) => {
+    if (_psd === undefined)
+      return ctx;
+    ctx = _psd;
+  }
 
   // tool objects
   let ls = null;
@@ -59,9 +65,9 @@ const Tool = (() => {
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
       e.preventDefault();
     };
-    _b.onmousedown = (e) => {};
-    _b.onmouseup = (e) => {};
-    _tb.onmousemove = (e) => {};
+    _b.onmousedown = (e) => { };
+    _b.onmouseup = (e) => { };
+    _tb.onmousemove = (e) => { };
     initTr();
     initBar();
     initProp();
@@ -192,7 +198,7 @@ const Tool = (() => {
     }
   }
 
-  function initProp() {}
+  function initProp() { }
 
   var lastTr = null;
   var tr = null;
@@ -450,5 +456,6 @@ const Tool = (() => {
     oValChanged: oValChanged,
     scrollTimeline: scrollTimeline,
     setPoint: setPoint,
+    psd: psd
   };
 })();
