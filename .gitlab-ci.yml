@@ -6,9 +6,10 @@ stages:
 dev:
   stage: dev
   script:
+  - df -h
   - ls
-  - rmdir -rf out
-  - rmdir -rf .next
+  - rm -rf out
+  - rm -rf .next
   - yarn install
   - yarn build
   
