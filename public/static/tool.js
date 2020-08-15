@@ -22,10 +22,9 @@ const Tool = (() => {
   let tl = null;
   let ctx = null;
   const psd = (_psd) => {
-    if (_psd === undefined)
-      return ctx;
+    if (_psd === undefined) return ctx;
     ctx = _psd;
-  }
+  };
 
   // tool objects
   let ls = null;
@@ -33,6 +32,7 @@ const Tool = (() => {
   let si = null;
   let ti = null;
   let time = 0;
+  let sz = 0;
 
   function init() {
     stg = new Konva.Stage({ container: 'container' });
@@ -41,7 +41,7 @@ const Tool = (() => {
     tl.hide();
     stg.add(pl);
     stg.add(tl);
-    resize(stg, _p.offsetWidth, _p.offsetHeight);
+    rebsize(stg, _p.offsetWidth, _p.offsetHeight);
     _tns.setAttribute('droppable', true);
     _tns.ondragover = (e) => e.preventDefault();
     _tns.ondrop = (e) => {
@@ -65,9 +65,9 @@ const Tool = (() => {
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
       e.preventDefault();
     };
-    _b.onmousedown = (e) => { };
-    _b.onmouseup = (e) => { };
-    _tb.onmousemove = (e) => { };
+    _b.onmousedown = (e) => {};
+    _b.onmouseup = (e) => {};
+    _tb.onmousemove = (e) => {};
     initTr();
     initBar();
     initProp();
@@ -154,7 +154,7 @@ const Tool = (() => {
       d.setAttribute('udid', did);
       d.setAttribute('progress', progress);
       d.className = 'tl_point';
-      d.style.left = (size * progress) / TIME_TICK + TB_PAD - 2 + 'px';
+      d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
       byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
     }
   }
@@ -198,14 +198,14 @@ const Tool = (() => {
     }
   }
 
-  function initProp() { }
+  function initProp() {}
 
   var lastTr = null;
   var tr = null;
 
   function initTr() {
     tr = new Konva.Transformer({
-      anchorSize: 10,
+      anchorbsize: 10,
       anchorStrokeWidth: 1,
       anchorCornerRadius: 5,
       borderDash: [5, 5],
@@ -287,7 +287,7 @@ const Tool = (() => {
     toggleLayer(false);
   };
 
-  const resize = (o, w, h) => {
+  const rebsize = (o, w, h) => {
     if (h === undefined) h = w;
     o.width(w);
     o.height(h);
@@ -362,7 +362,7 @@ const Tool = (() => {
     _b.style.left = TB_PAD + o + 'px';
     if (getTimebar() >= TIME_TICK) {
       stopTimebar();
-      _b.style.left = TB_PAD + size + 'px';
+      _b.style.left = TB_PAD + bsize + 'px';
     } else if (getTimebar() <= 0) {
       _b.style.left = TB_PAD + 'px';
     }
@@ -377,19 +377,19 @@ const Tool = (() => {
   const stopTimebar = () => clearInterval(ti);
   const resetTimebar = () => moveTimebar(0);
   const tickTime = () =>
-    moveTimebar(parseInt(computedStyle(_b).left) + size * 0.0005);
+    moveTimebar(parseInt(computedStyle(_b).left) + bsize * 0.0005);
   const getTimebar = () =>
     Math.round(
-      ((parseInt(computedStyle(_b).left) - TB_PAD) / size) * TIME_TICK
+      ((parseInt(computedStyle(_b).left) - TB_PAD) / bsize) * TIME_TICK
     );
 
   let lastX = -1;
   let lastL = -1;
-  const size = parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
+  const bsize = parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
   function initBar() {
     _tb.onmousemove = (e) => {
       let dist = lastL + e.x - lastX;
-      if (lastX != -1 && dist >= 0 && dist <= size) {
+      if (lastX != -1 && dist >= 0 && dist <= bsize) {
         moveTimebar(dist);
       }
     };
@@ -400,7 +400,7 @@ const Tool = (() => {
     _tb.onmouseleave = _tb.onmouseup = (e) => (lastX = lastL = -1);
     addTimebodyCalib();
     _tbh.onclick = (e) => {
-      const pos = Math.round((e.offsetX - TB_PAD / size) * TIME_TICK);
+      const pos = Math.round((e.offsetX - TB_PAD / bsize) * TIME_TICK);
       moveTimebar(e.offsetX - TB_PAD);
     };
     _tbh.onmousedown = (e) => {
@@ -412,8 +412,8 @@ const Tool = (() => {
 
   const CALIB_CNT = 11;
   function addTimebodyCalib() {
-    _tbh.style.width = size + TB_PAD * 2 + 'px';
-    const dist = size / (CALIB_CNT - 1);
+    _tbh.style.width = bsize + TB_PAD * 2 + 'px';
+    const dist = bsize / (CALIB_CNT - 1);
     // 10 = calib count
     for (let i = 0; i < CALIB_CNT; i++) {
       const u = createElem('p');
@@ -427,10 +427,18 @@ const Tool = (() => {
     }
   }
 
+  const size = (s) => (sz = s || sz);
+
+  const save = (n, h) => {
+    let p = getPLayer();
+    let f = currentTAW.getFlow();
+    SAVE.save(p, f, size(), n, h);
+  };
+
   return {
     init: init,
     redrawAll: redrawAll,
-    resize: resize,
+    rebsize: rebsize,
     scale: scale,
     getStage: getStage,
     getPLayer: getPLayer,
@@ -456,6 +464,8 @@ const Tool = (() => {
     oValChanged: oValChanged,
     scrollTimeline: scrollTimeline,
     setPoint: setPoint,
-    psd: psd
+    psd: psd,
+    save: save,
+    size: size,
   };
 })();
