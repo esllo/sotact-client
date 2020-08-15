@@ -8,7 +8,8 @@ if (input != null) {
       const tree = parser.parse(file.path);
       parser.waitForLoad((ctx) => {
         Tool.psd(ctx);
-        Tool.addPr(tree);
+        Tool.size(tree.size);
+        Tool.addPr(tree.group);
         Tool.applyLayer();
         Tool.redrawAll();
       });
