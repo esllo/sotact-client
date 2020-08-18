@@ -7,7 +7,9 @@ import Split from '../comp/Split';
 
 const Home = (props) => {
   useEffect(() => {
-    useEffectOccured();
+    if (window !== undefined){
+      useEffectOccured();
+    }
   }, []);
 
   // animate with path
@@ -51,39 +53,46 @@ const Home = (props) => {
             <FlexBox
               className="properties"
               dir="column"
-              style={{ width: '440px' }}>
+              style={{ width: '400px' }}>
               <label>
-                name :&nbsp;
-                <input id="nval" disabled />
+                <p>name :&nbsp;</p>
+                <input id="nval" disabled style={{ width: '200px' }} />
               </label>
-              <label>
-                x :&nbsp;
-                <input id="xval" />
-              </label>
-              <lable>
-                y :&nbsp;
-                <input id="yval" />
-              </lable>
-              <label>
-                rotation :&nbsp;
-                <input id="rval" />
-              </label>
-              <label>
-                opacity :&nbsp;
-                <input id="oval" />
-              </label>
+              <FlexBox dir="row">
+                <FlexBox dir="column" weight="1">
+                  <label>
+                    <p>x :&nbsp;</p>
+                    <input id="xval" />
+                  </label>
+                  <label>
+                    <p>y :&nbsp;</p>
+                    <input id="yval" />
+                  </label>
+                </FlexBox>
+                <FlexBox dir="column" weight="1">
+                  <label>
+                    <p>rotation :&nbsp;</p>
+                    <input id="rval" />
+                  </label>
+                  <label>
+                    <p>opacity :&nbsp;</p>
+                    <input id="oval" />
+                  </label>
+                </FlexBox>
+              </FlexBox>
+
               <button id="tb0">Start Timebar</button>
               <button id="tb1">Stop Timebar</button>
               <button id="tb2">Reset Timebar</button>
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox className="timeline" dir="row" weight={1}>
-              <FlexBox className="timeline_head" style={{ width: '220px' }}>
+              <FlexBox className="timeline_head" style={{ width: '220px', position: 'relative' }}>
                 <div id="timehead_head"></div>
                 <div id="tl_names" className="nsb"></div>
               </FlexBox>
               <Split dir="vertical"></Split>
-              <FlexBox className="timeline_body" weight={1}>
+              <FlexBox className="timeline_body" weight={1} style={{ position: 'relative' }}>
                 <div className="timebar"></div>
                 <div id="timebody_head"></div>
                 <div id="tl_props" className="nsb"></div>

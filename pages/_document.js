@@ -3,8 +3,9 @@ import { useEffect } from 'react';
 
 class MyDocument extends Document {
   render() {
-    const css_list = ['reset', 'layer', 'timeline'];
+    const css_list = ['reset', 'theme', 'timeline'];
     const js_list = ['util', 'tool', 'parse', 'ipc', 'event', 'view', 'save'];
+    const env = process.env.ISDEV=="true" ? './static/' : './out/static/';
     return (
       <html>
         <Head>
@@ -12,7 +13,7 @@ class MyDocument extends Document {
           <link rel="shortcut icon" href="/static/img/favicon.ico" />
           <base href="../"></base>
           {css_list.map((v) => (
-            <link rel="stylesheet" href={'./out/static/' + v + '.css'}></link>
+            <link rel="stylesheet" href={env + v + '.css'}></link>
           ))}
           {this.props.styleTags}
         </Head>
@@ -20,7 +21,7 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
           {js_list.map((v) => (
-            <script src={'./out/static/' + v + '.js'}></script>
+            <script src={env + v + '.js'}></script>
           ))}
         </body>
       </html>
