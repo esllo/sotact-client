@@ -1,10 +1,10 @@
 const Tool = (() => {
   // immutable component
   const _p = byQuery('.center');
-  const _ll = byID('flexbox-6');
+  const _ll = byQuery('.right');
   const _b = byQuery('.timebar');
-  const _th = byID('flexbox-10');
-  const _tb = byID('flexbox-11');
+  const _th = byQuery('.timeline_head');
+  const _tb = byQuery('.timeline_body');
   const _ts = byID('timebody_scroll');
   const _thh = byID('timehead_head');
   const _tbh = byID('timebody_head');
@@ -48,7 +48,7 @@ const Tool = (() => {
       const id = e.dataTransfer.getData('target');
       let item = findItem(pl, id);
       let did = nextUDID();
-      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
+      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">${item.name()}</div>`;
       data[did] = {
         src: id,
         timeline: {
@@ -65,9 +65,9 @@ const Tool = (() => {
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
       e.preventDefault();
     };
-    _b.onmousedown = (e) => {};
-    _b.onmouseup = (e) => {};
-    _tb.onmousemove = (e) => {};
+    _b.onmousedown = (e) => { };
+    _b.onmouseup = (e) => { };
+    _tb.onmousemove = (e) => { };
     initTr();
     initBar();
     initProp();
@@ -128,6 +128,7 @@ const Tool = (() => {
     return udid++;
   }
 
+  var nodes = [];
   function copyItemToTimeline(d, i) {
     const img = new Konva.Image({
       x: i.x(),
@@ -143,6 +144,7 @@ const Tool = (() => {
     img.on('mousedown', moveSelectListener);
     img.on('mouseup', moveReleaseListener);
     img.on('click', selectItem);
+    nodes.push(img);
     addTl(img);
     redrawAll();
   }
@@ -161,7 +163,7 @@ const Tool = (() => {
 
   function xValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       lastTr.x(parseFloat(val));
       applyUpdate(lastTr);
       tl.draw();
@@ -170,7 +172,7 @@ const Tool = (() => {
 
   function yValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       lastTr.y(parseFloat(val));
       applyUpdate(lastTr);
       tl.draw();
@@ -179,7 +181,7 @@ const Tool = (() => {
 
   function rValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       lastTr.rotation(parseFloat(val));
       applyUpdate(lastTr);
       tl.draw();
@@ -188,7 +190,7 @@ const Tool = (() => {
 
   function oValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       val = parseFloat(val);
       if (val < 0) val = 0;
       if (val > 100) val = 100;
@@ -198,7 +200,7 @@ const Tool = (() => {
     }
   }
 
-  function initProp() {}
+  function initProp() { }
 
   var lastTr = null;
   var tr = null;
@@ -214,8 +216,17 @@ const Tool = (() => {
     tl.add(tr);
   }
 
+  function selectNode(obj) {
+    const node = nodes[parseInt(obj.getAttribute('did'))];
+    ms = node;
+    updateSel();
+    ms = null;
+    selectItem(node);
+  }
+
   function selectItem(e) {
-    let target = e.currentTarget;
+    console.log('curTarget:'+e.currentTarget);
+    let target = e.currentTarget || e;
     if (lastTr != target) {
       lastTr = target;
       tr.nodes([lastTr]);
@@ -245,6 +256,7 @@ const Tool = (() => {
       rotation: o.rotation(),
       opacity: o.opacity(),
     };
+    TAW.initFromTool();
   }
   function updateSel() {
     if (ms != null) {
@@ -377,7 +389,7 @@ const Tool = (() => {
   const stopTimebar = () => clearInterval(ti);
   const resetTimebar = () => moveTimebar(0);
   const tickTime = () =>
-    moveTimebar(parseInt(computedStyle(_b).left) + bsize * 0.0005);
+    moveTimebar(parseInt(computedStyle(_b).left) + bsize * 0.0002);
   const getTimebar = () =>
     Math.round(
       ((parseInt(computedStyle(_b).left) - TB_PAD) / bsize) * TIME_TICK
@@ -467,5 +479,6 @@ const Tool = (() => {
     psd: psd,
     save: save,
     size: size,
+    selectNode: selectNode
   };
 })();
