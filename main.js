@@ -20,10 +20,10 @@ function createWindow() {
 
 function createLoginWindow() {
   let _win = new BrowserWindow({
-    width: 400,
-    height: 300,
+    width: 360,
+    height: 420,
     show: true,
-    frame: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -74,7 +74,6 @@ function createOAuthWindow() {
     show: true,
     frame: true,
     webPreferences: {
-      nodeIntegration: true
     }
   });
   _win.on('closed', () => _win = null)
@@ -103,6 +102,7 @@ function closeListen() {
 
 ipcMain.on('googleLogin', (e, c) => {
   let google = createOAuthWindow();
+  openListen();
   const param = {
     scope: 'email',
     access_type: 'offline',
@@ -123,6 +123,7 @@ ipcMain.on('googleLogin', (e, c) => {
 
 ipcMain.on('kakaoLogin', (e, c) => {
   let kakao = createOAuthWindow();
+  openListen();
   const param = {
     client_id: '276ef22491e2971006db8f2ce046d690',
     redirect_uri: 'http://localhost:8080/user/kakao-login',
