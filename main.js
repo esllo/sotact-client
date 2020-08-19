@@ -23,11 +23,13 @@ function createLoginWindow() {
     width: 360,
     height: 420,
     show: true,
-    frame: false,
+    frame: true,
     webPreferences: {
       nodeIntegration: true
     }
   });
+  _win.setMenu(null);
+  _win.webContents.openDevTools();
   _win.on('closed', () => _win = null)
 
   return _win;

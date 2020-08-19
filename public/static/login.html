@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TAW - Login</title>
     <style>
         * {
             padding: 0;
@@ -39,6 +39,7 @@
         .register.on {
             transform: translateX(-50%);
         }
+
 
         .login {
             transform: translateX(-100%);
@@ -99,7 +100,11 @@
             <input id="r_pass" type="password" placeholder="password" />
             <input id="r_repass" type="password" placeholder="re-password" />
             <button id="register">REGISTER</button>
+            <p id="back">Go Back</p>
         </div>
+    </div>
+    <div class="over">
+        
     </div>
     <script>
         const { ipcRenderer } = require('electron');
@@ -107,7 +112,7 @@
         function toggle() {
             document.querySelectorAll('.box').forEach(e => { e.classList.toggle('on'); });
         }
-        document.getElementById('reg').onclick = toggle;
+        document.getElementById('back').onclick = document.getElementById('reg').onclick = toggle;
         document.getElementById('kakao').onclick = () => {
             ipcRenderer.send('kakaoLogin', null);
         }
@@ -130,7 +135,11 @@
                         email: email,
                         password: pass
                     })
-                }).then(r => r.json()).then(r => console.log(r)).catch(e => console.error(e));
+                }).then(r => r.json()).then(r => {
+                    if(r.status == 200){
+                        // success
+                    }
+                }).catch(e => console.error(e));
         }
         document.getElementById('register').onclick = () => {
             let nick = document.getElementById('r_nick').value.trim();

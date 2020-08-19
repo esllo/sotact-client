@@ -13,13 +13,13 @@ const Split = (props) => {
   const _css =
     dir == 'vertical'
       ? css`
-          margin-left: -3px;
-          width: 3px;
+          margin-left: -2px;
+          width: 2px;
           cursor: ew-resize;
         `
       : css`
-          margin-top: -3px;
-          height: 3px;
+          margin-top: -2px;
+          height: 2px;
           cursor: ns-resize;
         `;
   return <DirSplit className={'split ' + dir} dir={dir} css={_css}></DirSplit>;

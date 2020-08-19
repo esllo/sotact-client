@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "electron": "^9.2.0"
+    "electron": "^9.2.0",
+    "electron-prompt": "^1.6.0"
   }
 }

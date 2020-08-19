@@ -1,5 +1,5 @@
 .layer {
-  background: #ececec;
+  /* background: #ececec; */
   border-bottom: 1px solid #333;
   user-select: none;
 }
@@ -13,7 +13,7 @@
 .layer-level-2,
 .layer-level-3,
 .layer-level-4 {
-  margin-left: 12px;
+  padding: 4px 8px;
 }
 .properties label {
   font-size: 0;
@@ -25,12 +25,50 @@
   vertical-align: top;
 }
 .properties input {
-  width: 90px;
+  width: 68px;
   height: 18px;
   border-radius: 6px;
   border: none;
   background: #373737;
   outline: none;
-  padding: 1px 5px;
+  padding: 1px 4px;
   color: #fff;
+}
+
+.property{
+  width: 100%;
+  background: #3d3d3d;
+  height: 26px;
+  margin-bottom:6px;
+  border-bottom: 1px solid #222;
+}
+.property > p{
+  line-height: 26px;
+  padding: 0 6px;
+}
+
+input[type=button]{
+  background: none;
+  border: none;
+  border-right: 1px solid #333;
+  cursor: pointer;
+}
+input[type=button]:hover{
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.top{
+  align-items: center;
+}
+.top > *{
+  height: 100%;
+}
+label{
+  padding: 0 4px;
+}
+label > input{
+  height: 100%;
+}
+.login{
+  float:right;
 }

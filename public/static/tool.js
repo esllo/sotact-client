@@ -1,7 +1,9 @@
 const Tool = (() => {
   // immutable component
   const _p = byQuery('.center');
+  const _rl = byQuery('.left');
   const _ll = byQuery('.right');
+  const _ls = byQuery('.layers');
   const _b = byQuery('.timebar');
   const _th = byQuery('.timeline_head');
   const _tb = byQuery('.timeline_body');
@@ -225,7 +227,7 @@ const Tool = (() => {
   }
 
   function selectItem(e) {
-    console.log('curTarget:'+e.currentTarget);
+    console.log('curTarget:' + e.currentTarget);
     let target = e.currentTarget || e;
     if (lastTr != target) {
       lastTr = target;
@@ -325,19 +327,21 @@ const Tool = (() => {
   };
 
   const applyLayer = () => {
-    _ll.innerHTML = parseLayer(pl, 'layer', 0);
+    _ls.innerHTML = parseLayer(pl, 'layer', 0);
   };
 
   const parseLayer = (c, h, l) => {
     if (c.children.length != 0) {
-      var rt = `<div id=${h} class="layer layer-level-${l}" 
-      onclick="event.stopPropagation();
-      Tool.layerSelect(this);">
-      <p>${c.name()}</p>`;
+      // var rt = `<div id=${h} class="layer layer-level-${l}" 
+      // onclick="event.stopPropagation();
+      // Tool.layerSelect(this);">
+      // <p>${c.name()}</p>`;
+      let rt = '';
       c.children.map((v, i) => {
         rt += parseLayer(v, h + '-' + i, l + 1);
       });
-      return rt + '</div>';
+      // return rt + '</div>';
+      return rt;
     } else {
       // item
       return `<div id="${h}" class="layer layer-level-${l}" 
@@ -386,10 +390,12 @@ const Tool = (() => {
     if (ti != null) clearInterval(ti);
     ti = setInterval(tickTime, TICK_RATE);
   }
+  const updateTb = (v) => tb_v = v / 100000;
+  let tb_v = 0.0002;
   const stopTimebar = () => clearInterval(ti);
   const resetTimebar = () => moveTimebar(0);
   const tickTime = () =>
-    moveTimebar(parseInt(computedStyle(_b).left) + bsize * 0.0002);
+    moveTimebar(parseInt(computedStyle(_b).left) + bsize * tb_v);
   const getTimebar = () =>
     Math.round(
       ((parseInt(computedStyle(_b).left) - TB_PAD) / bsize) * TIME_TICK
@@ -479,6 +485,7 @@ const Tool = (() => {
     psd: psd,
     save: save,
     size: size,
-    selectNode: selectNode
+    selectNode: selectNode,
+    updateTb: updateTb,
   };
 })();

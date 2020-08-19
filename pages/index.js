@@ -4,10 +4,11 @@ import Konva from 'konva';
 import TitleBar from '../comp/TitleBar';
 import FlexBox from '../comp/FlexBox';
 import Split from '../comp/Split';
+import { divide } from 'lodash';
 
 const Home = (props) => {
   useEffect(() => {
-    if (window !== undefined){
+    if (window !== undefined) {
       useEffectOccured();
     }
   }, []);
@@ -23,16 +24,30 @@ const Home = (props) => {
       <main>
         <TitleBar></TitleBar>
         <FlexBox dir="column" style={{ height: 'calc(100vh - 30px)' }}>
-          <FlexBox className="top" dir="row" minHeight="34px"></FlexBox>
+          <FlexBox className="top" dir="row" minHeight="34px" background="#3d3d3d">
+            <input id="selector_hidden" type="file" style={{ display: 'none' }} />
+            <input id="selector" type="button" value="Open File" />
+            <input id="save" type="button" value="Save" />
+            <input id="tb0" type="button" value="Start" />
+            <input id="tb1" type="button" value="Stop" />
+            <input id="tb2" type="button" value="Reset" />
+            <label style={{ display: 'none' }}>Speed :
+              <input type="range" min="1" max="20" id="speed" />
+            </label>
+            <label>Scale :
+              <input type="range" min="1" max="200" id="scale" />
+            </label>
+            <input type="button" value="" style={{ flex: 1 }} />
+            <input class="login" type="button" value="Login" />
+          </FlexBox>
           <Split dir="horizontal"></Split>
           <FlexBox className="middle" dir="row" weight={1}>
             <FlexBox className="left" dir="column" style={{ width: '280px' }}>
-              <input type="file" />
-              <input type="range" min="1" max="200" id="scale" />
-              <label>
-                <input type="checkbox" id="tm_toggle" />
-                타임라인
-              </label>
+              <div className="property">
+                <p>Layer</p>
+              </div>
+              <FlexBox className="layers" dir="column">
+              </FlexBox>
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox
@@ -54,6 +69,10 @@ const Home = (props) => {
               className="properties"
               dir="column"
               style={{ width: '400px' }}>
+
+              <div className="property">
+                <p>Properties</p>
+              </div>
               <label>
                 <p>name :&nbsp;</p>
                 <input id="nval" disabled style={{ width: '200px' }} />
@@ -81,14 +100,16 @@ const Home = (props) => {
                 </FlexBox>
               </FlexBox>
 
-              <button id="tb0">Start Timebar</button>
-              <button id="tb1">Stop Timebar</button>
-              <button id="tb2">Reset Timebar</button>
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox className="timeline" dir="row" weight={1}>
               <FlexBox className="timeline_head" style={{ width: '220px', position: 'relative' }}>
-                <div id="timehead_head"></div>
+                <div id="timehead_head">
+                  <label>
+                    <input type="checkbox" id="tm_toggle" />
+                  타임라인
+                </label>
+                </div>
                 <div id="tl_names" className="nsb"></div>
               </FlexBox>
               <Split dir="vertical"></Split>
