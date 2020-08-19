@@ -79,6 +79,71 @@
             padding: 2px;
             margin: 4px;
         }
+
+        .over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, .75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: all .4s;
+        }
+
+        .over.on {
+            opacity: 1;
+        }
+
+        .loading {
+            width: 50px;
+            height: 12px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .circle {
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 6px;
+        }
+
+        .fade {
+            animation-name: fading;
+            animation-duration: 900ms;
+            animation-iteration-count: infinite;
+        }
+
+        .fade:nth-child(2) {
+            animation-delay: 300ms;
+        }
+
+        .fade:nth-child(3) {
+            animation-delay: 600ms;
+        }
+
+        @keyframes fading {
+            0% {
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 0;
+            }
+
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -104,7 +169,11 @@
         </div>
     </div>
     <div class="over">
-        
+        <div class="loading">
+            <div class="circle fade"></div>
+            <div class="circle fade"></div>
+            <div class="circle fade"></div>
+        </div>
     </div>
     <script>
         const { ipcRenderer } = require('electron');
@@ -112,6 +181,26 @@
         function toggle() {
             document.querySelectorAll('.box').forEach(e => { e.classList.toggle('on'); });
         }
+        const o = document.querySelector('.over');
+        let isOver = false;
+        let last = 0;
+        function overOn() {
+            last = new Date().getTime();
+            isOver = true;
+            o.style.display = 'flex';
+            setTimeout(() => o.classList.add('on'), 0);
+        }
+        function overOff() {
+            const v = (new Date().getTime() - last);
+            if (v < 800){
+                setTimeout(overOff, v);
+                return;
+            }
+            isOver = false;
+            o.classList.remove('on');
+            setTimeout(() => o.style.display = 'none', 380)
+        }
+        overOff();
         document.getElementById('back').onclick = document.getElementById('reg').onclick = toggle;
         document.getElementById('kakao').onclick = () => {
             ipcRenderer.send('kakaoLogin', null);
@@ -122,7 +211,7 @@
         document.getElementById('login').onclick = () => {
             let email = document.getElementById('l_email').value.trim();
             let pass = document.getElementById('l_pass').value.trim();
-
+            overOn();
             fetch(base + 'user/login',
                 {
                     method: 'POST',
@@ -136,9 +225,10 @@
                         password: pass
                     })
                 }).then(r => r.json()).then(r => {
-                    if(r.status == 200){
+                    if (r.status == 200) {
                         // success
                     }
+                    overOff();
                 }).catch(e => console.error(e));
         }
         document.getElementById('register').onclick = () => {
@@ -146,6 +236,7 @@
             let email = document.getElementById('r_email').value.trim();
             let pass = document.getElementById('r_pass').value.trim();
             let repass = document.getElementById('r_repass').value.trim();
+            overOn();
             fetch(base + "user/signup",
                 {
                     method: 'POST',
@@ -159,7 +250,9 @@
                         password: pass,
                         passwordConfirm: repass
                     })
-                }).then(r => r.json()).then(r => console.log(r)).catch(e => console.error(e));
+                }).then(r => r.json()).then(r => {
+                    overOff();
+                }).catch(e => console.error(e));
         }
     </script>
 </body>

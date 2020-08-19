@@ -14,6 +14,7 @@
 .layer-level-3,
 .layer-level-4 {
   padding: 4px 8px;
+  color:#eee;
 }
 .properties label {
   font-size: 0;
