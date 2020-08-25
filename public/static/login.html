@@ -190,15 +190,15 @@
             o.style.display = 'flex';
             setTimeout(() => o.classList.add('on'), 0);
         }
-        function overOff() {
+        function overOff(cb) {
             const v = (new Date().getTime() - last);
-            if (v < 800){
-                setTimeout(overOff, v);
+            if (v < 800) {
+                setTimeout(overOff, v, cb);
                 return;
             }
             isOver = false;
             o.classList.remove('on');
-            setTimeout(() => o.style.display = 'none', 380)
+            setTimeout(() => { o.style.display = 'none'; if (cb !== undefined) cb(); }, 380)
         }
         overOff();
         document.getElementById('back').onclick = document.getElementById('reg').onclick = toggle;
@@ -226,9 +226,15 @@
                     })
                 }).then(r => r.json()).then(r => {
                     if (r.status == 200) {
-                        // success
+                        console.log("overoff");
+                        console.log(r);
+                        overOff(() => {
+                            ipcRenderer.send('loginSuccess', ''); console.log('called')
+                        });
+                    } else {
+                        alert(r.message || "로그인 할 수 없습니다.");
+                        overOff();
                     }
-                    overOff();
                 }).catch(e => console.error(e));
         }
         document.getElementById('register').onclick = () => {
@@ -251,6 +257,7 @@
                         passwordConfirm: repass
                     })
                 }).then(r => r.json()).then(r => {
+                    console.log(r);
                     overOff();
                 }).catch(e => console.error(e));
         }

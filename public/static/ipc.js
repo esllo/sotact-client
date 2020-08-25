@@ -20,3 +20,8 @@ async function useEffectOccured() {
 function addOnOccured(cb) {
   occurQueue.push(cb);
 }
+
+ipcRenderer.on('loginSuccess', (e, c) => {
+  console.log(e);
+  console.log(c);
+})

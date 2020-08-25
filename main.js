@@ -112,7 +112,9 @@ ipcMain.on('googleLogin', (e, c) => {
     state: 'state_parameter_passthrough_value',
     redirect_uri: 'http://localhost:8080/user/google-login',
     client_id: '764349256353-a3ik370k7ig28979cqls8igp9mt9g5h9.apps.googleusercontent.com',
-    response_type: 'code'
+    response_type: 'code',
+    prompt: 'select_account',
+    login_hit: 'current_email'
   };
   google.on('closed', () => {
     kakao = null;
@@ -138,5 +140,11 @@ ipcMain.on('kakaoLogin', (e, c) => {
   const url2 = 'https://accounts.kakao.com/login?continue=https%3A%2F%2Fkauth.kakao.com%2Foauth%2Fauthorize%3Fclient_id%3D276ef22491e2971006db8f2ce046d690%26redirect_uri%3Dhttp%3A%2F%2Flocalhost%3A8080%2Fuser%2Fkakao-login%26response_type%3Dcode';
   const url = 'https://kauth.kakao.com/oauth/authorize?' + concatUrl(param);
   console.log(url + '\n');
-  kakao.loadURL(url2, {userAgent: 'Chrome'});
+  kakao.loadURL(url2, { userAgent: 'Chrome' });
 })
+
+ipcMain.on('loginSuccess', (e, c) => {
+  console.log(c);
+  console.log("loginSucdeess");
+  win.webContents.send('loginSuccess', c);
+});
