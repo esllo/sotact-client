@@ -65,6 +65,7 @@ const Tool = (() => {
       _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
       copyItemToTimeline(did, item);
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
+      setPoint(did, 0);
       e.preventDefault();
     };
     _b.onmousedown = (e) => { };
@@ -252,6 +253,9 @@ const Tool = (() => {
   }
   function applyUpdate(o) {
     let dat = data[o.getAttr('did')];
+    if(dat.timeline['t'+getTimebar()] === undefined){
+      setPoint(parseInt(o.getAttr('did')), getTimebar());
+    }
     dat.timeline['t' + getTimebar()] = {
       x: Math.round(o.x()),
       y: Math.round(o.y()),

@@ -12,6 +12,8 @@ const Home = (props) => {
       useEffectOccured();
     }
   }, []);
+  const [to, setTo] = useState(0);
+  const [from, setFrom] = useState(100);
 
   // animate with path
   //https://stackoverflow.com/questions/53330168/animate-a-shape-along-a-line-or-path-in-konva
@@ -61,7 +63,15 @@ const Home = (props) => {
             <FlexBox
               className="right"
               dir="column"
-              style={{ width: '280px' }}></FlexBox>
+              style={{ width: '280px' }}>
+              <FlexBox className="fx_value" dir="row">
+                <input class="fx_from" type="text" value={to} onChange={e => setTo(e.target.value)} style={{ flex: 1 }} />
+                <input class="fx_to" type="text" value={from} onChange={e => setFrom(e.target.value)} style={{ flex: 1 }} />
+              </FlexBox>
+              <FlexBox className="fx_presets">
+
+              </FlexBox>
+            </FlexBox>
           </FlexBox>
           <Split dir="horizontal"></Split>
           <FlexBox className="bottom" dir="row" style={{ height: '260px' }}>

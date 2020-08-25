@@ -62,12 +62,12 @@ body {
 }
 .tl_point{
   width:4px;
-  height:4px;
-  border:1px solid #333;
+  height:8px;
+  border:1px solid #151515;
   background: #333;
-  border-radius: 2px;
+  border-radius: 3px;
   position: absolute;
-  top:39px;
+  top:37px;
 }
 .tl_point:hover{
   background: #222;
