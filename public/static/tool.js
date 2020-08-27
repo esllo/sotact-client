@@ -1,10 +1,12 @@
 const Tool = (() => {
   // immutable component
   const _p = byQuery('.center');
-  const _ll = byID('flexbox-6');
+  const _rl = byQuery('.left');
+  const _ll = byQuery('.right');
+  const _ls = byQuery('.layers');
   const _b = byQuery('.timebar');
-  const _th = byID('flexbox-10');
-  const _tb = byID('flexbox-11');
+  const _th = byQuery('.timeline_head');
+  const _tb = byQuery('.timeline_body');
   const _ts = byID('timebody_scroll');
   const _thh = byID('timehead_head');
   const _tbh = byID('timebody_head');
@@ -22,10 +24,9 @@ const Tool = (() => {
   let tl = null;
   let ctx = null;
   const psd = (_psd) => {
-    if (_psd === undefined)
-      return ctx;
+    if (_psd === undefined) return ctx;
     ctx = _psd;
-  }
+  };
 
   // tool objects
   let ls = null;
@@ -33,6 +34,7 @@ const Tool = (() => {
   let si = null;
   let ti = null;
   let time = 0;
+  let sz = 0;
 
   function init() {
     stg = new Konva.Stage({ container: 'container' });
@@ -41,14 +43,14 @@ const Tool = (() => {
     tl.hide();
     stg.add(pl);
     stg.add(tl);
-    resize(stg, _p.offsetWidth, _p.offsetHeight);
+    rebsize(stg, _p.offsetWidth, _p.offsetHeight);
     _tns.setAttribute('droppable', true);
     _tns.ondragover = (e) => e.preventDefault();
     _tns.ondrop = (e) => {
       const id = e.dataTransfer.getData('target');
       let item = findItem(pl, id);
       let did = nextUDID();
-      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false">${item.name()}</div>`;
+      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">${item.name()}</div>`;
       data[did] = {
         src: id,
         timeline: {
@@ -63,6 +65,7 @@ const Tool = (() => {
       _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
       copyItemToTimeline(did, item);
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
+      setPoint(did, 0);
       e.preventDefault();
     };
     _b.onmousedown = (e) => { };
@@ -128,6 +131,7 @@ const Tool = (() => {
     return udid++;
   }
 
+  var nodes = [];
   function copyItemToTimeline(d, i) {
     const img = new Konva.Image({
       x: i.x(),
@@ -143,6 +147,7 @@ const Tool = (() => {
     img.on('mousedown', moveSelectListener);
     img.on('mouseup', moveReleaseListener);
     img.on('click', selectItem);
+    nodes.push(img);
     addTl(img);
     redrawAll();
   }
@@ -154,14 +159,14 @@ const Tool = (() => {
       d.setAttribute('udid', did);
       d.setAttribute('progress', progress);
       d.className = 'tl_point';
-      d.style.left = (size * progress) / TIME_TICK + TB_PAD - 2 + 'px';
+      d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
       byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
     }
   }
 
   function xValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       lastTr.x(parseFloat(val));
       applyUpdate(lastTr);
       tl.draw();
@@ -170,7 +175,7 @@ const Tool = (() => {
 
   function yValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       lastTr.y(parseFloat(val));
       applyUpdate(lastTr);
       tl.draw();
@@ -179,7 +184,7 @@ const Tool = (() => {
 
   function rValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       lastTr.rotation(parseFloat(val));
       applyUpdate(lastTr);
       tl.draw();
@@ -188,7 +193,7 @@ const Tool = (() => {
 
   function oValChanged(e) {
     let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^0-9.]') == null) {
+    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
       val = parseFloat(val);
       if (val < 0) val = 0;
       if (val > 100) val = 100;
@@ -205,7 +210,7 @@ const Tool = (() => {
 
   function initTr() {
     tr = new Konva.Transformer({
-      anchorSize: 10,
+      anchorbsize: 10,
       anchorStrokeWidth: 1,
       anchorCornerRadius: 5,
       borderDash: [5, 5],
@@ -214,8 +219,17 @@ const Tool = (() => {
     tl.add(tr);
   }
 
+  function selectNode(obj) {
+    const node = nodes[parseInt(obj.getAttribute('did'))];
+    ms = node;
+    updateSel();
+    ms = null;
+    selectItem(node);
+  }
+
   function selectItem(e) {
-    let target = e.currentTarget;
+    console.log('curTarget:' + e.currentTarget);
+    let target = e.currentTarget || e;
     if (lastTr != target) {
       lastTr = target;
       tr.nodes([lastTr]);
@@ -239,12 +253,16 @@ const Tool = (() => {
   }
   function applyUpdate(o) {
     let dat = data[o.getAttr('did')];
+    if(dat.timeline['t'+getTimebar()] === undefined){
+      setPoint(parseInt(o.getAttr('did')), getTimebar());
+    }
     dat.timeline['t' + getTimebar()] = {
       x: Math.round(o.x()),
       y: Math.round(o.y()),
       rotation: o.rotation(),
       opacity: o.opacity(),
     };
+    TAW.initFromTool();
   }
   function updateSel() {
     if (ms != null) {
@@ -287,7 +305,7 @@ const Tool = (() => {
     toggleLayer(false);
   };
 
-  const resize = (o, w, h) => {
+  const rebsize = (o, w, h) => {
     if (h === undefined) h = w;
     o.width(w);
     o.height(h);
@@ -313,19 +331,21 @@ const Tool = (() => {
   };
 
   const applyLayer = () => {
-    _ll.innerHTML = parseLayer(pl, 'layer', 0);
+    _ls.innerHTML = parseLayer(pl, 'layer', 0);
   };
 
   const parseLayer = (c, h, l) => {
     if (c.children.length != 0) {
-      var rt = `<div id=${h} class="layer layer-level-${l}" 
-      onclick="event.stopPropagation();
-      Tool.layerSelect(this);">
-      <p>${c.name()}</p>`;
+      // var rt = `<div id=${h} class="layer layer-level-${l}" 
+      // onclick="event.stopPropagation();
+      // Tool.layerSelect(this);">
+      // <p>${c.name()}</p>`;
+      let rt = '';
       c.children.map((v, i) => {
         rt += parseLayer(v, h + '-' + i, l + 1);
       });
-      return rt + '</div>';
+      // return rt + '</div>';
+      return rt;
     } else {
       // item
       return `<div id="${h}" class="layer layer-level-${l}" 
@@ -362,7 +382,7 @@ const Tool = (() => {
     _b.style.left = TB_PAD + o + 'px';
     if (getTimebar() >= TIME_TICK) {
       stopTimebar();
-      _b.style.left = TB_PAD + size + 'px';
+      _b.style.left = TB_PAD + bsize + 'px';
     } else if (getTimebar() <= 0) {
       _b.style.left = TB_PAD + 'px';
     }
@@ -374,22 +394,24 @@ const Tool = (() => {
     if (ti != null) clearInterval(ti);
     ti = setInterval(tickTime, TICK_RATE);
   }
+  const updateTb = (v) => tb_v = v / 100000;
+  let tb_v = 0.0002;
   const stopTimebar = () => clearInterval(ti);
   const resetTimebar = () => moveTimebar(0);
   const tickTime = () =>
-    moveTimebar(parseInt(computedStyle(_b).left) + size * 0.0005);
+    moveTimebar(parseInt(computedStyle(_b).left) + bsize * tb_v);
   const getTimebar = () =>
     Math.round(
-      ((parseInt(computedStyle(_b).left) - TB_PAD) / size) * TIME_TICK
+      ((parseInt(computedStyle(_b).left) - TB_PAD) / bsize) * TIME_TICK
     );
 
   let lastX = -1;
   let lastL = -1;
-  const size = parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
+  const bsize = parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
   function initBar() {
     _tb.onmousemove = (e) => {
       let dist = lastL + e.x - lastX;
-      if (lastX != -1 && dist >= 0 && dist <= size) {
+      if (lastX != -1 && dist >= 0 && dist <= bsize) {
         moveTimebar(dist);
       }
     };
@@ -400,7 +422,7 @@ const Tool = (() => {
     _tb.onmouseleave = _tb.onmouseup = (e) => (lastX = lastL = -1);
     addTimebodyCalib();
     _tbh.onclick = (e) => {
-      const pos = Math.round((e.offsetX - TB_PAD / size) * TIME_TICK);
+      const pos = Math.round((e.offsetX - TB_PAD / bsize) * TIME_TICK);
       moveTimebar(e.offsetX - TB_PAD);
     };
     _tbh.onmousedown = (e) => {
@@ -412,8 +434,8 @@ const Tool = (() => {
 
   const CALIB_CNT = 11;
   function addTimebodyCalib() {
-    _tbh.style.width = size + TB_PAD * 2 + 'px';
-    const dist = size / (CALIB_CNT - 1);
+    _tbh.style.width = bsize + TB_PAD * 2 + 'px';
+    const dist = bsize / (CALIB_CNT - 1);
     // 10 = calib count
     for (let i = 0; i < CALIB_CNT; i++) {
       const u = createElem('p');
@@ -427,10 +449,18 @@ const Tool = (() => {
     }
   }
 
+  const size = (s) => (sz = s || sz);
+
+  const save = (n, h) => {
+    let p = getPLayer();
+    let f = currentTAW.getFlow();
+    SAVE.save(p, f, size(), n, h);
+  };
+
   return {
     init: init,
     redrawAll: redrawAll,
-    resize: resize,
+    rebsize: rebsize,
     scale: scale,
     getStage: getStage,
     getPLayer: getPLayer,
@@ -456,6 +486,10 @@ const Tool = (() => {
     oValChanged: oValChanged,
     scrollTimeline: scrollTimeline,
     setPoint: setPoint,
-    psd: psd
+    psd: psd,
+    save: save,
+    size: size,
+    selectNode: selectNode,
+    updateTb: updateTb,
   };
 })();

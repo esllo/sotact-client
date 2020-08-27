@@ -20,7 +20,10 @@ const parser = (() => {
     _psd.parse();
     console.log(_psd);
     totalLoad = totalCount = 0;
-    return parseChilds(_psd.tree(), '');
+    return {
+      size: { width: _psd.image.width(), height: _psd.image.height() },
+      group: parseChilds(_psd.tree(), ''),
+    };
   };
   function convertImage(imageURL, l, t, name, opacity, visible) {
     let image = new Image();
@@ -43,16 +46,19 @@ const parser = (() => {
     image.src = imageURL;
     return kImage;
   }
-  function parseChilds(from, hier) {
+  function parseChilds(from, hier, grp) {
     let childs = from._children;
     let i = 0;
-    let group = new Konva.Group();
+    let group = grp || new Konva.Group();
+    const p = confirm('Parse Group as one layer?');
     group.name(escape(from.name) || '이름없음');
+
     for (const child of childs.reverse()) {
-      if (child.constructor.name === 'Group') {
+      if (child.constructor.name === 'Group' && !p) {
         // Group
-        let childGroup = parseChilds(child, '--' + hier);
-        group.add(childGroup);
+        let childGroup = parseChilds(child, '--' + hier, group);
+        
+        // group.add(childGroup);
       } else {
         // Layer
         let lay = child.layer;

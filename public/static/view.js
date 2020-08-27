@@ -67,6 +67,7 @@ const TAW = (() => {
     setLayer(Tool.getPLayer());
     Tool.sortData();
     applyData(Tool.getData());
+    Tool.setCurrentTAW(TAW);
   }
   return {
     initFromTool: initFromTool,

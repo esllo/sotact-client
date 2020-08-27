@@ -8,9 +8,20 @@ function windowEvent(code) {
 var occurQueue = [];
 async function useEffectOccured() {
   Tool.init();
-  occurQueue.forEach(e => e());
+  occurQueue.forEach(c => {
+    try {
+      c();
+    } catch (e) {
+      if (e) console.error(e);
+    }
+  });
 }
 
-function addOnOccured(cb){
+function addOnOccured(cb) {
   occurQueue.push(cb);
 }
+
+ipcRenderer.on('loginSuccess', (e, c) => {
+  console.log(e);
+  console.log(c);
+})

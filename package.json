@@ -4,13 +4,12 @@
   "private": true,
   "main": "main.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env ISDEV=true next dev",
     "build": "next build",
     "start": "next start",
     "export": "next export",
     "electron": "electron .",
-    "dex": "next dev && electron .",
-    "rex": "next build && next export && electron ."
+    "rex": "cross-env ISDEV=false next build && next export && electron ."
   },
   "dependencies": {
     "@emotion/core": "^10.0.28",
@@ -23,6 +22,8 @@
     "react-dom": "16.13.1"
   },
   "devDependencies": {
-    "electron": "^9.1.0"
+    "cross-env": "^7.0.2",
+    "electron": "^9.2.0",
+    "electron-prompt": "^1.6.0"
   }
 }
