@@ -64,10 +64,10 @@ const Home = (props) => {
               className="right"
               dir="column"
               style={{ width: '280px' }}>
-              <FlexBox className="fx_value" dir="row">
-                <input class="fx_from" type="text" value={to} onChange={e => setTo(e.target.value)} style={{ flex: 1 }} />
-                <input class="fx_to" type="text" value={from} onChange={e => setFrom(e.target.value)} style={{ flex: 1 }} />
-              </FlexBox>
+              {/*<FlexBox className="fx_value" dir="row">
+                 <input class="fx_from" type="text" value={to} onChange={e => setTo(e.target.value)} style={{ flex: 1 }} />
+                 <input class="fx_to" type="text" value={from} onChange={e => setFrom(e.target.value)} style={{ flex: 1 }} />
+  </FlexBox>*/}
               <FlexBox className="fx_presets">
 
               </FlexBox>
@@ -131,6 +131,7 @@ const Home = (props) => {
             </FlexBox>
           </FlexBox>
         </FlexBox>
+        <input style={{display:'none'}} type="file" id="folder" webkitdirectory directory/>
       </main>
     </div>
   );

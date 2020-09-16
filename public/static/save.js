@@ -14,7 +14,8 @@ const SAVE = (() => {
     let path = name;
     if (!fs.existsSync(path)) fs.mkdirSync(path);
     path += '/' + hash;
-    flow = flow.map((e) => {
+    mflow = JSON.parse(JSON.stringify(flow));
+    mflow = mflow.map((e) => {
       delete e['obj'];
       return e;
     });
@@ -44,7 +45,7 @@ const SAVE = (() => {
         const attrs = {};
         _attr.forEach((e) => attrs[e] = child[e]());
 
-        fm.push({path: cpath + '.png', attrs: attrs});
+        fm.push({ path: cpath + '.png', attrs: attrs });
       } else {
         //group
         recurSave(child, cpath, fm);

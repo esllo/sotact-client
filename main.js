@@ -13,7 +13,7 @@ function createWindow() {
       nodeIntegration: true,
     },
   });
-  _win.webContents.openDevTools();
+  // _win.webContents.openDevTools();
 
   return _win;
 }
@@ -29,7 +29,7 @@ function createLoginWindow() {
     }
   });
   _win.setMenu(null);
-  _win.webContents.openDevTools();
+  // _win.webContents.openDevTools();
   _win.on('closed', () => _win = null)
 
   return _win;
@@ -101,9 +101,9 @@ function closeListen() {
     listen.close();
   listen = null;
 }
-
+var google = null, kakao = null;
 ipcMain.on('googleLogin', (e, c) => {
-  let google = createOAuthWindow();
+  google = createOAuthWindow();
   openListen();
   const param = {
     scope: 'email',
@@ -144,7 +144,6 @@ ipcMain.on('kakaoLogin', (e, c) => {
 })
 
 ipcMain.on('loginSuccess', (e, c) => {
-  console.log(c);
-  console.log("loginSucdeess");
+  login.close();
   win.webContents.send('loginSuccess', c);
 });

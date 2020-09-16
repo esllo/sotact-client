@@ -24,4 +24,6 @@ function addOnOccured(cb) {
 ipcRenderer.on('loginSuccess', (e, c) => {
   console.log(e);
   console.log(c);
+  byQuery('.login').value = c.nickname+"님 안녕하세요.";
+  byQuery('.login').disabled = true;
 })
