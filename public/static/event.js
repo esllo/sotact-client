@@ -22,7 +22,7 @@ if (input != null) {
 // window resize
 window.addEventListener('resize', () => {
   let parent = Tool.getParent();
-  Tool.resize(Tool.getStage(), parent.offsetWidth, parent.offsetHeight);
+  Tool.rebsize(Tool.getStage(), parent.offsetWidth, parent.offsetHeight);
 });
 
 // stage scale
@@ -62,12 +62,35 @@ byID('save').onclick = () => {
 }
 
 byQuery('.login').onclick = () => ipcRenderer.send('loginRequest', null);
+byQuery('.session').onclick = () => {
+  if (Tool.session() == null) {
+    ss = Conn.Session('someKey');
+    Tool.session(ss);
+    Tool.sessionCreated();
+  }
+  Tool.session().connect();
+}
+
+function valueChanged(fn) {
+  return function (e) {
+    let val = e.target.value.trim();
+    if (val != '' && val.match('[^-0-9.]') == null) {
+      val = parseFloat(val);
+      if (fn == "opacity") {
+        if (val < 0) val = 0;
+        if (val > 100) val = 100;
+        val /= 100;
+      }
+      Tool.changeLastTr(fn, val);
+    }
+  }
+}
 
 addOnOccured(() => {
-  byID('xval').addEventListener('keyup', Tool.xValChanged);
-  byID('yval').addEventListener('keyup', Tool.yValChanged);
-  byID('rval').addEventListener('keyup', Tool.rValChanged);
-  byID('oval').addEventListener('keyup', Tool.oValChanged);
+  byID('xval').addEventListener('keyup', valueChanged('x'));
+  byID('yval').addEventListener('keyup', valueChanged('y'));
+  byID('rval').addEventListener('keyup', valueChanged('rotation'));
+  byID('oval').addEventListener('keyup', valueChanged('opacity'));
   byID('tl_names').addEventListener('wheel', Tool.scrollTimeline);
   byID('tl_props').addEventListener('wheel', Tool.scrollTimeline);
 });

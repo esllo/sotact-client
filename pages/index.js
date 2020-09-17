@@ -40,7 +40,8 @@ const Home = (props) => {
               <input type="range" min="1" max="200" id="scale" />
             </label>
             <input type="button" value="" style={{ flex: 1 }} />
-            <input class="login" type="button" value="Login" />
+            <input className="session" type="button" value="Session" />
+            <input className="login" type="button" value="Login" />
           </FlexBox>
           <Split dir="horizontal"></Split>
           <FlexBox className="middle" dir="row" weight={1}>

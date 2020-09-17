@@ -36,6 +36,16 @@ const Tool = (() => {
   let time = 0;
   let sz = 0;
 
+  // session
+  let _session = null;
+  const session = (s) => _session = s || _session;
+  function isValidSession() {
+    return _session != null && _session.socket().connected;
+  }
+  function sessionCreated() {
+
+  }
+
   function init() {
     stg = new Konva.Stage({ container: 'container' });
     pl = new Konva.Layer();
@@ -50,6 +60,8 @@ const Tool = (() => {
       const id = e.dataTransfer.getData('target');
       let item = findItem(pl, id);
       let did = nextUDID();
+      item.id(id);
+      console.log(id);
       _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">${item.name()}</div>`;
       data[did] = {
         src: id,
@@ -62,6 +74,14 @@ const Tool = (() => {
           },
         },
       };
+      if (isValidSession()) {
+        _session.send('attrChange',
+          {
+            src: id,
+            time: 0,
+            data: data[did].timeline['t0']
+          });
+      }
       _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
       copyItemToTimeline(did, item);
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
@@ -88,32 +108,32 @@ const Tool = (() => {
 
   let udid = 0;
   let data = {};
-  let flow = {};
+  // let flow = {};
 
   const getData = () => data;
 
-  function makeFlowData() {
-    sortData();
-    flow = {};
-    for (const k of Object.keys(data)) {
-      const tmp = {};
-      let o = data[k];
-      const tl = Array.from(Object.keys(o.timeline), (x) =>
-        parseInt(x.substr(1))
-      );
-      if (tl.length == 1) continue;
-      tmp.src = o.src;
-      for (let i = 0; i < tl.length - 2; i++) {
-        let from = tl[i];
-        let to = tl[i + 1];
-        let keys = [...Object.keys(from), ...Object.keys(to)];
-        keys = keys.filter((i, p) => keys.indexOf(i) === p);
-        for (const key of keys) {
-        }
-      }
-      flow[k] = tmp;
-    }
-  }
+  // function makeFlowData() {
+  //   sortData();
+  //   flow = {};
+  //   for (const k of Object.keys(data)) {
+  //     const tmp = {};
+  //     let o = data[k];
+  //     const tl = Array.from(Object.keys(o.timeline), (x) =>
+  //       parseInt(x.substr(1))
+  //     );
+  //     if (tl.length == 1) continue;
+  //     tmp.src = o.src;
+  //     for (let i = 0; i < tl.length - 2; i++) {
+  //       let from = tl[i];
+  //       let to = tl[i + 1];
+  //       let keys = [...Object.keys(from), ...Object.keys(to)];
+  //       keys = keys.filter((i, p) => keys.indexOf(i) === p);
+  //       for (const key of keys) {
+  //       }
+  //     }
+  //     flow[k] = tmp;
+  //   }
+  // }
 
   function sortData() {
     for (const o of Object.values(data)) {
@@ -134,6 +154,7 @@ const Tool = (() => {
   var nodes = [];
   function copyItemToTimeline(d, i) {
     const img = new Konva.Image({
+      id: i.id(),
       x: i.x(),
       y: i.y(),
       opacity: i.opacity(),
@@ -164,40 +185,9 @@ const Tool = (() => {
     }
   }
 
-  function xValChanged(e) {
-    let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
-      lastTr.x(parseFloat(val));
-      applyUpdate(lastTr);
-      tl.draw();
-    }
-  }
-
-  function yValChanged(e) {
-    let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
-      lastTr.y(parseFloat(val));
-      applyUpdate(lastTr);
-      tl.draw();
-    }
-  }
-
-  function rValChanged(e) {
-    let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
-      lastTr.rotation(parseFloat(val));
-      applyUpdate(lastTr);
-      tl.draw();
-    }
-  }
-
-  function oValChanged(e) {
-    let val = e.target.value.trim();
-    if (lastTr != null && val != '' && val.match('[^-0-9.]') == null) {
-      val = parseFloat(val);
-      if (val < 0) val = 0;
-      if (val > 100) val = 100;
-      lastTr.opacity(val / 100);
+  function changeLastTr(fn, v) {
+    if (lastTr != null) {
+      lastTr[fn](v);
       applyUpdate(lastTr);
       tl.draw();
     }
@@ -251,19 +241,69 @@ const Tool = (() => {
     if (si != null) clearInterval(si);
     si = setInterval(updateSel, 100);
   }
+
+  function attrChange(pk) {
+    let item = tl.find('#' + pk.src);
+    if (item.length == 0) {
+      const id = pk.src;
+      let i = findItem(pl, id);
+      let did = nextUDID();
+      i.id(id);
+      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">${i.name()}</div>`;
+      data[did] = {
+        src: id,
+        timeline: {
+          t0: {
+            x: i.x(),
+            y: i.y(),
+            rotation: i.rotation(),
+            opacity: i.opacity(),
+          },
+        },
+      };
+      _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
+      copyItemToTimeline(did, i);
+      setPoint(did, 0);
+    }
+    item = tl.find('#' + pk.src)
+    item = item[0];
+    let did = item.getAttr('did');
+    if (data[did].timeline['t' + pk.time] == undefined)
+      data[did].timeline['t' + pk.time] = {};
+    Object.keys(pk.data).forEach(key => {
+      data[did].timeline['t' + pk.time][key] = pk.data[key];
+      item[key](pk.data[key]);
+    });
+    setPoint(did, pk.time);
+    tl.draw();
+  }
+
   function applyUpdate(o) {
     let dat = data[o.getAttr('did')];
-    if(dat.timeline['t'+getTimebar()] === undefined){
-      setPoint(parseInt(o.getAttr('did')), getTimebar());
+    let tm = getTimebar();
+    let tmb = 't' + tm;
+    if (dat.timeline[tmb] === undefined) {
+      setPoint(parseInt(o.getAttr('did')), tm);
     }
-    dat.timeline['t' + getTimebar()] = {
+    dat.timeline[tmb] = {
       x: Math.round(o.x()),
       y: Math.round(o.y()),
       rotation: o.rotation(),
       opacity: o.opacity(),
     };
+
+    if (isValidSession()) {
+      _session.send('attrChange',
+        {
+          src: o.id(),
+          time: tm,
+          data: data[o.getAttr('did')].timeline[tmb]
+        });
+    }
+
     TAW.initFromTool();
   }
+
   function updateSel() {
     if (ms != null) {
       dragged = true;
@@ -275,6 +315,7 @@ const Tool = (() => {
       _ov.value = ms.opacity() * 100;
     }
   }
+
   function moveReleaseListener(e) {
     if (!dragged) lastTr = null;
     updateSel();
@@ -336,15 +377,10 @@ const Tool = (() => {
 
   const parseLayer = (c, h, l) => {
     if (c.children.length != 0) {
-      // var rt = `<div id=${h} class="layer layer-level-${l}" 
-      // onclick="event.stopPropagation();
-      // Tool.layerSelect(this);">
-      // <p>${c.name()}</p>`;
       let rt = '';
       c.children.map((v, i) => {
         rt += parseLayer(v, h + '-' + i, l + 1);
       });
-      // return rt + '</div>';
       return rt;
     } else {
       // item
@@ -480,10 +516,7 @@ const Tool = (() => {
     moveTimebar: moveTimebar,
     sortData: sortData,
     setCurrentTAW: setCurrentTAW,
-    xValChanged: xValChanged,
-    yValChanged: yValChanged,
-    rValChanged: rValChanged,
-    oValChanged: oValChanged,
+    changeLastTr: changeLastTr,
     scrollTimeline: scrollTimeline,
     setPoint: setPoint,
     psd: psd,
@@ -491,5 +524,8 @@ const Tool = (() => {
     size: size,
     selectNode: selectNode,
     updateTb: updateTb,
+    attrChange: attrChange,
+    session: session,
+    sessionCreated: sessionCreated
   };
 })();

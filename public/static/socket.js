@@ -1,34 +1,78 @@
 const io = require('socket.io-client');
 
 const Conn = (() => {
-  const reqAddr = "http://localhost";
+  const reqAddr = "http://localhost:5500/";
+  const map = new Map();
   function requestAddr(key, cb) {
-    fetch(reqAddr).then(r => r.json()).then(j => {
+    fetch(reqAddr, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; utf-8'
+      },
+      body: JSON.stringify({ action: "room", key: key })
+    }).then(r => r.json()).then(j => {
+      console.log(j);
       cb(j);
-    }).catch(cb({ addr: 'http://localhost', port: 3002, room: '/' }));
+    }).catch(cb());
   }
+
+  function send(key, pk, data) {
+    let session = map.get(key);
+    session.send(pk, data);
+  }
+
   const Session = ((key) => {
+    map.set(key, this);
     const data = {
       key: key,
       phase: 0,
       failed: false,
     };
+    function initListener(socket){
+      socket.on('lockDeny', (pk) => {
+        // pk = src;
+      });
+      socket.on('lock', (pk) => {
+        // pk.id = src;
+        // pk.to = socket.id;
+      });
+      socket.on('unlock', (pk) => {
+        // pk.id = src;
+      });
+      socket.on('fullData', (pk) => {
+        //pk = data;
+      });
+      socket.on('attrChange', (pk) => {
+        Tool.attrChange(pk);
+      });
+    }
+    function send(pk, d) {
+      console.log('send packet');
+      console.log(`  ${pk} : ${JSON.stringify(d)}`);
+      data.socket.emit(pk, d);
+    }
     function requestCallback(json) {
       _failed(false);
       _phase(2);
-      if (json === undefined) {
+      if (json === undefined || !json.result) {
         _failed(true);
         return;
       }
+      json = json.dist;
       data.addr = json.addr;
       data.port = json.port;
       data.room = json.room;
+      console.log('json');
+      console.log(json);
+      addr = data.addr + ':' + data.port + '/' + data.room;
+      console.log(addr);
+      data.socket = io(addr, { timeout: 5000, reconnection: false, autoConnect: false });
+      initListener(data.socket);
       connectSocket();
     }
     function connectSocket() {
       _failed(false);
-      addr = data.addr + ':' + data.port + data.room;
-      data.socket = io.connect(addr, { timeout: 5000, reconnection: false });
+      data.socket.connect();
       _phase(3);
       console.log(data.socket);
       setTimeout(() => {
@@ -39,7 +83,7 @@ const Conn = (() => {
           return;
         }
         _phase(5);
-      }, 5000);
+      }, 3000);
     }
     function isConnected() {
       return data.socket.connected;
@@ -62,8 +106,9 @@ const Conn = (() => {
       isConnected: isConnected,
       phase: () => _phase(),
       failed: () => _failed(),
-      socket: socket
+      socket: socket,
+      send: send
     };
   });
-  return { Session: Session };
+  return { Session: Session, send: send };
 })();
