@@ -1,7 +1,7 @@
 const io = require('socket.io-client');
 
 const Conn = (() => {
-  const reqAddr = "http://localhost:5500/";
+  const reqAddr = "http://54.180.158.231:5500/";
   const map = new Map();
   function requestAddr(key, cb) {
     fetch(reqAddr, {
