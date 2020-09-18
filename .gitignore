@@ -31,3 +31,5 @@ yarn-error.log*
 
 # Intellij IDEA
 .idea
+
+yarn.lock
