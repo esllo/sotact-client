@@ -1,4 +1,5 @@
 const { takeWhile } = require("lodash");
+// const { ipcRenderer } = require("electron");
 
 // file selected
 let input = byQuery('[type=file]');
@@ -7,14 +8,52 @@ if (input != null) {
     if (e.target.value != '') {
       file = e.target.files[0];
       e.target.value = '';
-      const tree = parser.parse(file.path);
-      parser.waitForLoad((ctx) => {
-        Tool.psd(ctx);
-        Tool.size(tree.size);
-        Tool.addPr(tree.group);
-        Tool.applyLayer();
-        Tool.redrawAll();
-      });
+      let fpath = file.path;
+      if (fpath.endsWith('.psd')) {
+        const tree = parser.parse(file.path);
+        parser.waitForLoad((ctx) => {
+          Tool.psd(ctx);
+          Tool.size(tree.size);
+          if (Tool.getPLayer().getChildren().length == 0) {
+            Tool.addPr(tree.group);
+          } else {
+            let group = Tool.getPLayer().getChildren()[0];
+            tree.group.getChildren().forEach(c => group.add(c));
+          }
+          Tool.applyLayer();
+          Tool.redrawAll();
+        });
+      } else if (fpath.endsWith('.png') || fpath.endsWith('.jpg')) {
+        let rimg = new Image();
+        rimg.onload = () => {
+          let img = new Konva.Image({
+            x: 0,
+            y: 0,
+            listening: false,
+            image: rimg,
+            name: file.name
+          })
+          img.offset({ x: img.width() / 2, y: img.height() / 2 });
+          let sz = Tool.size();
+          let w = parseInt(Math.max(sz.width, img.width()));
+          let h = parseInt(Math.max(sz.height, img.height()));
+          Tool.size({ width: w, height: h });
+
+          if (Tool.getPLayer().getChildren().length == 0) {
+            let group = new Konva.Group();
+            group.add(img);
+            Tool.addPr(group);
+          } else {
+            Tool.getPLayer().getChildren()[0].add(img);
+          }
+          Tool.applyLayer();
+          Tool.redrawAll();
+        }
+        rimg.src = fpath;
+      } else if (fpath.endsWith('.taw')) {
+        // reset
+
+      }
     }
   });
 }
@@ -45,6 +84,9 @@ byID('tb1').onclick = Tool.stopTimebar;
 byID('tb2').onclick = Tool.resetTimebar;
 
 byID('selector').onclick = () => byID('selector_hidden').click();
+byID('cloudSelect').onclick = () => {
+  ipcRenderer.send('requestCloud');
+};
 byID('save').onclick = () => {
   TAW.initFromTool();
   Tool.setCurrentTAW(TAW);
@@ -60,6 +102,7 @@ byID('save').onclick = () => {
     }
   }).catch(console.error);
 }
+byID('clear').onclick = Tool.clear;
 
 byQuery('.login').onclick = () => ipcRenderer.send('loginRequest', null);
 byQuery('.session').onclick = () => {

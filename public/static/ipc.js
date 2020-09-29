@@ -6,24 +6,29 @@ function windowEvent(code) {
 }
 
 var occurQueue = [];
-async function useEffectOccured() {
-  Tool.init();
-  occurQueue.forEach(c => {
-    try {
-      c();
-    } catch (e) {
-      if (e) console.error(e);
-    }
-  });
-}
+setTimeout(() => {
+  async function useEffectOccured() {
+    Tool.init();
+    occurQueue.forEach(c => {
+      try {
+        c();
+      } catch (e) {
+        if (e) console.error(e);
+      }
+    });
+  }
+  window.useEffectOccured = useEffectOccured;
+}, 3000);
 
 function addOnOccured(cb) {
   occurQueue.push(cb);
 }
 
 ipcRenderer.on('loginSuccess', (e, c) => {
-  console.log(e);
-  console.log(c);
-  byQuery('.login').value = c.nickname+"님 안녕하세요.";
+  byQuery('.login').value = c.nickname + "님 안녕하세요.";
   byQuery('.login').disabled = true;
+})
+
+ipcRenderer.on('cloudSelected', (e, arg) => {
+  console.log(arg);
 })

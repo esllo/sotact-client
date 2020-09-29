@@ -36,6 +36,26 @@ const Tool = (() => {
   let time = 0;
   let sz = 0;
 
+  function clear() {
+    if (_session != null) {
+      _session.socket().close();
+      _session = null;
+    }
+    pl.destroyChildren();
+    tl.destroyChildren();
+    ls = ms = si = ti = sz = 0;
+    udid = maxDist = 0;
+    data = {};
+    nodes = [];
+    lastTr = tr = currentTAW = null;
+    dragged = false;
+    lastX = lastL = -1;
+    _tps.innerHTML = _tns.innerHTML = '';
+    applyLayer();
+    redrawAll();
+    initTr();
+  }
+
   // session
   let _session = null;
   const session = (s) => _session = s || _session;
@@ -526,6 +546,7 @@ const Tool = (() => {
     updateTb: updateTb,
     attrChange: attrChange,
     session: session,
-    sessionCreated: sessionCreated
+    sessionCreated: sessionCreated,
+    clear: clear
   };
 })();

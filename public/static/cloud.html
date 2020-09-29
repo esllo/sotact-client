@@ -114,13 +114,14 @@
         </div>
     </div>
     <script>
+        const { ipcRenderer } = require('electron');
         function setList(to, data) {
             let obj = document.getElementById(to);
             obj.innerHTML = '';
             data.forEach(row => {
                 let str = row.status ? 'class="green"' : '';
                 console.log(str);
-                obj.innerHTML += `<div class="row">
+                obj.innerHTML += `<div class="row" onclick="fileSelected('${row.key}')">
                     <p ${str}></p>
                     <p>${row.name}</p>
                     <p>${row.owner}</p>
@@ -133,6 +134,7 @@
             let dm = [];
             for (let i = 0; i < Math.random() * 5 + 3; i++) {
                 dm.push({
+                    key: 'somekey' + i,
                     id: i,
                     status: Math.random() < 0.5,
                     name: 'Name' + i,
@@ -149,6 +151,11 @@
                 document.getElementById(o.id + "_list").classList.add('on');
             }
         }
+        function fileSelected(key) {
+            ipcRenderer.send('cloudSelected', key);
+        }
+        setList('private_list', dummy());
+        setList('public_list', dummy());
     </script>
 </body>
 

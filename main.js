@@ -1,5 +1,6 @@
-const { app, protocol, BrowserWindow, screen, ipcMain } = require('electron');
+const { app, protocol, BrowserWindow, screen, ipcMain, Menu } = require('electron');
 const http = require('http');
+
 
 let win, login;
 function createWindow() {
@@ -13,7 +14,7 @@ function createWindow() {
       nodeIntegration: true,
     },
   });
-  // _win.webContents.openDevTools();
+  _win.webContents.openDevTools();
 
   return _win;
 }
@@ -36,6 +37,8 @@ function createLoginWindow() {
 }
 
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null);
+  // app.getAppPath(); exe path
   protocol.registerFileProtocol('*', (req, cb) => {
     alert(req);
     alert(req.url);
@@ -147,3 +150,32 @@ ipcMain.on('loginSuccess', (e, c) => {
   login.close();
   win.webContents.send('loginSuccess', c);
 });
+
+
+let cloudWindow = null;
+
+function createCloudWindow() {
+  if (cloudWindow != null) return;
+  cloudWindow = new BrowserWindow({
+    width: 500,
+    height: 700,
+    show: true,
+    frame: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+  cloudWindow.on('closed', () => cloudWindow = null);
+  cloudWindow.loadURL(`file://${__dirname}/out/static/cloud.html`);
+}
+
+ipcMain.on('requestCloud', (e) => {
+  createCloudWindow();
+})
+
+ipcMain.on('cloudSelected', (e, args) => {
+  if (win != null) {
+    win.webContents.send('cloudSelected', args);
+  }
+  cloudWindow.close();
+})

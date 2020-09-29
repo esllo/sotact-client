@@ -8,9 +8,14 @@ import { divide } from 'lodash';
 
 const Home = (props) => {
   useEffect(() => {
-    if (window !== undefined) {
-      useEffectOccured();
+    function bindLoop() {
+      if (window == undefined || window.useEffectOccured == undefined) {
+        setTimeout(bindLoop, 200);
+      } else {
+        window.useEffectOccured();
+      }
     }
+    bindLoop();
   }, []);
   const [to, setTo] = useState(0);
   const [from, setFrom] = useState(100);
@@ -28,8 +33,11 @@ const Home = (props) => {
         <FlexBox dir="column" style={{ height: 'calc(100vh - 30px)' }}>
           <FlexBox className="top" dir="row" minHeight="34px" background="#3d3d3d">
             <input id="selector_hidden" type="file" style={{ display: 'none' }} />
-            <input id="selector" type="button" value="Open File" />
+            <input id="selector" type="button" value="Open Local" />
+            <input id="cloudSelect" type="button" value="Open Cloud" />
             <input id="save" type="button" value="Save" />
+            <input id="clear" type="button" value="Clear" />
+            <div style={{ width: '4px' }}></div>
             <input id="tb0" type="button" value="Start" />
             <input id="tb1" type="button" value="Stop" />
             <input id="tb2" type="button" value="Reset" />
@@ -98,6 +106,14 @@ const Home = (props) => {
                     <p>y :&nbsp;</p>
                     <input id="yval" />
                   </label>
+                  <label>
+                    <p>Scale x:&nbsp;</p>
+                    <input id="sxval" />
+                  </label>
+                  <label>
+                    <p>Visible :&nbsp;</p>
+                    <input id="vval" />
+                  </label>
                 </FlexBox>
                 <FlexBox dir="column" weight="1">
                   <label>
@@ -108,8 +124,16 @@ const Home = (props) => {
                     <p>opacity :&nbsp;</p>
                     <input id="oval" />
                   </label>
+                  <label>
+                    <p>Scale y:&nbsp;</p>
+                    <input id="syval" />
+                  </label>
                 </FlexBox>
               </FlexBox>
+              <label>
+                <p>Compsite Operation :&nbsp;</p>
+                <input id="coval" />
+              </label>
 
             </FlexBox>
             <Split dir="vertical"></Split>
@@ -132,7 +156,7 @@ const Home = (props) => {
             </FlexBox>
           </FlexBox>
         </FlexBox>
-        <input style={{display:'none'}} type="file" id="folder" webkitdirectory directory/>
+        <input style={{ display: 'none' }} type="file" id="folder" webkitdirectory directory />
       </main>
     </div>
   );
