@@ -44,7 +44,7 @@ app.whenReady().then(() => {
     alert(req.url);
   });
   win = createWindow();
-  win.loadURL(`file://${__dirname}/out/index.html`);
+  win.loadURL(`file://${__dirname}/out/html/index.html`);
 });
 
 app.on('window-all-closed', () => {
@@ -70,7 +70,7 @@ ipcMain.on('windowEvent', (e, c) => {
 });
 ipcMain.on('loginRequest', (e, c) => {
   login = createLoginWindow();
-  login.loadURL(`file://${__dirname}/out/static/login.html`);
+  login.loadURL(`file://${__dirname}/out/static/html/login.html`);
 })
 function createOAuthWindow() {
   let _win = new BrowserWindow({
@@ -166,7 +166,7 @@ function createCloudWindow() {
     }
   });
   cloudWindow.on('closed', () => cloudWindow = null);
-  cloudWindow.loadURL(`file://${__dirname}/out/static/cloud.html`);
+  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html`);
 }
 
 ipcMain.on('requestCloud', (e) => {
