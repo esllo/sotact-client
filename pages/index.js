@@ -19,6 +19,7 @@ const Home = (props) => {
   }, []);
   const [to, setTo] = useState(0);
   const [from, setFrom] = useState(100);
+  const compOpers = ["source-over", "source-in", "source-out", "source-atop", "destination-over", "destination-in", "destination-out", "lighter", "copy", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"];
 
   // animate with path
   //https://stackoverflow.com/questions/53330168/animate-a-shape-along-a-line-or-path-in-konva
@@ -92,47 +93,52 @@ const Home = (props) => {
               <div className="property">
                 <p>Properties</p>
               </div>
-              <label>
+              <label className="prop_label">
                 <p>name :&nbsp;</p>
-                <input id="nval" disabled style={{ width: '200px' }} />
+                <input id="nval" disabled style={{ flex: '1' }} />
               </label>
               <FlexBox dir="row">
                 <FlexBox dir="column" weight="1">
-                  <label>
+                  <label className="prop_label">
                     <p>x :&nbsp;</p>
                     <input id="xval" />
                   </label>
-                  <label>
+                  <label className="prop_label">
                     <p>y :&nbsp;</p>
                     <input id="yval" />
                   </label>
-                  <label>
-                    <p>Scale x:&nbsp;</p>
+                  <label className="prop_label">
+                    <p>Scale x :&nbsp;</p>
                     <input id="sxval" />
                   </label>
-                  <label>
+                  <label className="prop_label">
                     <p>Visible :&nbsp;</p>
-                    <input id="vval" />
+                    <select id="vval">
+                      <option value="true">show</option>
+                      <option value="false">hide</option>
+                    </select>
                   </label>
                 </FlexBox>
                 <FlexBox dir="column" weight="1">
-                  <label>
-                    <p>rotation :&nbsp;</p>
+                  <label className="prop_label">
+                    <p>Rotation :&nbsp;</p>
                     <input id="rval" />
                   </label>
-                  <label>
-                    <p>opacity :&nbsp;</p>
+                  <label className="prop_label">
+                    <p>Opacity :&nbsp;</p>
                     <input id="oval" />
                   </label>
-                  <label>
-                    <p>Scale y:&nbsp;</p>
+                  <label className="prop_label">
+                    <p>Scale y :&nbsp;</p>
                     <input id="syval" />
                   </label>
                 </FlexBox>
               </FlexBox>
-              <label>
+              <label className="prop_label">
                 <p>Compsite Operation :&nbsp;</p>
-                <input id="coval" />
+                <select id="coval" style={{ flex: '1' }}>
+                  {compOpers.map((co, i) => <option key={`co-${i}`} value={co}>{co}</option>)}
+                </select>
               </label>
 
             </FlexBox>

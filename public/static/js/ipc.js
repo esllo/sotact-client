@@ -5,6 +5,7 @@ function windowEvent(code) {
   ipcRenderer.send('windowEvent', code);
 }
 
+let occred = false;
 var occurQueue = [];
 setTimeout(() => {
   async function useEffectOccured() {
@@ -16,12 +17,14 @@ setTimeout(() => {
         if (e) console.error(e);
       }
     });
+    occred = true;
   }
   window.useEffectOccured = useEffectOccured;
-}, 3000);
+}, 1000);
 
 function addOnOccured(cb) {
-  occurQueue.push(cb);
+  if(occred) cb();
+  else occurQueue.push(cb);
 }
 
 ipcRenderer.on('loginSuccess', (e, c) => {

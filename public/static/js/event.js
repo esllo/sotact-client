@@ -117,12 +117,22 @@ byQuery('.session').onclick = () => {
 function valueChanged(fn) {
   return function (e) {
     let val = e.target.value.trim();
-    if (val != '' && val.match('[^-0-9.]') == null) {
-      val = parseFloat(val);
-      if (fn == "opacity") {
-        if (val < 0) val = 0;
-        if (val > 100) val = 100;
-        val /= 100;
+    if (val != '') {
+      if (val.match('[^-0-9.]') == null) {
+        val = parseFloat(val);
+        switch (fn) {
+          case "opacity":
+            if (val < 0) val = 0;
+            if (val > 100) val = 100;
+            val /= 100;
+            break;
+        }
+      } else if (e.target.localName == "select") {
+        if (fn == "visible") {
+          val = val == "true";
+        }
+      } else {
+        return;
       }
       Tool.changeLastTr(fn, val);
     }
@@ -130,10 +140,13 @@ function valueChanged(fn) {
 }
 
 addOnOccured(() => {
-  byID('xval').addEventListener('keyup', valueChanged('x'));
-  byID('yval').addEventListener('keyup', valueChanged('y'));
-  byID('rval').addEventListener('keyup', valueChanged('rotation'));
-  byID('oval').addEventListener('keyup', valueChanged('opacity'));
+  let ids = {
+    xval: 'x', yval: 'y',
+    sxval: 'scaleX', syval: 'scaleY',
+    vval: 'visible', rval: 'rotation',
+    oval: 'opacity', coval: 'globalCompositeOperation'
+  };
+  Object.keys(ids).forEach(key => byID(key).addEventListener(byID(key).localName == "select" ? 'change' : 'keyup', valueChanged(ids[key])));
   byID('tl_names').addEventListener('wheel', Tool.scrollTimeline);
   byID('tl_props').addEventListener('wheel', Tool.scrollTimeline);
 });

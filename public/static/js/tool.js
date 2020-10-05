@@ -17,6 +17,10 @@ const Tool = (() => {
   const _yv = byID('yval');
   const _rv = byID('rval');
   const _ov = byID('oval');
+  const _sxv = byID('sxval');
+  const _syv = byID('syval');
+  const _vv = byID('vval');
+  const _cv = byID('coval');
 
   // konva objects
   let stg = null;
@@ -333,6 +337,10 @@ const Tool = (() => {
       _yv.value = ms.y();
       _rv.value = ms.rotation();
       _ov.value = ms.opacity() * 100;
+      _sxv.value = ms.scaleX();
+      _syv.value = ms.scaleY();
+      _vv.value = ms.visible();
+      _cv.value = ms.globalCompositeOperation();
     }
   }
 

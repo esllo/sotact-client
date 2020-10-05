@@ -44,7 +44,7 @@ app.whenReady().then(() => {
     alert(req.url);
   });
   win = createWindow();
-  win.loadURL(`file://${__dirname}/out/html/index.html`);
+  win.loadURL(`file://${__dirname}/out/index.html`);
 });
 
 app.on('window-all-closed', () => {
