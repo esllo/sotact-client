@@ -22,6 +22,8 @@ const Tool = (() => {
   const _vv = byID('vval');
   const _cv = byID('coval');
 
+  const _props = ['x', 'y', 'rotation', 'opacity', 'visible', 'scale', 'globalCompositeOperation'];
+
   // konva objects
   let stg = null;
   let pl = null;
@@ -90,12 +92,7 @@ const Tool = (() => {
       data[did] = {
         src: id,
         timeline: {
-          t0: {
-            x: item.x(),
-            y: item.y(),
-            rotation: item.rotation(),
-            opacity: item.opacity(),
-          },
+          t0: createTlData(item),
         },
       };
       if (isValidSession()) {
@@ -132,32 +129,14 @@ const Tool = (() => {
 
   let udid = 0;
   let data = {};
-  // let flow = {};
 
   const getData = () => data;
 
-  // function makeFlowData() {
-  //   sortData();
-  //   flow = {};
-  //   for (const k of Object.keys(data)) {
-  //     const tmp = {};
-  //     let o = data[k];
-  //     const tl = Array.from(Object.keys(o.timeline), (x) =>
-  //       parseInt(x.substr(1))
-  //     );
-  //     if (tl.length == 1) continue;
-  //     tmp.src = o.src;
-  //     for (let i = 0; i < tl.length - 2; i++) {
-  //       let from = tl[i];
-  //       let to = tl[i + 1];
-  //       let keys = [...Object.keys(from), ...Object.keys(to)];
-  //       keys = keys.filter((i, p) => keys.indexOf(i) === p);
-  //       for (const key of keys) {
-  //       }
-  //     }
-  //     flow[k] = tmp;
-  //   }
-  // }
+  function createTlData(item) {
+    let tmp = {};
+    _props.forEach(prop => tmp[prop] = item[prop]());
+    return tmp;
+  }
 
   function sortData() {
     for (const o of Object.values(data)) {
@@ -230,6 +209,14 @@ const Tool = (() => {
       borderDash: [5, 5],
       centerScaling: true,
     });
+    const evv = (a) => {
+      console.log(a);
+    };
+    tr.on('mousedown', evv);
+    tr.on('dragmove', evv);
+    tr.on('transform', evv);
+    tr.on('transformend', evv);
+    tr.on('transformstart', evv);
     tl.add(tr);
   }
 
@@ -277,12 +264,7 @@ const Tool = (() => {
       data[did] = {
         src: id,
         timeline: {
-          t0: {
-            x: i.x(),
-            y: i.y(),
-            rotation: i.rotation(),
-            opacity: i.opacity(),
-          },
+          t0: createTlData(i),
         },
       };
       _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Konva from 'konva';
 import TitleBar from '../comp/TitleBar';
 import FlexBox from '../comp/FlexBox';
+import Konva from 'konva';
 import Split from '../comp/Split';
-import { divide } from 'lodash';
 
 const Home = (props) => {
   useEffect(() => {

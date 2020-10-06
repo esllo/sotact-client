@@ -43,4 +43,18 @@ const Presets = (() => {
 
     const cos = (deg) => parseFloat(Math.cos(deg * Math.PI / 180).toFixed(15));
     const sin = (deg) => parseFloat(Math.sin(deg * Math.PI / 180).toFixed(15));
+
+    function getPresetHTML(name, func, type) {
+        let struct = `<div class="preset" id="preset-${func}">`;
+        struct += `<p class="preset-title">${name}</p>`;
+        Object.keys(type).forEach(key => { struct += `<label>${key}<input /></label>`; });
+        struct += `</div>`;
+    }
+
+    function getHTML() {
+        let struct = `<div class="presets">`;
+        
+        struct += `</div>`;
+    }
+    return { getHTML: getHTML };
 })();
