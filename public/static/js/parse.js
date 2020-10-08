@@ -6,6 +6,7 @@ const parser = (() => {
   var _psd = null;
   var totalLoad = 0;
   var totalCount = 0;
+  var idIndex = 0;
   const parseImage = (png, width, height) => {
     cvs.width = width;
     cvs.height = height;
@@ -15,16 +16,46 @@ const parser = (() => {
     ctx.putImageData(img, 0, 0);
     return cvs.toDataURL('image/png');
   };
+  const toDataImage = (image, kImage, m) => {
+    cvs.width = image.width;
+    cvs.height = image.height;
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctx.drawImage(image, 0, 0);
+    let img = new Image();
+    img.onload = () => {
+      totalLoad++;
+      kImage.image(img);
+      Object.keys(m.attrs).forEach(attr => {
+        console.log(attr + " : " + m.attrs[attr]);
+        if (attr == "visible" && m.attrs[attr] == null)
+          m.attrs[attr] = true;
+        kImage[attr](m.attrs[attr])
+      });
+      image = null;
+    }
+    img.src = cvs.toDataURL('image/png');
+  }
   const parse = (path) => {
     _psd = psd.fromFile(path);
     _psd.parse();
     console.log(_psd);
-    totalLoad = totalCount = 0;
+    totalLoad = totalCount = idIndex = 0;
     return {
       size: { width: _psd.image.width(), height: _psd.image.height() },
       group: parseChilds(_psd.tree(), ''),
     };
   };
+  const parseJson = (dir, data) => {
+    totalLoad = totalCount = idIndex = 0;
+    console.log('data');
+    console.log(data);
+    return {
+      size: data.size,
+      group: parseJsonMap(dir, data.map),
+      name: data.name,
+      flow: data.flow
+    }
+  }
   function convertImage(imageURL, l, t, name, opacity, visible) {
     let image = new Image();
     let kImage = new Konva.Image({
@@ -35,6 +66,7 @@ const parser = (() => {
     totalCount++;
     image.onload = async function () {
       totalLoad++;
+      kImage.id('obj-' + getDateAsHex() + idIndex++);
       kImage.image(image);
       kImage.name(name);
       kImage.opacity(opacity);
@@ -57,7 +89,7 @@ const parser = (() => {
       if (child.constructor.name === 'Group' && !p) {
         // Group
         let childGroup = parseChilds(child, '--' + hier, group);
-        
+
         // group.add(childGroup);
       } else {
         // Layer
@@ -77,12 +109,31 @@ const parser = (() => {
     }
     return group;
   }
+
+  function parseJsonMap(dir, map) {
+    let group = new Konva.Group();
+    map.forEach(m => {
+      let iPath = dir + m.path;
+      console.log(iPath);
+      let image = new Image();
+      let kImage = new Konva.Image({ listening: false, });
+      totalCount++;
+      image.onload = async function () {
+        toDataImage(image, kImage, m);
+      };
+      image.src = iPath;
+      group.add(kImage);
+    });
+    return group;
+  }
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   const waitForLoad = async function (cb) {
-    while (totalLoad != totalCount) await sleep(50);
-    cb(_psd);
+    while (totalLoad != totalCount) {
+      await sleep(200);
+      if (true) console.log(totalLoad + " / " + totalCount);
+    } cb(_psd);
   };
 
-  return { parse: parse, waitForLoad: waitForLoad };
+  return { parse: parse, waitForLoad: waitForLoad, parseJson: parseJson };
 })();

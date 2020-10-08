@@ -9,22 +9,55 @@
     "start": "next start",
     "export": "next export",
     "electron": "electron .",
-    "rex": "cross-env ISDEV=false next build && next export && electron ."
+    "rex": "cross-env ISDEV=false next build && next export && electron .",
+    "build:win": "cross-env ISDEV=false next build && next export && electron-builder --win --x64"
   },
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
+    "electron-prompt": "^1.6.0",
     "konva": "^7.1.3",
     "lodash": "^4.17.19",
     "next": "9.4.4",
     "psd": "^3.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "socket.io": "^2.3.0"
+    "request": "^2.88.2",
+    "socket.io": "^2.3.0",
+    "tar": "^6.0.5"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
     "electron": "^9.2.0",
-    "electron-prompt": "^1.6.0"
+    "electron-builder": "^22.8.1"
+  },
+  "build": {
+    "productName": "TAW",
+    "appId": "sotact.taw",
+    "asar": false,
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": ""
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "installerLanguages": [
+        "ko_KR"
+      ],
+      "language": "1042"
+    },
+    "fileAssociations": [
+      {
+        "ext": [
+          "taw"
+        ],
+        "name": "TawProject",
+        "role": "Editor"
+      }
+    ],
+    "publish": null
   }
 }

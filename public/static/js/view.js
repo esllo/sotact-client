@@ -21,15 +21,20 @@ const TAW = (() => {
           let dists = fl.time[fl.index + 1] - fl.time[fl.index];
           let prgrs = p - fl.time[fl.index];
           value += diffs * (prgrs / dists);
-          fl.obj[key](value);
+          findItem(Tool.getPLayer(), fl.src)[key](value);
+          findItem(Tool.getTLayer(), fl.src)[key](value);
+          // fl.obj[key](value);
         }
       else {
         for (const key of Object.keys(fl.data[fl.index])) {
           f[key] = fl.data[fl.index][key];
-          fl.obj[key](fl.data[fl.index][key]);
+          // fl.obj[key](fl.data[fl.index][key]);
+          findItem(Tool.getPLayer(), fl.src)[key](fl.data[fl.index][key]);
+          findItem(Tool.getTLayer(), fl.src)[key](fl.data[fl.index][key]);
         }
       }
-      lay.batchDraw();
+      Tool.redrawAll();
+      // lay.batchDraw();
       return f;
     });
   }

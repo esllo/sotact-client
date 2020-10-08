@@ -2,161 +2,157 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud</title>
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
 
-        #cloud {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    #cloud {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        #tab_head {
-            display: flex;
-            flex-direction: row;
-            height: 60px;
-            align-items: center;
-            border-bottom: 2px solid #aaa;
-        }
+    #tab_head {
+      display: flex;
+      flex-direction: row;
+      height: 60px;
+      align-items: center;
+      border-bottom: 2px solid #aaa;
+    }
 
-        #tab_head>div {
-            flex: 1;
-            text-align: center;
-        }
+    #tab_head>div {
+      flex: 1;
+      text-align: center;
+    }
 
-        #tab_body {
-            flex: 1;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+    #tab_body {
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
-        .row {
-            display: flex;
-            flex-direction: row;
-            padding: 12px;
-            border-bottom: 1px solid #ccc;
-            font-size: 16px;
-            align-items: center;
-        }
+    .row {
+      display: flex;
+      flex-direction: row;
+      padding: 12px;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+      align-items: center;
+    }
 
-        .green {
-            background: green !important;
-        }
+    .green {
+      background: green !important;
+    }
 
-        .row>p:nth-child(1) {
-            width: 14px;
-            height: 14px;
-            border-radius: 7px;
-            background: red;
-            margin: 0 16px 0 10px;
-        }
+    .row>p:nth-child(1) {
+      flex: 1;
+    }
 
-        .row.head>p:nth-child(1) {
-            background: none;
-            width: 40px;
-            border-radius: none;
-            height: auto;
-            margin: 0;
-        }
+    .row>p:nth-child(2) {
+      width: 120px;
+    }
 
-        .row>p:nth-child(2) {
-            flex: 1;
-        }
+    .row>p:nth-child(3) {
+      width: 80px;
+      /* height:  */
+    }
 
-        .row>p:nth-child(3) {
-            width: 140px;
-        }
+    .row>p:nth-child(4) {
+      width: 80px;
+    }
 
-        .row>p:nth-child(4) {
-            width: 80px;
-            /* height:  */
-        }
+    .file_list {
+      display: none;
+    }
 
-        .row>p:nth-child(5) {
-            width: 80px;
-        }
-
-        .file_list {
-            display: none;
-        }
-
-        .file_list.on {
-            display: inherit;
-        }
-    </style>
+    .file_list.on {
+      display: inherit;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="cloud">
-        <div id="tab_head">
-            <div id="private" class="on" onclick="toggleClick(this);">Private</div>
-            <div id="public" onclick="toggleClick(this);">Public</div>
-        </div>
-        <div id="tab_body">
-            <div class="row head">
-                <p>상태</p>
-                <p>파일명</p>
-                <p>소유자</p>
-                <p>공유</p>
-                <p>삭제</p>
-            </div>
-            <div id="private_list" class="file_list on">
-            </div>
-            <div id="public_list" class="file_list">
-            </div>
-        </div>
+  <div id="cloud">
+    <div id="tab_head">
+      <div id="private" class="on" onclick="toggleClick(this);">Private</div>
+      <div id="public" onclick="toggleClick(this);">Public</div>
     </div>
-    <script>
-        const { ipcRenderer } = require('electron');
-        function setList(to, data) {
-            let obj = document.getElementById(to);
-            obj.innerHTML = '';
-            data.forEach(row => {
-                let str = row.status ? 'class="green"' : '';
-                console.log(str);
-                obj.innerHTML += `<div class="row" onclick="fileSelected('${row.key}')">
-                    <p ${str}></p>
+    <div id="tab_body">
+      <div class="row head">
+        <p>파일명</p>
+        <p>소유자</p>
+        <p>공유</p>
+        <p>삭제</p>
+      </div>
+      <div id="private_list" class="file_list on">
+      </div>
+      <div id="public_list" class="file_list">
+      </div>
+    </div>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    function setList(to, data) {
+      let obj = document.getElementById(to);
+      obj.innerHTML = '';
+      data.forEach(row => {
+        // let str = row.status ? 'class="green"' : '';
+        // console.log(str);
+        obj.innerHTML += `<div class="row" onclick="fileSelected('${row.key}', '${row.name}')">
                     <p>${row.name}</p>
                     <p>${row.owner}</p>
-                    <p>share ${row.id}</p>
-                    <p>delete ${row.id}</p>
+                    <p>share ${row.key}</p>
+                    <p>delete ${row.key}</p>
                 </div>`;
-            });
-        }
-        function dummy() {
-            let dm = [];
-            for (let i = 0; i < Math.random() * 5 + 3; i++) {
-                dm.push({
-                    key: 'somekey' + i,
-                    id: i,
-                    status: Math.random() < 0.5,
-                    name: 'Name' + i,
-                    owner: 'self',
-                });
-            }
-            return dm;
-        }
-        function toggleClick(o) {
-            if (!o.classList.contains('on')) {
-                document.querySelector('#tab_head > div.on').classList.remove('on');
-                o.classList.add('on');
-                document.querySelector('.file_list.on').classList.remove('on');
-                document.getElementById(o.id + "_list").classList.add('on');
-            }
-        }
-        function fileSelected(key) {
-            ipcRenderer.send('cloudSelected', key);
-        }
-        setList('private_list', dummy());
-        setList('public_list', dummy());
-    </script>
+      });
+    }
+    function dummy() {
+      let dm = [];
+      for (let i = 0; i < Math.random() * 5 + 3; i++) {
+        dm.push({
+          key: 'somekey' + i,
+          // status: Math.random() < 0.5,
+          name: 'Name' + i,
+          owner: 'self',
+        });
+      }
+      return dm;
+    }
+    function toggleClick(o) {
+      if (!o.classList.contains('on')) {
+        document.querySelector('#tab_head > div.on').classList.remove('on');
+        o.classList.add('on');
+        document.querySelector('.file_list.on').classList.remove('on');
+        document.getElementById(o.id + "_list").classList.add('on');
+      }
+    }
+    function fileSelected(key, name) {
+      ipcRenderer.send('cloudSelected', [key, name]);
+    }
+    function fetchData() {
+      let fetchURL = 'http://13.125.214.132:4000/?user=' + window.location.hash.substr(1);
+      console.log(fetchURL);
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        console.log('fetch : ');
+        console.log(json);
+        let dm = [];
+        json.forEach(e => dm.push({ key: e.hash, name: e.original, owner: e.who }));
+        setList('private_list', dm);
+      }).catch(e => {
+        console.error('cannot fetch');
+        console.log(e);
+      });
+    };
+    fetchData();
+    // setList('private_list', dummy());
+    // setList('public_list', dummy());
+  </script>
 </body>
 
 </html>

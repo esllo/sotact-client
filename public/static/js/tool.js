@@ -44,14 +44,15 @@ const Tool = (() => {
 
   function clear() {
     if (_session != null) {
-      _session.socket().close();
+      if (_session.socket() != null)
+        _session.socket().close();
       _session = null;
     }
     pl.destroyChildren();
     tl.destroyChildren();
     ls = ms = si = ti = sz = 0;
     udid = maxDist = 0;
-    data = {};
+    data = [];
     nodes = [];
     lastTr = tr = currentTAW = null;
     dragged = false;
@@ -84,6 +85,7 @@ const Tool = (() => {
     _tns.ondragover = (e) => e.preventDefault();
     _tns.ondrop = (e) => {
       const id = e.dataTransfer.getData('target');
+      console.log('id:' + id);
       let item = findItem(pl, id);
       let did = nextUDID();
       item.id(id);
@@ -131,6 +133,28 @@ const Tool = (() => {
   let data = {};
 
   const getData = () => data;
+  function parseData(datum) {
+    data = [];
+    datum.forEach(dt => {
+      let tl = { src: dt.src, timeline: {} };
+      let i = findItem(pl, dt.src)
+      console.log('find ' + dt.src);
+      let d = nextUDID();
+      copyItemToTimeline(d, i);
+      _tns.innerHTML += `<div class="tl_name" did="${d}" uid="${dt.src}" droppable="false" onclick="Tool.selectNode(this)">${i.name()}</div>`;
+      _tps.innerHTML += `<div class="tl_prop" did="${d}" uid="${dt.src}"></div>`;
+      for (let ind = 0; ind < Math.min(dt.time.length, dt.data.length); ind++) {
+        let tm = dt.time[ind];
+        let tmb = 't' + tm;
+        if (tl.timeline[tmb] === undefined) {
+          setPoint(d, tm);
+        }
+        tl.timeline[tmb] = dt.data[ind];
+      }
+      data.push(tl);
+    });
+    TAW.initFromTool();
+  }
 
   function createTlData(item) {
     let tmp = {};
@@ -210,7 +234,7 @@ const Tool = (() => {
       centerScaling: true,
     });
     const evv = (a) => {
-      console.log(a);
+      // console.log(a);
     };
     tr.on('mousedown', evv);
     tr.on('dragmove', evv);
@@ -291,19 +315,14 @@ const Tool = (() => {
     if (dat.timeline[tmb] === undefined) {
       setPoint(parseInt(o.getAttr('did')), tm);
     }
-    dat.timeline[tmb] = {
-      x: Math.round(o.x()),
-      y: Math.round(o.y()),
-      rotation: o.rotation(),
-      opacity: o.opacity(),
-    };
+    dat.timeline[tmb] = createTlData(o);
 
     if (isValidSession()) {
       _session.send('attrChange',
         {
           src: o.id(),
           time: tm,
-          data: data[o.getAttr('did')].timeline[tmb]
+          data: dat.timeline[tmb]
         });
     }
 
@@ -382,7 +401,7 @@ const Tool = (() => {
   };
 
   const applyLayer = () => {
-    _ls.innerHTML = parseLayer(pl, 'layer', 0);
+    _ls.innerHTML = pl.children.length == 0 ? "" : parseLayer(pl, 'layer', 0);
   };
 
   const parseLayer = (c, h, l) => {
@@ -394,7 +413,7 @@ const Tool = (() => {
       return rt;
     } else {
       // item
-      return `<div id="${h}" class="layer layer-level-${l}" 
+      return `<div id="${c.id()}" class="layer layer-level-${l}" 
       onclick="event.stopPropagation();Tool.layerSelect(this);" 
       ondragstart="event.dataTransfer.setData('target', event.srcElement.id)" 
       draggable="true">
@@ -497,10 +516,11 @@ const Tool = (() => {
 
   const size = (s) => (sz = s || sz);
 
-  const save = (n, h) => {
+  const save = (n, h, cb) => {
+    moveTimebar(0);
     let p = getPLayer();
     let f = currentTAW.getFlow();
-    SAVE.save(p, f, size(), n, h);
+    SAVE.save(p, f, size(), n, h, cb);
   };
 
   return {
@@ -513,6 +533,7 @@ const Tool = (() => {
     getTLayer: getTLayer,
     getParent: getParent,
     getData: getData,
+    parseData: parseData,
     toggleLayer: toggleLayer,
     showTimeline: showTimeline,
     showPredraw: showPredraw,

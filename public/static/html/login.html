@@ -240,7 +240,10 @@
             alert(r.message || "로그인 할 수 없습니다.");
             overOff();
           }
-        }).catch(e => console.error(e));
+        }).catch(e => {
+          console.error(e);
+          overOff();
+        })
     }
     document.getElementById('register').onclick = () => {
       let nick = document.getElementById('r_nick').value.trim();

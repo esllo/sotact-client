@@ -17,10 +17,14 @@ function createElem(t) {
   return document.createElement(t);
 }
 function findItem(l, i) {
-  let lh = i.substr(i.indexOf('-') + 1).split('-');
-  let it = l;
-  for (const h of lh) it = it.children[h];
-  return it;
+  if (i.startsWith('obj-')) {
+    return l.find("#" + i)[0];
+  } else {
+    let lh = i.substr(i.indexOf('-') + 1).split('-');
+    let it = l;
+    for (const h of lh) it = it.children[h];
+    return it;
+  }
 }
 var ETA = document.createElement('textarea');
 function escape(text) {

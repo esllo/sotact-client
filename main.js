@@ -1,8 +1,8 @@
-const { app, protocol, BrowserWindow, screen, ipcMain, Menu } = require('electron');
+const { app, protocol, BrowserWindow, screen, ipcMain, Menu, dialog } = require('electron');
 const http = require('http');
 
 
-let win, login;
+let win, login, userData = null;
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const _win = new BrowserWindow({
@@ -12,6 +12,7 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true
     },
   });
   _win.webContents.openDevTools();
@@ -149,6 +150,7 @@ ipcMain.on('kakaoLogin', (e, c) => {
 ipcMain.on('loginSuccess', (e, c) => {
   login.close();
   win.webContents.send('loginSuccess', c);
+  userData = c;
 });
 
 
@@ -156,6 +158,7 @@ let cloudWindow = null;
 
 function createCloudWindow() {
   if (cloudWindow != null) return;
+  if (userData == null) return;
   cloudWindow = new BrowserWindow({
     width: 500,
     height: 700,
@@ -166,7 +169,8 @@ function createCloudWindow() {
     }
   });
   cloudWindow.on('closed', () => cloudWindow = null);
-  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html`);
+  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname);
+  cloudWindow.openDevTools();
 }
 
 ipcMain.on('requestCloud', (e) => {
@@ -179,3 +183,32 @@ ipcMain.on('cloudSelected', (e, args) => {
   }
   cloudWindow.close();
 })
+function showDialog(args, buttons) {
+  return dialog.showMessageBoxSync(win, {
+    type: 'question',
+    buttons: buttons,
+    title: args.title || "TAW",
+    message: args.message || "",
+    detail: args.detail || ""
+  });
+}
+ipcMain.on('alert', (e, args) => {
+  if (args == undefined) args = {};
+  e.returnValue = showDialog(args, ['Ok']);
+});
+ipcMain.on('yesorno', (e, args) => {
+  if (args == undefined) args = {};
+  e.returnValue = showDialog(args, ['Yes', 'No']);
+});
+
+ipcMain.on('savepath', (e, args) => {
+  if (args == undefined) args = {};
+  e.returnValue = dialog.showSaveDialogSync(win, {
+    title: args.title || "",
+    message: args.message || "",
+    filters: [{
+      name: "TAW project",
+      extensions: ['taw']
+    }]
+  });
+});
