@@ -90,3 +90,34 @@ label > input {
   display: flex;
   justify-content: space-between;
 }
+
+.fx_presets{
+  overflow-y: scroll;
+}
+.fx_presets::-webkit-scrollbar{
+  display:none;
+}
+
+.preset{
+  margin: 0px 4px 4px 4px;
+  border: 1px solid #222;
+  border-radius: 0 12px 0 12px;
+}
+.preset-title{
+  padding: 8px; 
+  color: #eee;
+}
+.preset > label{
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.preset > label > span{
+  width: 60px;
+  text-align: center;
+  color:#eee;
+  margin-right: 8px;
+}
+.preset > label > input{
+  flex: 1;
+}

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 class MyDocument extends Document {
   render() {
     const css_list = ['reset', 'theme', 'timeline'];
-    const js_list = ['util', 'tool', 'socket', 'parse', 'ipc', 'event', 'view', 'save'];
+    const js_list = ['util', 'ctx', 'tool', 'socket', 'parse', 'ipc', 'event', 'view', 'save', 'preset'];
     const env = process.env.ISDEV == "true" ? './static/' : './out/static/';
     return (
       <html>
