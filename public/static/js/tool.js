@@ -1,9 +1,10 @@
 const Tool = (() => {
   // immutable component
   const _p = byQuery('.center');
-  const _rl = byQuery('.left');
-  const _ll = byQuery('.right');
+  const _ll = byQuery('.left');
+  const _rl = byQuery('.right');
   const _ls = byQuery('.layers');
+  const _ps = byQuery('.fx_presets');
   const _b = byQuery('.timebar');
   const _th = byQuery('.timeline_head');
   const _tb = byQuery('.timeline_body');
@@ -117,6 +118,10 @@ const Tool = (() => {
     initTr();
     initBar();
     initProp();
+  }
+
+  function initPresets() {
+    _ps.innerHTML = Presets.getHTML();
   }
 
   let maxDist = 0;
@@ -525,6 +530,7 @@ const Tool = (() => {
 
   return {
     init: init,
+    initPresets: initPresets,
     redrawAll: redrawAll,
     rebsize: rebsize,
     scale: scale,

@@ -17,6 +17,7 @@ const Presets = (() => {
         }
         return ret;
     }
+
     const Spinout = function (dst, cnt) {
         let ret = [from];
         let ang = 0;
@@ -44,17 +45,62 @@ const Presets = (() => {
     const cos = (deg) => parseFloat(Math.cos(deg * Math.PI / 180).toFixed(15));
     const sin = (deg) => parseFloat(Math.sin(deg * Math.PI / 180).toFixed(15));
 
-    function getPresetHTML(name, func, type) {
-        let struct = `<div class="preset" id="preset-${func}">`;
+    const FuncSets = {
+        Linear: {
+            name: '선형 이동',
+            type: {
+                ang: 0,
+                dst: 0
+            }
+        },
+        Rotate: {
+            name: '회전',
+            type: {
+                ang: 0
+            }
+        },
+        Wdgd: {
+            name: '반복 이동',
+            type: {
+                ang: 0,
+                dst: 0,
+                cnt: 0,
+            }
+        },
+        Spinout: {
+            name: '밖으로 회전',
+            type: {
+                dst: 0,
+                cnt: 0
+            }
+        },
+        Zigzag: {
+            name: '지그재그 이동',
+            type: {
+                dir: 0,
+                cnt: 0,
+                ang: 0,
+                dst: 0,
+                flp: 0,
+            }
+        }
+    };
+
+    function getPresetHTML(func, name, type) {
+        let struct = `<div class="preset" id="preset-${func}" onclick="addPreset(e, '${func}')">`;
         struct += `<p class="preset-title">${name}</p>`;
-        Object.keys(type).forEach(key => { struct += `<label>${key}<input /></label>`; });
+        Object.keys(type).forEach(key => { struct += `<label><span>${key}</span><input /></label>`; });
         struct += `</div>`;
+        return struct;
     }
 
     function getHTML() {
         let struct = `<div class="presets">`;
-        
+        Object.keys(FuncSets).forEach(key => struct += getPresetHTML(key, FuncSets[key].name, FuncSets[key].type));
         struct += `</div>`;
+        return struct;
     }
+
     return { getHTML: getHTML };
 })();
+addOnOccured(() => { Tool.initPresets() });
