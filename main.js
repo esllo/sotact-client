@@ -22,16 +22,16 @@ function createWindow() {
 
 function createLoginWindow() {
   let _win = new BrowserWindow({
-    width: 360,
-    height: 420,
+    width: 450,
+    height: 440,
     show: true,
-    frame: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true
     }
   });
   _win.setMenu(null);
-  // _win.webContents.openDevTools();
+  _win.webContents.openDevTools();
   _win.on('closed', () => _win = null)
 
   return _win;
@@ -67,6 +67,11 @@ ipcMain.on('windowEvent', (e, c) => {
     win.isMaximized() ? win.unmaximize() : win.maximize();
   } else if (c == 2) {
     win.minimize();
+  }
+});
+ipcMain.on('windowEventLogin', (e, c) => {
+  if(login != null){
+    login.quit();
   }
 });
 ipcMain.on('loginRequest', (e, c) => {

@@ -31,7 +31,10 @@ const Home = (props) => {
       <main>
         <TitleBar></TitleBar>
         <FlexBox dir="column" style={{ height: 'calc(100vh - 30px)' }}>
-          <FlexBox className="top" dir="row" minHeight="34px" background="#3d3d3d">
+          <FlexBox className="titleHead" dir="row" minHeight="20px" background="#BDBDBD" style={{ color: '#191818', justifyContent: 'center' }}>
+            <h2 id="title_head">Title Text</h2>
+          </FlexBox>
+          <FlexBox className="top" dir="row" minHeight="50px" background="#191818">
             <input id="selector_hidden" type="file" style={{ display: 'none' }} />
             <input id="selector" type="button" value="Open Local" />
             <input id="cloudSelect" type="button" value="Open Cloud" />
@@ -53,7 +56,7 @@ const Home = (props) => {
           </FlexBox>
           <Split dir="horizontal"></Split>
           <FlexBox className="middle" dir="row" weight={1}>
-            <FlexBox className="left" dir="column" style={{ width: '280px' }}>
+            <FlexBox className="left" dir="column" style={{ width: '290px' }}>
               <div className="property">
                 <p>Layer</p>
               </div>
@@ -62,7 +65,6 @@ const Home = (props) => {
             </FlexBox>
             <Split dir="vertical"></Split>
             <FlexBox
-              background="#828282"
               className="center"
               dir="row"
               weight={1}>
@@ -83,58 +85,57 @@ const Home = (props) => {
             </FlexBox>
           </FlexBox>
           <Split dir="horizontal"></Split>
-          <FlexBox className="bottom" dir="row" style={{ height: '260px' }}>
+          <FlexBox className="bottom" dir="row" style={{ height: '240px' }}>
             <FlexBox
               className="properties"
               dir="column"
-              style={{ width: '400px' }}>
+              style={{ width: '290px' }}>
 
               <div className="property">
                 <p>Properties</p>
               </div>
-              <label className="prop_label">
-                <p>name :&nbsp;</p>
-                <input id="nval" disabled style={{ flex: '1' }} />
-              </label>
+              <div className="prop_label">
+                <p id="nval"></p>
+              </div>
               <FlexBox dir="row">
                 <FlexBox dir="column" weight="1">
                   <label className="prop_label">
-                    <p>x :&nbsp;</p>
+                    <p>X :&nbsp;</p>
                     <input id="xval" />
                   </label>
                   <label className="prop_label">
-                    <p>y :&nbsp;</p>
+                    <p>Y :&nbsp;</p>
                     <input id="yval" />
                   </label>
                   <label className="prop_label">
-                    <p>Scale x :&nbsp;</p>
-                    <input id="sxval" />
-                  </label>
-                  <label className="prop_label">
-                    <p>Visible :&nbsp;</p>
-                    <select id="vval">
-                      <option value="true">show</option>
-                      <option value="false">hide</option>
-                    </select>
+                    <p>R :&nbsp;</p>
+                    <input id="rval" />
                   </label>
                 </FlexBox>
                 <FlexBox dir="column" weight="1">
                   <label className="prop_label">
-                    <p>Rotation :&nbsp;</p>
-                    <input id="rval" />
+                    <p>W :&nbsp;</p>
+                    <input id="sxval" />
                   </label>
                   <label className="prop_label">
-                    <p>Opacity :&nbsp;</p>
-                    <input id="oval" />
-                  </label>
-                  <label className="prop_label">
-                    <p>Scale y :&nbsp;</p>
+                    <p>H :&nbsp;</p>
                     <input id="syval" />
+                  </label>
+                  <label className="prop_label">
+                    <p>O :&nbsp;</p>
+                    <input id="oval" />
                   </label>
                 </FlexBox>
               </FlexBox>
               <label className="prop_label">
-                <p>Compsite Operation :&nbsp;</p>
+                <p>Visible :&nbsp;</p>
+                <select id="vval">
+                  <option value="true">show</option>
+                  <option value="false">hide</option>
+                </select>
+              </label>
+              <label className="prop_label">
+                <p>Operation :&nbsp;</p>
                 <select id="coval" style={{ flex: '1' }}>
                   {compOpers.map((co, i) => <option key={`co-${i}`} value={co}>{co}</option>)}
                 </select>

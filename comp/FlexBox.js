@@ -20,7 +20,7 @@ const FlexBox = (props) => {
     <Flex
       id={compID}
       className={props.className}
-      background={props.background || '#4F4F4F'}
+      background={props.background || '#232323'}
       dir={props.dir || 'column'}
       minWidth={props.minWidth || '60px'}
       minHeight={props.minHeight || '60px'}

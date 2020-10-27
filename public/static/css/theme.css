@@ -1,11 +1,11 @@
 .layer {
   /* background: #ececec; */
-  border-bottom: 1px solid #333;
+  border-bottom: 2px solid #121212;
   user-select: none;
 }
 .layer > p {
-  height: 24px;
-  line-height: 24px;
+  height: 26px;
+  line-height: 26px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -18,22 +18,23 @@
 }
 .properties label {
   font-size: 0;
-  margin: 5px 10px;
+  margin: 5px 8px;
 }
 .properties label > p {
-  font-size: 16px;
+  font-size: 14px;
   display: inline-block;
   vertical-align: top;
+  line-height: 22px;
 }
 .properties input,
 .properties select {
-  width: 68px;
+  width: 84px;
   height: 20px;
-  border-radius: 1px 8px 1px 1px;
-  border: none;
-  background: #373737;
+  border-radius: 8px;
+  border: 1px solid #2A2B2B;
+  background: #1A1A1C;
   outline: none;
-  padding: 0px 4px;
+  padding: 2px 4px;
   color: #fff;
   -webkit-appearance: none;
   appearance: none;
@@ -50,14 +51,18 @@ option:hover {
 
 .property {
   width: 100%;
-  background: #3d3d3d;
-  height: 26px;
+  background: #38393A;
+  height: 30px;
   margin-bottom: 6px;
   border-bottom: 1px solid #222;
 }
 .property > p {
-  line-height: 26px;
+  line-height: 18px;
+  margin: 6px 10px;
   padding: 0 6px;
+  border-left: 1px solid #191818;
+  color: #919293;
+  font-weight: bold;
 }
 
 input[type='button'] {
@@ -89,4 +94,8 @@ label > input {
   color: #eee;
   display: flex;
   justify-content: space-between;
+}
+
+.prop_label > select{
+  height: 24px;
 }

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 const DirSplit = styled.div((props) => ({
   userSelect: 'none',
-  background: '#060607',
+  background: '#000000',
   label: 'flex-box-split',
   zIndex: 999,
 }));
@@ -13,13 +13,13 @@ const Split = (props) => {
   const _css =
     dir == 'vertical'
       ? css`
-          margin-left: -2px;
-          width: 2px;
+          margin-left: -3px;
+          width: 3px;
           cursor: ew-resize;
         `
       : css`
-          margin-top: -2px;
-          height: 2px;
+          margin-top: -3px;
+          height: 3px;
           cursor: ns-resize;
         `;
   return <DirSplit className={'split ' + dir} dir={dir} css={_css}></DirSplit>;

@@ -131,11 +131,10 @@ const TitleBar = (props) => {
     <Titlebar style={{ background: getBackground() }}>
       <Menubar css={menuBar}>
         <img src="" />
-        <p>File</p>
-        <p>Edit</p>
-        <p>View</p>
-        <p>Window</p>
-        <p>Help</p>
+        <p id="menu_open">Open</p>
+        <p id="menu_save">Save</p>
+        <p id="menu_share">Share</p>
+        <p id="menu_render">Rendering</p>
       </Menubar>
       <div style={{ flex: 1 }} css={draggable}></div>
       <Title>TAW - Canvas Animate Tool</Title>
