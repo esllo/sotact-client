@@ -91,7 +91,11 @@ const Tool = (() => {
       let did = nextUDID();
       item.id(id);
       console.log(id);
-      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">${item.name()}</div>`;
+      let color = rainbow(Math.floor(Math.random() * 1000));
+      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">
+        ${item.name()}
+        <p class="tl_name_color" style="background: ${color}"></p>
+      </div>`;
       data[did] = {
         src: id,
         timeline: {
@@ -146,7 +150,12 @@ const Tool = (() => {
       console.log('find ' + dt.src);
       let d = nextUDID();
       copyItemToTimeline(d, i);
-      _tns.innerHTML += `<div class="tl_name" did="${d}" uid="${dt.src}" droppable="false" onclick="Tool.selectNode(this)">${i.name()}</div>`;
+      
+      let color = rainbow(Math.floor(Math.random() * 1000));
+      _tns.innerHTML += `<div class="tl_name" did="${d}" uid="${dt.src}" droppable="false" onclick="Tool.selectNode(this)">
+        ${i.name()}
+        <p class="tl_name_color" style="background: ${color}"></p>
+      </div>`;
       _tps.innerHTML += `<div class="tl_prop" did="${d}" uid="${dt.src}"></div>`;
       for (let ind = 0; ind < Math.min(dt.time.length, dt.data.length); ind++) {
         let tm = dt.time[ind];
@@ -289,7 +298,12 @@ const Tool = (() => {
       let i = findItem(pl, id);
       let did = nextUDID();
       i.id(id);
-      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">${i.name()}</div>`;
+      
+      let color = rainbow(Math.floor(Math.random() * 1000));
+      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">
+        ${i.name()}
+        <p class="tl_name_color" style="background: ${color}"></p>
+      </div>`;
       data[did] = {
         src: id,
         timeline: {
@@ -338,7 +352,7 @@ const Tool = (() => {
     if (ms != null) {
       dragged = true;
       applyUpdate(ms);
-      _nv.value = ms.name();
+      _nv.textContent = ms.name();
       _xv.value = ms.x();
       _yv.value = ms.y();
       _rv.value = ms.rotation();

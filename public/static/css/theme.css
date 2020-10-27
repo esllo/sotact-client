@@ -31,8 +31,8 @@
   width: 84px;
   height: 20px;
   border-radius: 8px;
-  border: 1px solid #2A2B2B;
-  background: #1A1A1C;
+  border: 1px solid #2a2b2b;
+  background: #1a1a1c;
   outline: none;
   padding: 2px 4px;
   color: #fff;
@@ -51,9 +51,8 @@ option:hover {
 
 .property {
   width: 100%;
-  background: #38393A;
+  background: #38393a;
   height: 30px;
-  margin-bottom: 6px;
   border-bottom: 1px solid #222;
 }
 .property > p {
@@ -96,37 +95,62 @@ label > input {
   justify-content: space-between;
 }
 
-.prop_label > select{
-  height: 24px;
+.prop_label > select {
+  height: 26px;
+  font-size: 15px;
 }
 
-.fx_presets{
+.fx_presets {
   overflow-y: scroll;
 }
-.fx_presets::-webkit-scrollbar{
-  display:none;
+.fx_presets::-webkit-scrollbar {
+  display: none;
 }
 
-.preset{
-  margin: 0px 4px 4px 4px;
-  border: 1px solid #222;
-  border-radius: 0 12px 0 12px;
+.preset {
 }
-.preset-title{
-  padding: 8px; 
-  color: #eee;
-}
-.preset > label{
+.preset-title {
   padding: 8px;
+  color: #eee;
+  border-bottom: 2px solid #0c0c0c;
+  transition: all .5s;
+}
+.preset-title.on {
+  background: #343435;
+}
+.preset > div.on {
+  max-height: 240px;
+  padding: 6px 0;
+  border-bottom: 2px solid #0c0c0c;
+  margin-bottom: -2px;
+  background: #343435;
+}
+.preset > div {
+  max-height: 0px;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+.preset > div > label {
+  padding: 4px 8px;
   display: flex;
   justify-content: space-between;
 }
-.preset > label > span{
+.preset > div > label > span {
   width: 60px;
   text-align: center;
-  color:#eee;
+  color: #eee;
   margin-right: 8px;
 }
-.preset > label > input{
+.preset > div > label > input {
   flex: 1;
+  border-radius: 8px;
+  border: 1px solid #2a2b2b;
+  background: #1a1a1c;
+  height: 24px;
+}
+
+.prop_name {
+  height: 32px;
+  background: #6353a2;
+  margin-bottom: 8px;
 }

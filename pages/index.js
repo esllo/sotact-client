@@ -31,8 +31,8 @@ const Home = (props) => {
       <main>
         <TitleBar></TitleBar>
         <FlexBox dir="column" style={{ height: 'calc(100vh - 30px)' }}>
-          <FlexBox className="titleHead" dir="row" minHeight="20px" background="#BDBDBD" style={{ color: '#191818', justifyContent: 'center' }}>
-            <h2 id="title_head">Title Text</h2>
+          <FlexBox className="titleHead" dir="row" minHeight="22px" background="#BDBDBD" style={{ color: '#191818', justifyContent: 'center' }}>
+            <h2 id="title_head" style={{ fontSize: '15px', lineHeight: '22px' }}>Title Text</h2>
           </FlexBox>
           <FlexBox className="top" dir="row" minHeight="50px" background="#191818">
             <input id="selector_hidden" type="file" style={{ display: 'none' }} />
@@ -55,108 +55,110 @@ const Home = (props) => {
             <input className="login" type="button" value="Login" />
           </FlexBox>
           <Split dir="horizontal"></Split>
-          <FlexBox className="middle" dir="row" weight={1}>
-            <FlexBox className="left" dir="column" style={{ width: '290px' }}>
+          <FlexBox className="bot" dir="row" weight={1}>
+            <FlexBox className="left" dir="column" style={{ width: '300px' }}>
               <div className="property">
-                <p>Layer</p>
+                <p>Source</p>
               </div>
-              <FlexBox className="layers" dir="column">
+              <FlexBox className="layers" dir="column" weight={1}>
               </FlexBox>
-            </FlexBox>
-            <Split dir="vertical"></Split>
-            <FlexBox
-              className="center"
-              dir="row"
-              weight={1}>
-              <div id="container"></div>
-            </FlexBox>
-            <Split dir="vertical"></Split>
-            <FlexBox
-              className="right"
-              dir="column"
-              style={{ width: '280px' }}>
-              <div className="property">
-                <p>Layer</p>
-              </div>
-              <FlexBox className="fx_presets">
+              <FlexBox
+                className="properties"
+                dir="column"
+                style={{ padding: '8px 0' }}>
 
-              </FlexBox>
-            </FlexBox>
-          </FlexBox>
-          <Split dir="horizontal"></Split>
-          <FlexBox className="bottom" dir="row" style={{ height: '240px' }}>
-            <FlexBox
-              className="properties"
-              dir="column"
-              style={{ width: '290px' }}>
-
-              <div className="property">
-                <p>Properties</p>
-              </div>
-              <div className="prop_label">
-                <p id="nval"></p>
-              </div>
-              <FlexBox dir="row">
-                <FlexBox dir="column" weight="1">
-                  <label className="prop_label">
-                    <p>X :&nbsp;</p>
-                    <input id="xval" />
-                  </label>
-                  <label className="prop_label">
-                    <p>Y :&nbsp;</p>
-                    <input id="yval" />
-                  </label>
-                  <label className="prop_label">
-                    <p>R :&nbsp;</p>
-                    <input id="rval" />
-                  </label>
-                </FlexBox>
-                <FlexBox dir="column" weight="1">
-                  <label className="prop_label">
-                    <p>W :&nbsp;</p>
-                    <input id="sxval" />
-                  </label>
-                  <label className="prop_label">
-                    <p>H :&nbsp;</p>
-                    <input id="syval" />
-                  </label>
-                  <label className="prop_label">
-                    <p>O :&nbsp;</p>
-                    <input id="oval" />
-                  </label>
-                </FlexBox>
-              </FlexBox>
-              <label className="prop_label">
-                <p>Visible :&nbsp;</p>
-                <select id="vval">
-                  <option value="true">show</option>
-                  <option value="false">hide</option>
-                </select>
-              </label>
-              <label className="prop_label">
-                <p>Operation :&nbsp;</p>
-                <select id="coval" style={{ flex: '1' }}>
-                  {compOpers.map((co, i) => <option key={`co-${i}`} value={co}>{co}</option>)}
-                </select>
-              </label>
-
-            </FlexBox>
-            <Split dir="vertical"></Split>
-            <FlexBox className="timeline" dir="row" weight={1}>
-              <FlexBox className="timeline_head" style={{ width: '220px', position: 'relative' }}>
-                <div id="timehead_head">
-                  <label>
-                    <input type="checkbox" id="tm_toggle" />
-                  타임라인
-                </label>
+                <div className="property">
+                  <p>Properties</p>
                 </div>
-                <div id="tl_names" className="nsb"></div>
+                <div className="prop_name">
+                  <p id="nval" style={{ lineHeight: '32px', color: '#efefef', padding: '0 20px' }}></p>
+                </div>
+                <FlexBox dir="row">
+                  <FlexBox dir="column" weight="1">
+                    <label className="prop_label">
+                      <p>X :&nbsp;</p>
+                      <input id="xval" />
+                    </label>
+                    <label className="prop_label">
+                      <p>Y :&nbsp;</p>
+                      <input id="yval" />
+                    </label>
+                    <label className="prop_label">
+                      <p>R :&nbsp;</p>
+                      <input id="rval" />
+                    </label>
+                  </FlexBox>
+                  <FlexBox dir="column" weight="1">
+                    <label className="prop_label">
+                      <p>W :&nbsp;</p>
+                      <input id="sxval" />
+                    </label>
+                    <label className="prop_label">
+                      <p>H :&nbsp;</p>
+                      <input id="syval" />
+                    </label>
+                    <label className="prop_label">
+                      <p>O :&nbsp;</p>
+                      <input id="oval" />
+                    </label>
+                  </FlexBox>
+                </FlexBox>
+                <label className="prop_label">
+                  <p style={{ width: '80px' }}>Operation :&nbsp;</p>
+                  <select id="coval" style={{ flex: '1' }}>
+                    {compOpers.map((co, i) => <option key={`co-${i}`} value={co}>{co}</option>)}
+                  </select>
+                </label>
+                <label className="prop_label">
+                  <p style={{ width: '80px' }}>Visible :&nbsp;</p>
+                  <select id="vval" style={{ flex: '1' }}>
+                    <option value="true">show</option>
+                    <option value="false">hide</option>
+                  </select>
+                </label>
               </FlexBox>
-              <Split dir="vertical"></Split>
-              <FlexBox className="timeline_body" weight={1} style={{ position: 'relative' }}>
-                <div className="timebar"></div>
-                <div id="timebody_head"></div>
-                <div id="tl_props" className="nsb"></div>
+            </FlexBox>
+            <Split dir="vertical"></Split>
+            <FlexBox className="centerize" weight={1}>
+              <FlexBox className="middle" dir="row" weight={1}>
+                <FlexBox
+                  className="center"
+                  dir="row"
+                  weight={1}>
+                  <div id="container"></div>
+                </FlexBox>
+                <Split dir="vertical"></Split>
+                <FlexBox
+                  className="right"
+                  dir="column"
+                  style={{ width: '280px' }}>
+                  <div className="property">
+                    <p>Presets</p>
+                  </div>
+                  <FlexBox className="fx_presets">
+
+                  </FlexBox>
+                </FlexBox>
+              </FlexBox>
+              <Split dir="horizontal"></Split>
+              <FlexBox className="bottom" dir="row" style={{ height: '240px' }}>
+                <FlexBox className="timeline" dir="row" weight={1}>
+                  <FlexBox className="timeline_head" style={{ width: '220px', position: 'relative' }}>
+                    <div id="timehead_head">
+                      <label>
+                        <input type="checkbox" id="tm_toggle" />
+                        타임라인
+                      </label>
+                    </div>
+                    <div id="tl_names" className="nsb"></div>
+                  </FlexBox>
+                  <Split dir="vertical"></Split>
+                  <FlexBox className="timeline_body" weight={1} style={{ position: 'relative' }}>
+                    <div className="timebar"></div>
+                    <div id="timebody_head"></div>
+                    <div id="tl_props" className="nsb"></div>
+                  </FlexBox>
+                </FlexBox>
               </FlexBox>
             </FlexBox>
           </FlexBox>
