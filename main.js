@@ -78,6 +78,10 @@ ipcMain.on('loginRequest', (e, c) => {
   login = createLoginWindow();
   login.loadURL(`file://${__dirname}/out/static/html/login.html`);
 })
+ipcMain.on('closeLogin', () => {
+  login.close();
+  login = null;
+})
 function createOAuthWindow() {
   let _win = new BrowserWindow({
     width: 500,

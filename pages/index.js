@@ -35,32 +35,35 @@ const Home = (props) => {
             <h2 id="title_head" style={{ fontSize: '15px', lineHeight: '22px' }}>Title Text</h2>
           </FlexBox>
           <FlexBox className="top" dir="row" minHeight="50px" background="#191818">
+            <div className="profile_box">
+              <img src="./out/static/img/etc/etc_profile.svg" />
+              <h4 className="profile_name" style={{ flex: 1 }}>Name</h4>
+              <h4 className="profile_share">+ 0</h4>
+            </div>
+            <div className="control_box">
+              <img src="./out/static/img/etc/etc_play.svg" />
+              <img src="./out/static/img/etc/etc_stop.svg" />
+            </div>
             <input id="selector_hidden" type="file" style={{ display: 'none' }} />
-            <input id="selector" type="button" value="Open Local" />
-            <input id="cloudSelect" type="button" value="Open Cloud" />
-            <input id="save" type="button" value="Save" />
-            <input id="clear" type="button" value="Clear" />
-            <div style={{ width: '4px' }}></div>
-            <input id="tb0" type="button" value="Start" />
-            <input id="tb1" type="button" value="Stop" />
-            <input id="tb2" type="button" value="Reset" />
-            <label style={{ display: 'none' }}>Speed :
-              <input type="range" min="1" max="20" id="speed" />
-            </label>
-            <label>Scale :
+            <div style={{ flex: 1 }}></div>
+            <div className="scale_box">
+              <img src="./out/static/img/etc/etc_zoom.svg" />
               <input type="range" min="1" max="200" id="scale" />
-            </label>
-            <input type="button" value="" style={{ flex: 1 }} />
-            <input className="session" type="button" value="Session" />
-            <input className="login" type="button" value="Login" />
+            </div>
+            <div className="exit_box">
+              <div>
+                <img src="./out/static/img/etc/etc_out.svg" />
+              </div>
+            </div>
           </FlexBox>
           <Split dir="horizontal"></Split>
+          <div style={{width: '48px', height: '3px', margin: '-3px 283px 0 auto', background:'#232323', zIndex:1002}}></div>
           <FlexBox className="bot" dir="row" weight={1}>
             <FlexBox className="left" dir="column" style={{ width: '300px' }}>
               <div className="property">
                 <p>Source</p>
               </div>
-              <FlexBox className="layers" dir="column" weight={1}>
+              <FlexBox className="layers" dir="column" weight={1} style={{ overflowY: "auto", marginRight: '3px' }}>
               </FlexBox>
               <FlexBox
                 className="properties"
@@ -76,29 +79,29 @@ const Home = (props) => {
                 <FlexBox dir="row">
                   <FlexBox dir="column" weight="1">
                     <label className="prop_label">
-                      <p>X :&nbsp;</p>
+                      <p>X</p>
                       <input id="xval" />
                     </label>
                     <label className="prop_label">
-                      <p>Y :&nbsp;</p>
+                      <p>Y</p>
                       <input id="yval" />
                     </label>
                     <label className="prop_label">
-                      <p>R :&nbsp;</p>
+                      <img src="./out/static/img/etc/etc_rotation.svg" />
                       <input id="rval" />
                     </label>
                   </FlexBox>
                   <FlexBox dir="column" weight="1">
                     <label className="prop_label">
-                      <p>W :&nbsp;</p>
+                      <p>W</p>
                       <input id="sxval" />
                     </label>
                     <label className="prop_label">
-                      <p>H :&nbsp;</p>
+                      <p>H</p>
                       <input id="syval" />
                     </label>
                     <label className="prop_label">
-                      <p>O :&nbsp;</p>
+                      <img src="./out/static/img/etc/etc_transparent.svg" />
                       <input id="oval" />
                     </label>
                   </FlexBox>
@@ -131,11 +134,11 @@ const Home = (props) => {
                 <FlexBox
                   className="right"
                   dir="column"
-                  style={{ width: '280px' }}>
-                  <div className="property">
+                  style={{ width: '280px', overflowY: 'auto', position:'relative' }}>
+                  <div className="property" style={{position: 'fixed', zIndex: 999}}>
                     <p>Presets</p>
                   </div>
-                  <FlexBox className="fx_presets">
+                  <FlexBox className="fx_presets" style={{overflow:'hidden', marginTop: '31px'}}>
 
                   </FlexBox>
                 </FlexBox>

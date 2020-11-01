@@ -67,7 +67,7 @@
       text-align: center;
     }
 
-    input::placeholder{
+    input::placeholder {
       color: #272727;
     }
 
@@ -207,25 +207,45 @@
     }
 
     .hover {
-      width:100vw;
-      height:100px;
+      width: 100vw;
+      height: 100px;
       position: fixed;
-      top:0;
-      left:0;
+      top: 0;
+      left: 0;
       -webkit-app-region: drag;
       -webkit-user-select: none;
       z-index: 999;
     }
-    .hover > h2{
+
+    .hover>h2 {
       width: 100%;
       text-align: center;
       line-height: 110px;
+    }
+
+    .exit {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      position: fixed;
+      right: 8px;
+      top: 8px;
+      box-shadow: 0px 0px 14px 4px;
+      z-index: 1000;
+      -webkit-app-region: no-drag;
+    }
+
+    .exit_button {
+      width: 24px;
     }
   </style>
 </head>
 
 <body>
   <div class="hover">
+    <div class="exit">
+      <img class="exit_button" src="../img/login/login_X.svg" />
+    </div>
     <h2>TAW</h2>
   </div>
   <div class="panel">
@@ -237,15 +257,15 @@
         <div class="block">
           <h5>Social Login</h5>
           <div>
-            <button id="kakao">Kakao</button>
-            <button id="google">Google</button>
+            <img id="kakao" src="../img/login/login_kakao.svg" width="50px" />
+            <img id="google" src="../img/login/login_google.svg" width="50px" />
           </div>
         </div>
         <div class="vertical-divider"></div>
         <div class="block">
           <h5>Create Account</h5>
           <div>
-            <button id="reg">TAW</button>
+            <img id="reg" src="../img/login/login_taw.svg" width="50px" />
           </div>
         </div>
       </div>
@@ -292,6 +312,7 @@
       setTimeout(() => { o.style.display = 'none'; if (cb !== undefined) cb(); }, 380)
     }
     overOff();
+    document.getElementsByClassName('exit_button')[0].onclick = () => ipcRenderer.send('closeLogin');
     document.getElementById('back').onclick = document.getElementById('reg').onclick = toggle;
     document.getElementById('kakao').onclick = () => {
       ipcRenderer.send('kakaoLogin', null);
@@ -318,7 +339,7 @@
         }).then(r => r.json()).then(r => {
           if (r.status == 200) {
             if (r.message != "로그인 성공") {
-              alert(r.message || "로그인 할 수 없습니다.");
+              ipcRenderer.sendSync('alert', { title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
               overOff();
             } else {
               console.log("overoff");
@@ -328,7 +349,7 @@
               });
             }
           } else {
-            alert(r.message || "로그인 할 수 없습니다.");
+            ipcRenderer.sendSync('alert', { title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
             overOff();
           }
         }).catch(e => {

@@ -110,24 +110,23 @@ byID('scale').oninput = (e) => {
   let scale = parseInt(e.target.value) / 100;
   Tool.scale(Tool.getStage(), scale);
 };
-byID('speed').value = 20;
-byID('speed').oninput = (e) => {
-  Tool.updateTb(parseInt(e.target.value));
-}
 
 // timeline, predraw toggle
 byID('tm_toggle').addEventListener('change', (e) => {
   Tool.toggleLayer(e.target.checked);
 });
 
-byID('tb0').onclick = Tool.startTimebar;
-byID('tb1').onclick = Tool.stopTimebar;
-byID('tb2').onclick = Tool.resetTimebar;
+// byID('tb0').onclick = Tool.startTimebar;
+// byID('tb1').onclick = Tool.stopTimebar;
+// byID('tb2').onclick = Tool.resetTimebar;
 
-byID('selector').onclick = () => byID('selector_hidden').click();
-byID('cloudSelect').onclick = () => {
-  ipcRenderer.send('requestCloud');
-};
+// 클릭시 로컬 파일 오픈
+// byID('selector').onclick = () => byID('selector_hidden').click();
+
+// 클라우드 파일 오픈
+// byID('cloudSelect').onclick = () => {
+//   ipcRenderer.send('requestCloud');
+// };
 function upload(name) {
   return function (result) {
     if (result) {
@@ -151,47 +150,48 @@ function upload(name) {
     }
   }
 }
-byID('save').onclick = () => {
-  TAW.initFromTool();
-  Tool.setCurrentTAW(TAW);
-  if (Tool.session() != null && Tool.session().isConnected()) {
-    Tool.session().send('save');
-  } else {
-    let ans = ipcRenderer.sendSync('yesorno', { title: '클라우드에 저장', message: '클라우드에 저장?', detail: '클라우드에 저장..' })
-    if (ans == 0) {
-      //cloud save
-      const prompt = require('electron-prompt');
-      prompt({
-        title: '저장할 이름 : ',
-        type: 'input'
-      }).then((r) => {
-        if (r != null && r != "" && userData != null) {
-          Tool.save('.', 'tmp', upload(r));
-        }
-      }).catch(console.error);
-    } else if (ans == 1) {
-      let savePath = ipcRenderer.sendSync('savepath', {
-        title: '프로젝트 저장',
-        message: '저장할 경로를 선택하세요',
-      });
-      if (savePath != undefined) {
-        //save locally
-        let index = savePath.match(/([^\\\/]*\.taw)/).index;
-        let path = savePath.substr(0, index);
-        let name = savePath.substr(index);
-        name = name.substr(0, name.length - 4);
-        Tool.save(path, name);
-      }
-    }
-  }
-}
-byID('clear').onclick = Tool.clear;
+// 로컬 저장
+// byID('save').onclick = () => {
+//   TAW.initFromTool();
+//   Tool.setCurrentTAW(TAW);
+//   if (Tool.session() != null && Tool.session().isConnected()) {
+//     Tool.session().send('save');
+//   } else {
+//     let ans = ipcRenderer.sendSync('yesorno', { title: '클라우드에 저장', message: '클라우드에 저장?', detail: '클라우드에 저장..' })
+//     if (ans == 0) {
+//       //cloud save
+//       const prompt = require('electron-prompt');
+//       prompt({
+//         title: '저장할 이름 : ',
+//         type: 'input'
+//       }).then((r) => {
+//         if (r != null && r != "" && userData != null) {
+//           Tool.save('.', 'tmp', upload(r));
+//         }
+//       }).catch(console.error);
+//     } else if (ans == 1) {
+//       let savePath = ipcRenderer.sendSync('savepath', {
+//         title: '프로젝트 저장',
+//         message: '저장할 경로를 선택하세요',
+//       });
+//       if (savePath != undefined) {
+//         //save locally
+//         let index = savePath.match(/([^\\\/]*\.taw)/).index;
+//         let path = savePath.substr(0, index);
+//         let name = savePath.substr(index);
+//         name = name.substr(0, name.length - 4);
+//         Tool.save(path, name);
+//       }
+//     }
+//   }
+// }
+byQuery('.exit_box').onclick = () => ipcRenderer.sendSync('yesorno', { title: '프로젝트를 닫으시겠습니까?', message: '프로젝트를 닫으시겠습니까? 변경된 내용은 저장되지 않습니다.' }) == 0 && Tool.clear();
 
-byQuery('.login').onclick = () => ipcRenderer.send('loginRequest', null);
-byQuery('.session').onclick = () => {
-  if (Tool.session() != null)
-    Tool.session().connect();
-}
+// byQuery('.login').onclick = () => ipcRenderer.send('loginRequest', null);
+// byQuery('.session').onclick = () => {
+//   if (Tool.session() != null)
+//     Tool.session().connect();
+// }
 
 function valueChanged(fn) {
   return function (e) {
@@ -229,3 +229,9 @@ addOnOccured(() => {
   byID('tl_names').addEventListener('wheel', Tool.scrollTimeline);
   byID('tl_props').addEventListener('wheel', Tool.scrollTimeline);
 });
+
+
+byID('menu_open');
+byID('menu_save');
+byID('menu_share');
+byID('menu_render');

@@ -49,8 +49,8 @@ const Tool = (() => {
         _session.socket().close();
       _session = null;
     }
-    pl.destroyChildren();
-    tl.destroyChildren();
+    pl.children.length != 0 && pl.destroyChildren();
+    tl.children.length != 0 && tl.destroyChildren();
     ls = ms = si = ti = sz = 0;
     udid = maxDist = 0;
     data = [];
@@ -150,7 +150,7 @@ const Tool = (() => {
       console.log('find ' + dt.src);
       let d = nextUDID();
       copyItemToTimeline(d, i);
-      
+
       let color = rainbow(Math.floor(Math.random() * 1000));
       _tns.innerHTML += `<div class="tl_name" did="${d}" uid="${dt.src}" droppable="false" onclick="Tool.selectNode(this)">
         ${i.name()}
@@ -298,7 +298,7 @@ const Tool = (() => {
       let i = findItem(pl, id);
       let did = nextUDID();
       i.id(id);
-      
+
       let color = rainbow(Math.floor(Math.random() * 1000));
       _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">
         ${i.name()}

@@ -88,7 +88,7 @@ const Presets = (() => {
 
   function getPresetHTML(func, name, type) {
     let struct = `<div class="preset" id="preset-${func}">`;
-    struct += `<p onclick="Presets.togglePreset(this)" class="preset-title">${name}</p><div>`;
+    struct += `<p onclick="Presets.togglePreset(this)" class="preset-title"><img/>${name}</p><div>`;
     Object.keys(type).forEach(key => { struct += `<label><span>${key}</span><input /></label>`; });
     struct += `</div></div>`;
     return struct;
