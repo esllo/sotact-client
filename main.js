@@ -1,7 +1,8 @@
-const { app, protocol, BrowserWindow, screen, ipcMain } = require('electron');
+const { app, protocol, BrowserWindow, screen, ipcMain, Menu, dialog } = require('electron');
 const http = require('http');
 
-let win, login;
+
+let win, login, userData = null;
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const _win = new BrowserWindow({
@@ -11,6 +12,7 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true
     },
   });
   _win.webContents.openDevTools();
@@ -20,10 +22,10 @@ function createWindow() {
 
 function createLoginWindow() {
   let _win = new BrowserWindow({
-    width: 360,
-    height: 420,
+    width: 450,
+    height: 440,
     show: true,
-    frame: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -36,6 +38,8 @@ function createLoginWindow() {
 }
 
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null);
+  // app.getAppPath(); exe path
   protocol.registerFileProtocol('*', (req, cb) => {
     alert(req);
     alert(req.url);
@@ -65,9 +69,18 @@ ipcMain.on('windowEvent', (e, c) => {
     win.minimize();
   }
 });
+ipcMain.on('windowEventLogin', (e, c) => {
+  if (login != null) {
+    login.quit();
+  }
+});
 ipcMain.on('loginRequest', (e, c) => {
   login = createLoginWindow();
-  login.loadURL(`file://${__dirname}/out/static/login.html`);
+  login.loadURL(`file://${__dirname}/out/static/html/login.html`);
+})
+ipcMain.on('closeLogin', () => {
+  login.close();
+  login = null;
 })
 function createOAuthWindow() {
   let _win = new BrowserWindow({
@@ -101,9 +114,9 @@ function closeListen() {
     listen.close();
   listen = null;
 }
-
+var google = null, kakao = null;
 ipcMain.on('googleLogin', (e, c) => {
-  let google = createOAuthWindow();
+  google = createOAuthWindow();
   openListen();
   const param = {
     scope: 'email',
@@ -144,7 +157,109 @@ ipcMain.on('kakaoLogin', (e, c) => {
 })
 
 ipcMain.on('loginSuccess', (e, c) => {
-  console.log(c);
-  console.log("loginSucdeess");
+  login.close();
   win.webContents.send('loginSuccess', c);
+  userData = c;
+});
+ipcMain.on('logout', () => {
+  userData = null;
+})
+
+let cloudWindow = null;
+
+function createCloudWindow() {
+  if (cloudWindow != null) return;
+  if (userData == null) {
+    showDialog({ title: "로그인 필요", message: "로그인이 필요합니다." }, ['Ok'])
+    return;
+  }
+  cloudWindow = new BrowserWindow({
+    width: 500,
+    height: 700,
+    show: true,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+  cloudWindow.on('closed', () => cloudWindow = null);
+  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname);
+  cloudWindow.openDevTools();
+}
+
+ipcMain.on('requestCloud', (e) => {
+  createCloudWindow();
+})
+
+ipcMain.on('closeCloud', () => {
+  cloudWindow.close();
+  cloudWindow = null;
+})
+
+ipcMain.on('cloudSelected', (e, args) => {
+  if (win != null) {
+    win.webContents.send('cloudSelected', args);
+  }
+  cloudWindow.close();
+})
+
+let shareWindow = null;
+function createShareWindow(id) {
+  if (shareWindow != null) return;
+  if (userData == null) {
+    showDialog({ title: "로그인 필요", message: "로그인이 필요합니다." }, ['Ok'])
+    return;
+  }
+
+  shareWindow = new BrowserWindow({
+    width: 500,
+    height: 700,
+    show: true,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+  shareWindow.on('closed', () => shareWindow = null);
+  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id);
+  shareWindow.openDevTools();
+}
+ipcMain.on('requestShare', (e, a) => {
+  createShareWindow(a.id);
+})
+
+ipcMain.on('closeShare', () => {
+  shareWindow.close();
+  shareWindow = null;
+})
+
+
+function showDialog(args, buttons) {
+  return dialog.showMessageBoxSync(win, {
+    type: 'question',
+    buttons: buttons,
+    title: args.title || "TAW",
+    message: args.message || "",
+    detail: args.detail || ""
+  });
+}
+ipcMain.on('alert', (e, args) => {
+  if (args == undefined) args = {};
+  e.returnValue = showDialog(args, ['Ok']);
+});
+ipcMain.on('yesorno', (e, args) => {
+  if (args == undefined) args = {};
+  e.returnValue = showDialog(args, ['Yes', 'No']);
+});
+
+ipcMain.on('savepath', (e, args) => {
+  if (args == undefined) args = {};
+  e.returnValue = dialog.showSaveDialogSync(win, {
+    title: args.title || "",
+    message: args.message || "",
+    filters: [{
+      name: "TAW project",
+      extensions: ['taw']
+    }]
+  });
 });

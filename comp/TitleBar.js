@@ -13,6 +13,13 @@ const Menubar = styled.div((props) => ({
   userSelect: 'none',
   zIndex: 3,
 }));
+const logo = css`
+  font-size: 14px;
+  font-weight: bold;
+  color: #9cff00;
+  margin: 0 14px;
+  line-height: 30px;
+`;
 const menuBar = css`
   p {
     padding: 0 6px;
@@ -123,22 +130,22 @@ const TitleBar = (props) => {
     return color;
   };
   const callWindowEvent = (c) => {
-    return function(){
+    return function () {
       windowEvent(c);
     }
   }
   return (
     <Titlebar style={{ background: getBackground() }}>
+      <h2 css={logo}>TAW</h2>
       <Menubar css={menuBar}>
         <img src="" />
-        <p>File</p>
-        <p>Edit</p>
-        <p>View</p>
-        <p>Window</p>
-        <p>Help</p>
+        <p id="menu_open">Open</p>
+        <p id="menu_save">Save</p>
+        <p id="menu_share">Share</p>
+        <p id="menu_render">Rendering</p>
       </Menubar>
       <div style={{ flex: 1 }} css={draggable}></div>
-      <Title>TAW - Canvas Animate Tool</Title>
+      <Title>{props.title || ""}</Title>
       <div css={buttons}>
         <div onClick={callWindowEvent(2)} css={buttonMinimize}>
           <div></div>

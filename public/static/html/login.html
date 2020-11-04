@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAW - Login</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #232323;
+    }
+
+    .panel {
+      width: calc(100vw - 24px);
+      height: calc(100vh - 24px);
+      margin: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box {
+      margin-top: 30px;
+      width: calc(100vw - 36px);
+      display: flex;
+      flex-direction: column;
+      transition: all .5s;
+      padding: 0 18px;
+      position: absolute;
+      left: 0;
+    }
+
+    .login.on {
+      transform: translateX(0%);
+    }
+
+    .register.on {
+      transform: translateX(0%);
+    }
+
+
+    .login {
+      transform: translateX(-100%);
+    }
+
+    .register {
+      transform: translateX(100%);
+    }
+
+    input,
+    button {
+      margin: 6px 20px;
+      height: 48px;
+      padding: 0 12px;
+      font-size: 16px;
+      outline: none;
+      border: none;
+      background: #0f0f0f;
+      border-radius: 18px;
+      color: #272727;
+      text-align: center;
+    }
+
+    input::placeholder {
+      color: #272727;
+    }
+
+    input {
+      color: #fff;
+    }
+
+    button.active {
+      background: #8cff00;
+      color: #0f0f0f;
+    }
+
+    p {
+      margin: 0 20px;
+    }
+
+    button {
+      background: #8cff00;
+      margin-bottom: 26px;
+    }
+
+    .social {
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .social>button {
+      flex: 1;
+      padding: 2px;
+      margin: 4px;
+    }
+
+    .over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, .75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: all .4s;
+    }
+
+    .over.on {
+      opacity: 1;
+    }
+
+    .loading {
+      width: 50px;
+      height: 12px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .circle {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 6px;
+    }
+
+    .fade {
+      animation-name: fading;
+      animation-duration: 900ms;
+      animation-iteration-count: infinite;
+    }
+
+    .fade:nth-child(2) {
+      animation-delay: 300ms;
+    }
+
+    .fade:nth-child(3) {
+      animation-delay: 600ms;
+    }
+
+    @keyframes fading {
+      0% {
+        opacity: 0;
+      }
+
+      40% {
+        opacity: 0;
+      }
+
+      70% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .others {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .vertical-divider {
+      width: 1px;
+      background: #b4b4b4;
+      margin: 4px 0;
+    }
+
+    .block {
+      width: calc(50% - 1px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .block>h5 {
+      color: #828282;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .block>div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      width: 70%;
+      margin: 12px auto;
+    }
+
+    .block>div>button {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      margin: 0;
+      padding: 0;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .hover {
+      width: 100vw;
+      height: 100px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      -webkit-app-region: drag;
+      -webkit-user-select: none;
+      z-index: 999;
+    }
+
+    .hover>h2 {
+      width: 100%;
+      text-align: center;
+      line-height: 110px;
+    }
+
+    .exit {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      position: fixed;
+      right: 8px;
+      top: 8px;
+      box-shadow: 0px 0px 14px 4px;
+      z-index: 1000;
+      -webkit-app-region: no-drag;
+    }
+
+    .exit_button {
+      width: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hover">
+    <div class="exit">
+      <img class="exit_button" src="../img/login/login_X.svg" />
+    </div>
+    <h2>TAW</h2>
+  </div>
+  <div class="panel">
+    <div class="box login on">
+      <input id="l_email" type="email" placeholder="email" />
+      <input id="l_pass" type="password" placeholder="password" />
+      <button id="login">LOGIN</button>
+      <div class="others">
+        <div class="block">
+          <h5>Social Login</h5>
+          <div>
+            <img id="kakao" src="../img/login/login_kakao.svg" width="36px" />
+            <img id="google" src="../img/login/login_google.svg" width="36px" />
+          </div>
+        </div>
+        <div class="vertical-divider"></div>
+        <div class="block">
+          <h5>Create Account</h5>
+          <div>
+            <img id="reg" src="../img/login/login_taw.svg" width="36px" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box register">
+      <input id="r_nick" type="text" placeholder="nick name" />
+      <input id="r_email" type="email" placeholder="email" />
+      <input id="r_pass" type="password" placeholder="password" />
+      <input id="r_repass" type="password" placeholder="re-password" />
+      <button id="register" style="margin-top:16px;">REGISTER</button>
+      <p id="back">Go Back</p>
+    </div>
+  </div>
+  <div class="over">
+    <div class="loading">
+      <div class="circle fade"></div>
+      <div class="circle fade"></div>
+      <div class="circle fade"></div>
+    </div>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    const base = "http://dam.esllo.com:8080/";
+    function toggle() {
+      document.querySelectorAll('.box').forEach(e => { e.classList.toggle('on'); });
+    }
+    const o = document.querySelector('.over');
+    let isOver = false;
+    let last = 0;
+    function overOn() {
+      last = new Date().getTime();
+      isOver = true;
+      o.style.display = 'flex';
+      setTimeout(() => o.classList.add('on'), 0);
+    }
+    function overOff(cb) {
+      const v = (new Date().getTime() - last);
+      if (v < 800) {
+        setTimeout(overOff, v, cb);
+        return;
+      }
+      isOver = false;
+      o.classList.remove('on');
+      setTimeout(() => { o.style.display = 'none'; if (cb !== undefined) cb(); }, 380)
+    }
+    overOff();
+    document.getElementsByClassName('exit_button')[0].onclick = () => ipcRenderer.send('closeLogin');
+    document.getElementById('back').onclick = document.getElementById('reg').onclick = toggle;
+    document.getElementById('kakao').onclick = () => {
+      ipcRenderer.send('kakaoLogin', null);
+    }
+    document.getElementById('google').onclick = () => {
+      ipcRenderer.send('googleLogin', null);
+    }
+    document.getElementById('login').onclick = () => {
+      let email = document.getElementById('l_email').value.trim();
+      let pass = document.getElementById('l_pass').value.trim();
+      overOn();
+      fetch(base + 'user/login',
+        {
+          method: 'POST',
+          headers:
+          {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            password: pass
+          })
+        }).then(r => r.json()).then(r => {
+          if (r.status == 200) {
+            if (r.message != "로그인 성공") {
+              ipcRenderer.sendSync('alert', { title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
+              overOff();
+            } else {
+              console.log("overoff");
+              console.log(r);
+              overOff(() => {
+                ipcRenderer.send('loginSuccess', r.data); console.log('called')
+              });
+            }
+          } else {
+            ipcRenderer.sendSync('alert', { title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
+            overOff();
+          }
+        }).catch(e => {
+          console.error(e);
+          overOff();
+        })
+    }
+    document.getElementById('register').onclick = () => {
+      let nick = document.getElementById('r_nick').value.trim();
+      let email = document.getElementById('r_email').value.trim();
+      let pass = document.getElementById('r_pass').value.trim();
+      let repass = document.getElementById('r_repass').value.trim();
+      overOn();
+      fetch(base + "user/signup",
+        {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nickname: nick,
+            email: email,
+            password: pass,
+            passwordConfirm: repass
+          })
+        }).then(r => r.json()).then(r => {
+          console.log(r);
+          overOff();
+        }).catch(e => console.error(e));
+    }
+  </script>
+</body>
+
+</html>
