@@ -70,7 +70,7 @@ ipcMain.on('windowEvent', (e, c) => {
   }
 });
 ipcMain.on('windowEventLogin', (e, c) => {
-  if(login != null){
+  if (login != null) {
     login.quit();
   }
 });
@@ -161,18 +161,23 @@ ipcMain.on('loginSuccess', (e, c) => {
   win.webContents.send('loginSuccess', c);
   userData = c;
 });
-
+ipcMain.on('logout', () => {
+  userData = null;
+})
 
 let cloudWindow = null;
 
 function createCloudWindow() {
   if (cloudWindow != null) return;
-  if (userData == null) return;
+  if (userData == null) {
+    showDialog({ title: "로그인 필요", message: "로그인이 필요합니다." }, ['Ok'])
+    return;
+  }
   cloudWindow = new BrowserWindow({
     width: 500,
     height: 700,
     show: true,
-    frame: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -186,12 +191,49 @@ ipcMain.on('requestCloud', (e) => {
   createCloudWindow();
 })
 
+ipcMain.on('closeCloud', () => {
+  cloudWindow.close();
+  cloudWindow = null;
+})
+
 ipcMain.on('cloudSelected', (e, args) => {
   if (win != null) {
     win.webContents.send('cloudSelected', args);
   }
   cloudWindow.close();
 })
+
+let shareWindow = null;
+function createShareWindow(id) {
+  if (shareWindow != null) return;
+  if (userData == null) {
+    showDialog({ title: "로그인 필요", message: "로그인이 필요합니다." }, ['Ok'])
+    return;
+  }
+
+  shareWindow = new BrowserWindow({
+    width: 500,
+    height: 700,
+    show: true,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+  shareWindow.on('closed', () => shareWindow = null);
+  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id);
+  shareWindow.openDevTools();
+}
+ipcMain.on('requestShare', (e, a) => {
+  createShareWindow(a.id);
+})
+
+ipcMain.on('closeShare', () => {
+  shareWindow.close();
+  shareWindow = null;
+})
+
+
 function showDialog(args, buttons) {
   return dialog.showMessageBoxSync(win, {
     type: 'question',

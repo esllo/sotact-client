@@ -37,12 +37,13 @@ const Home = (props) => {
           <FlexBox className="top" dir="row" minHeight="50px" background="#191818">
             <div className="profile_box">
               <img src="./out/static/img/etc/etc_profile.svg" />
-              <h4 className="profile_name" style={{ flex: 1 }}>Name</h4>
+              <h4 id="login" className="profile_name" style={{ flex: 1 }}>Login</h4>
               <h4 className="profile_share">+ 0</h4>
             </div>
             <div className="control_box">
-              <img src="./out/static/img/etc/etc_play.svg" />
-              <img src="./out/static/img/etc/etc_stop.svg" />
+              <img id="tb0" src="./out/static/img/etc/etc_play.svg" />
+              <img id="tb1" src="./out/static/img/etc/etc_pause.svg" />
+              <img id="tb2" src="./out/static/img/etc/etc_stop.svg" />
             </div>
             <input id="selector_hidden" type="file" style={{ display: 'none' }} />
             <div style={{ flex: 1 }}></div>
@@ -57,7 +58,7 @@ const Home = (props) => {
             </div>
           </FlexBox>
           <Split dir="horizontal"></Split>
-          <div style={{width: '48px', height: '3px', margin: '-3px 283px 0 auto', background:'#232323', zIndex:1002}}></div>
+          <div style={{ width: '48px', height: '3px', margin: '-3px 283px 0 auto', background: '#232323', zIndex: 1002 }}></div>
           <FlexBox className="bot" dir="row" weight={1}>
             <FlexBox className="left" dir="column" style={{ width: '300px' }}>
               <div className="property">
@@ -134,11 +135,11 @@ const Home = (props) => {
                 <FlexBox
                   className="right"
                   dir="column"
-                  style={{ width: '280px', overflowY: 'auto', position:'relative' }}>
-                  <div className="property" style={{position: 'fixed', zIndex: 999}}>
+                  style={{ width: '280px', overflowY: 'auto', position: 'relative' }}>
+                  <div className="property" style={{ position: 'fixed', zIndex: 999 }}>
                     <p>Presets</p>
                   </div>
-                  <FlexBox className="fx_presets" style={{overflow:'hidden', marginTop: '31px'}}>
+                  <FlexBox className="fx_presets" style={{ overflow: 'hidden', marginTop: '31px' }}>
 
                   </FlexBox>
                 </FlexBox>
@@ -167,6 +168,18 @@ const Home = (props) => {
           </FlexBox>
         </FlexBox>
         <input style={{ display: 'none' }} type="file" id="folder" webkitdirectory directory />
+        <div className="wrap_panel">
+          <div className="account_info">
+            <h2>Account</h2>
+            <img src="./out/static/img/account/account_account_profile.svg" />
+            <h4>Name</h4>
+            <h5>Email</h5>
+            <button id="logout">LOGOUT</button>
+            <div class="account_exit">
+              <img src="./out/static/img/cloud/cloud_X.svg" />
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

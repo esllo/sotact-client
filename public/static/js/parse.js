@@ -82,7 +82,8 @@ const parser = (() => {
     let childs = from._children;
     let i = 0;
     let group = grp || new Konva.Group();
-    const p = confirm('Parse Group as one layer?');
+    // const p = confirm('Parse Group as one layer?');
+    p = true;
     group.name(escape(from.name) || '이름없음');
 
     for (const child of childs.reverse()) {

@@ -15,13 +15,15 @@ const Split = (props) => {
       ? css`
           margin-left: -3px;
           width: 3px;
-          cursor: ew-resize;
         `
+        //   cursor: ew-resize;
+        // `
       : css`
           margin-top: -3px;
           height: 3px;
-          cursor: ns-resize;
         `;
+        //   cursor: ns-resize;
+        // `;
   return <DirSplit className={'split ' + dir} dir={dir} css={_css}></DirSplit>;
 };
 

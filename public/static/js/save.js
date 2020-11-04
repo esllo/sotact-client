@@ -4,7 +4,7 @@ if (typeof fs == 'undefined') {
 
 const SAVE = (() => {
   const tar = require('tar');
-  const _attr = ['x', 'y', 'width', 'height', 'visible', 'id', 'name', 'opacity', 'scale', 'rotation', 'offset', 'globalCompositeOperation'];
+  const _attr = ['x', 'y', 'width', 'height', 'visible', 'id', 'name', 'opacity', 'scaleX', 'scaleY', 'rotation', 'offset', 'globalCompositeOperation'];
   function save(tree, flow, size, name, real, cb) {
     if (cb == undefined) cb = () => { };
     let hash = getDateAsHex();

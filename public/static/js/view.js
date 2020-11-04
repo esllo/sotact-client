@@ -14,23 +14,29 @@ const TAW = (() => {
         fl.index++;
       }
       let f = {};
-      if (fl.index != fl.max - 1)
+      if (fl.index != fl.max - 1) {
+        let itemP = findItem(Tool.getPLayer(), fl.src);
+        let itemT = findItem(Tool.getTLayer(), fl.src);
         for (const key of Object.keys(fl.data[fl.index])) {
           let value = fl.data[fl.index][key];
-          let diffs = fl.data[fl.index + 1][key] - fl.data[fl.index][key];
-          let dists = fl.time[fl.index + 1] - fl.time[fl.index];
-          let prgrs = p - fl.time[fl.index];
-          value += diffs * (prgrs / dists);
-          findItem(Tool.getPLayer(), fl.src)[key](value);
-          findItem(Tool.getTLayer(), fl.src)[key](value);
-          // fl.obj[key](value);
+          if (!(key == "globalCompositeOperation" || key == "visible")) {
+            let diffs = fl.data[fl.index + 1][key] - fl.data[fl.index][key];
+            let dists = fl.time[fl.index + 1] - fl.time[fl.index];
+            let prgrs = p - fl.time[fl.index];
+            value += diffs * (prgrs / dists);
+          }
+          itemT[key](value);
+          itemP[key](value);
+          // itemT[key](value);
+          // itemP[key](value);
         }
-      else {
+      } else {
+        let itemP = findItem(Tool.getPLayer(), fl.src);
+        let itemT = findItem(Tool.getTLayer(), fl.src);
         for (const key of Object.keys(fl.data[fl.index])) {
           f[key] = fl.data[fl.index][key];
-          // fl.obj[key](fl.data[fl.index][key]);
-          findItem(Tool.getPLayer(), fl.src)[key](fl.data[fl.index][key]);
-          findItem(Tool.getTLayer(), fl.src)[key](fl.data[fl.index][key]);
+          itemT[key](fl.data[fl.index][key]);
+          itemP[key](fl.data[fl.index][key]);
         }
       }
       Tool.redrawAll();

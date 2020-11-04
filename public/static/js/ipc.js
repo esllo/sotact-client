@@ -30,8 +30,8 @@ function addOnOccured(cb) {
 }
 
 ipcRenderer.on('loginSuccess', (e, c) => {
-  byQuery('.login').value = c.nickname + "님 안녕하세요.";
-  byQuery('.login').disabled = true;
+  byID('login').textContent = c.nickname;
+  byID('login').classList.add('on');
   userData = c;
 })
 

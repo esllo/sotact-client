@@ -23,7 +23,7 @@ const Tool = (() => {
   const _vv = byID('vval');
   const _cv = byID('coval');
 
-  const _props = ['x', 'y', 'rotation', 'opacity', 'visible', 'scale', 'globalCompositeOperation'];
+  const _props = ['x', 'y', 'rotation', 'opacity', 'visible', 'scaleX', 'scaleY', 'globalCompositeOperation'];
 
   // konva objects
   let stg = null;
@@ -414,9 +414,9 @@ const Tool = (() => {
   const getParent = () => _p;
 
   const redrawAll = () => {
-    pl.draw();
-    tl.draw();
-    stg.draw();
+    pl.batchDraw();
+    tl.batchDraw();
+    // stg.batchDraw();
   };
 
   const applyLayer = () => {
