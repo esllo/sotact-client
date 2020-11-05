@@ -26,6 +26,7 @@ function createLoginWindow() {
     height: 440,
     show: true,
     frame: false,
+    alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -89,6 +90,7 @@ function createOAuthWindow() {
     show: true,
     frame: true,
     webPreferences: {
+      nodeIntegration: false,
     }
   });
   _win.on('closed', () => _win = null)
@@ -105,7 +107,10 @@ var listen;
 function openListen() {
   listen = http.createServer((rq, rs) => {
     console.log(rq.url);
-    rs.end('');
+    if (login != null) {
+      login.webContents.send('oauth', rq.url);
+    }
+    rs.end('<head><meta charset="utf-8"/></head><p>현재 창을 닫아주세요.</p>');
     listen.close();
   }).listen(8080);
 }
@@ -178,12 +183,13 @@ function createCloudWindow() {
     height: 700,
     show: true,
     frame: false,
+    alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true
     }
   });
   cloudWindow.on('closed', () => cloudWindow = null);
-  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname);
+  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname + "&" + userData.userId);
   cloudWindow.openDevTools();
 }
 
@@ -216,12 +222,13 @@ function createShareWindow(id) {
     height: 700,
     show: true,
     frame: false,
+    alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true
     }
   });
   shareWindow.on('closed', () => shareWindow = null);
-  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id);
+  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id + "&" + userData.userId);
   shareWindow.openDevTools();
 }
 ipcMain.on('requestShare', (e, a) => {
@@ -235,7 +242,15 @@ ipcMain.on('closeShare', () => {
 
 
 function showDialog(args, buttons) {
-  return dialog.showMessageBoxSync(win, {
+  let vwin = win;
+  switch (args.from) {
+    case "login": vwin = login;
+      break;
+    case "cloud": vwin = cloudWindow;
+      break;
+    case "share": vwin = shareWindow;
+  }
+  return dialog.showMessageBoxSync(vwin, {
     type: 'question',
     buttons: buttons,
     title: args.title || "TAW",
@@ -245,11 +260,11 @@ function showDialog(args, buttons) {
 }
 ipcMain.on('alert', (e, args) => {
   if (args == undefined) args = {};
-  e.returnValue = showDialog(args, ['Ok']);
+  e.returnValue = showDialog(args, ['Ok'], e.sender);
 });
 ipcMain.on('yesorno', (e, args) => {
   if (args == undefined) args = {};
-  e.returnValue = showDialog(args, ['Yes', 'No']);
+  e.returnValue = showDialog(args, ['Yes', 'No'], e.sender);
 });
 
 ipcMain.on('savepath', (e, args) => {

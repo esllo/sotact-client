@@ -1,7 +1,7 @@
 const io = require('socket.io-client');
 
 const Conn = (() => {
-  const reqAddr = "http://54.180.158.231:5500/";
+  const reqAddr = "http://13.125.218.2:5500/";
   const map = new Map();
   function requestAddr(key, cb) {
     fetch(reqAddr, {
@@ -66,7 +66,7 @@ const Conn = (() => {
       console.log(json);
       addr = data.addr + ':' + data.port + '/' + data.room;
       console.log(addr);
-      data.socket = io(addr, { timeout: 5000, reconnection: false, autoConnect: false });
+      data.socket = io(addr, { timeout: 5000, reconnection: true, autoConnect: false });
       initListener(data.socket);
       connectSocket();
     }

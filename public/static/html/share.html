@@ -247,6 +247,9 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
+    const [uname, hash, uid] = window.location.hash.substr(1).split('&');
+    console.log(uname);
+    console.log(hash);
     document.getElementById('cancel').onclick = () => ipcRenderer.send('closeShare');
     let add = document.querySelector('.exit');
     let right = document.getElementsByClassName('tab')[1];
@@ -254,7 +257,7 @@
       right.classList.add('on');
       add.style.display = 'none';
     };
-    const release = () => { add.style.display = 'block'; right.classList.remove('on') };
+    const release = () => { add.style.display = 'block'; right.classList.remove('on'); getFriends() };
 
     document.getElementById('apply').onclick = release;
     document.getElementById('previous').onclick = release;
@@ -262,18 +265,24 @@
     function clicked(o) {
       o.classList.toggle('on');
     }
+
     const _list = document.getElementById('share_list');
     function setList(list) {
       _list.innerHTML = '';
-      list.forEach(e => {
-        _list.innerHTML += `
+      if (list == null || list.length == 0) {
+        _list.innerHTML = "<div class='row'><p>친구가 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          _list.innerHTML += `
         <div class="row" id="${e.id}" onclick="clicked(this)">
           <img class="profile" src="../img/share/share_profile.svg" />
           <p>${e.name}</p>
           <img class="check" />
         </div>`;
-      });
+        });
+      }
     }
+
     function getChecked() {
       let ids = Array.from(document.querySelectorAll('.row.on')).map(e => e.id);
       return ids || [];
@@ -285,6 +294,27 @@
         d.push({ id: "id" + i, name: "name" + i });
       return d;
     }
+
+    function getFriends() {
+      let fetchURL = "http://taw.esllo.com:8080/friend?userId=" + uid;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        console.log(json);
+        if (json.status == "200") {
+          let data = (JSON.parse(json.data) || [null])[0]
+          if (data != null && Array.isArray(data)) {
+            let refined = data.map(e => ({ id: e.friendId || "", name: e.nickname || "" }));
+            setList(refined);
+            return;
+          }
+        }
+        throw "error occred";
+      }).catch(e => {
+        console.error(e);
+        ipcRenderer.send('alert', { title: "에러", message: "에러가 발생했습니다." });
+      });
+    }
+
+    getFriends();
   </script>
 </body>
 

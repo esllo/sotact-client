@@ -179,6 +179,20 @@ const Home = (props) => {
               <img src="./out/static/img/cloud/cloud_X.svg" />
             </div>
           </div>
+          <div className="so">
+            <h2 className="so_title">Open</h2>
+            <div class="so_from">
+              <img id="so_local" />
+              <img id="so_cloud" />
+            </div>
+            <div class="so_input off">
+              <input id="save_input" placeholder="프로젝트의 제목을 입력하세요."/>
+              <button id="save_cloud">저장</button>
+            </div>
+            <div class="so_exit">
+              <img src="./out/static/img/cloud/cloud_X.svg" />
+            </div>
+          </div>
         </div>
       </main>
     </div>

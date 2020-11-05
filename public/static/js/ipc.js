@@ -33,6 +33,8 @@ ipcRenderer.on('loginSuccess', (e, c) => {
   byID('login').textContent = c.nickname;
   byID('login').classList.add('on');
   userData = c;
+  document.querySelector('.account_info > h4').textContent = userData.nickname;
+  document.querySelector('.account_info > h5').textContent = userData.email;
 })
 
 ipcRenderer.on('cloudSelected', (e, args) => {
