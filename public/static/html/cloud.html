@@ -150,7 +150,8 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
-    const [uname, uid] = window.location.hash.substr(1).split('&');
+    const [_uname, uid] = window.location.hash.substr(1).split('&');
+    const uname = decodeURI(_uname);
     function setList(data) {
       let obj = document.getElementById('list');
       obj.innerHTML = '';

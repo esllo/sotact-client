@@ -247,7 +247,8 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
-    const [uname, hash, uid] = window.location.hash.substr(1).split('&');
+    const [_uname, hash, uid] = window.location.hash.substr(1).split('&');
+    const uname = decodeURI(_uname);
     console.log(uname);
     console.log(hash);
     document.getElementById('cancel').onclick = () => ipcRenderer.send('closeShare');
