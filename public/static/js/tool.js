@@ -173,7 +173,7 @@ const Tool = (() => {
 
   function createCaps() {
     let body = ``;
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 101; i++) {
       body += `<div class="cap cap-${i}"></div>`;
     }
     return body;
@@ -223,17 +223,43 @@ const Tool = (() => {
     redrawAll();
   }
 
+  function checkPoint(did, progress) {
+    let d = byQuery(`div.tl_prop[did="${did}"]`);
+    if (d != null) {
+      let cap = d.querySelector('.cap-' + progress);
+      let p = cap.previousElementSibling;
+      if (p != null) {
+        if (!p.classList.contains('cap')) {
+          p.parentElement.removeChild(p);
+        }
+      }
+      return cap;
+    }
+    return null;
+  }
+
   function setPoint(did, progress) {
-    let d = byQuery(`div[udid="${did}"][progress="${progress}"]`);
-    if (d == null) {
-      d = createElem('div');
-      d.setAttribute('udid', did);
-      d.setAttribute('progress', progress);
-      d.className = 'tl_point';
-      d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
-      byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
+    let cap = checkPoint(did, progress);
+    if (cap != null) {
+      let p = document.createElement('div');
+      p.className = 'point';
+      p.setAttribute('udid', did);
+      p.setAttribute('progress', progress);
+      cap.parentElement.insertBefore(p, cap);
     }
   }
+
+  // function setPoint(did, progress) {
+  //   let d = byQuery(`div[udid="${did}"][progress="${progress}"]`);
+  //   if (d == null) {
+  //     d = createElem('div');
+  //     d.setAttribute('udid', did);
+  //     d.setAttribute('progress', progress);
+  //     d.className = 'tl_point';
+  //     d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
+  //     byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
+  //   }
+  // }
 
   function changeLastTr(fn, v) {
     if (lastTr != null) {
