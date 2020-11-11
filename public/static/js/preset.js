@@ -11,7 +11,7 @@ const Presets = (() => {
       return [from, to];
     },
     Wdgd: function (ang, dst, cnt) { // 왔다갔다
-      let to = Linear(ang, dst);
+      let to = FuncObjs.Linear(ang, dst);
       let ret = [from];
       for (let i = 0; i < cnt; i++) {
         ret.push(to);

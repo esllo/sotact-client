@@ -111,6 +111,8 @@ function openListen() {
       login.webContents.send('oauth', rq.url);
     }
     rs.end('<head><meta charset="utf-8"/></head><p>현재 창을 닫아주세요.</p>');
+    (kakao != null) && kakao.close() || (kakao = null);
+    (google != null) && google.close() || (google = null);
     listen.close();
   }).listen(8080);
 }
@@ -242,7 +244,7 @@ ipcMain.on('closeShare', () => {
 
 
 function showDialog(args, buttons) {
-  let vwin = win;
+  let vwin = BrowserWindow.getFocusedWindow() || win;
   switch (args.from) {
     case "login": vwin = login;
       break;

@@ -347,7 +347,6 @@
               console.log("overoff");
               console.log(r);
               overOff(() => {
-                delete r.data.password;
                 ipcRenderer.send('loginSuccess', r.data); console.log('called')
               });
             }
@@ -364,7 +363,9 @@
     ipcRenderer.on('oauth', (e, a) => {
       let url = base + a;
       while (url.indexOf('//') != -1) url = url.replace('//', '/');
-      fetch(url).then(r => r.json()).then(r => {
+      fetch(url).then(r => r.text()).then(r => {
+        console.log(r);
+        r = JSON.parse(r);
         if (r.status == 200) {
           if (r.message != "로그인 성공") {
             ipcRenderer.sendSync('alert', { from: "login", title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
@@ -373,7 +374,6 @@
             console.log("overoff");
             console.log(r);
             overOff(() => {
-              delete r.data.password;
               ipcRenderer.send('loginSuccess', r.data); console.log('called')
             });
           }
