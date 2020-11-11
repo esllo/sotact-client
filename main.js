@@ -1,5 +1,6 @@
 const { app, protocol, BrowserWindow, screen, ipcMain, Menu, dialog } = require('electron');
 const http = require('http');
+const { list } = require('tar');
 
 
 let win, login, userData = null;
@@ -104,7 +105,11 @@ function concatUrl(params) {
 }
 
 var listen;
+let port = 8080;
 function openListen() {
+  if (listen != null) {
+    return;
+  }
   listen = http.createServer((rq, rs) => {
     console.log(rq.url);
     if (login != null) {
@@ -114,7 +119,14 @@ function openListen() {
     (kakao != null) && kakao.close() || (kakao = null);
     (google != null) && google.close() || (google = null);
     listen.close();
-  }).listen(8080);
+  });
+  listen.on('error', e => {
+    console.log(port + ' port already used');
+    port++;
+    listen = null;
+    openListen();
+  });
+  listen.listen(port);
 }
 function closeListen() {
   if (listen != null)
@@ -123,6 +135,7 @@ function closeListen() {
 }
 var google = null, kakao = null;
 ipcMain.on('googleLogin', (e, c) => {
+  if (google != null) return;
   google = createOAuthWindow();
   openListen();
   const param = {
@@ -130,7 +143,7 @@ ipcMain.on('googleLogin', (e, c) => {
     access_type: 'offline',
     include_granted_scopes: true,
     state: 'state_parameter_passthrough_value',
-    redirect_uri: 'http://localhost:8080/user/google-login',
+    redirect_uri: 'http://localhost:' + port + '/user/google-login',
     client_id: '764349256353-a3ik370k7ig28979cqls8igp9mt9g5h9.apps.googleusercontent.com',
     response_type: 'code',
     prompt: 'select_account',
@@ -146,11 +159,12 @@ ipcMain.on('googleLogin', (e, c) => {
 })
 
 ipcMain.on('kakaoLogin', (e, c) => {
+  if (kakao != null) return;
   let kakao = createOAuthWindow();
   openListen();
   const param = {
     client_id: '276ef22491e2971006db8f2ce046d690',
-    redirect_uri: 'http://localhost:8080/user/kakao-login',
+    redirect_uri: 'http://localhost:' + port + '/user/kakao-login',
     response_type: 'code'
   };
   kakao.on('closed', () => {
