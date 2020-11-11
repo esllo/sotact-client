@@ -13,7 +13,8 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 .timebar {
-  width: 2px;
+  width: 3px;
+  margin: 0 0 0 -1px;
   height: 100%;
   background: #99ca3c;
   position: absolute;
@@ -36,15 +37,15 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 26px;
+  height: 30px;
   background: #3d3d3d;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid #191818;
 }
 #tl_names,
 #tl_props {
   width: 100%;
   height: 100%;
-  margin-top: 26px;
+  margin-top: 31px;
   overflow-y: auto;
 }
 .tl_name {
@@ -66,10 +67,29 @@ body {
   top: 6px;
 }
 .tl_prop {
-  width: 100%;
+  width: calc(100% - 40px);
+  padding: 0 20px;
   height: 32px;
   border-bottom: 1px solid #333;
   position: relative;
+  display:flex;
+  flex-direction: row;
+}
+.cap{
+  flex: 1;
+}
+.cap-100{
+  width: 0;
+  flex: 0;
+}
+
+.point{
+  width: 7px;
+  height: 7px;
+  border-radius: 3px;
+  background: rgb(216, 24, 24);
+  margin: auto -4px auto -3px;
+  z-index: 99;
 }
 .tl_point {
   width: 4px;
@@ -89,6 +109,8 @@ body {
   height: 100%;
 }
 #timebody_head {
+  display:flex;
+  flex-direction: column;
 }
 .time_calib_unit {
   height: 16px;
@@ -109,4 +131,38 @@ body {
 
 .top > input {
   color: #eee;
+}
+
+.unit_vals, .unit_caps{
+  height: 22px;
+  display:flex;
+  flex-direction: row;
+  color:#919293;
+  font-size: 13px;
+  padding: 0 20px;
+  line-height: 22px;
+}
+
+.unit_caps{
+  height: 8px;
+}
+
+.val{
+  width: 24px;
+  margin: 0 -12px;
+  text-align: center;
+}
+
+.val-sp, .ucap-sp{
+  flex: 1;
+}
+
+.ucap{
+  background: #919293;
+  width: 1px;
+  margin: 3px -1px 0 0px;
+}
+
+.ucap-high{
+  margin: 0 -1px 0 0;
 }
