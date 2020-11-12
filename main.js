@@ -1,5 +1,6 @@
 const { app, protocol, BrowserWindow, screen, ipcMain, Menu, dialog } = require('electron');
 const http = require('http');
+const { list } = require('tar');
 
 
 let win, login, userData = null;
@@ -26,6 +27,7 @@ function createLoginWindow() {
     height: 440,
     show: true,
     frame: false,
+    alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -89,6 +91,7 @@ function createOAuthWindow() {
     show: true,
     frame: true,
     webPreferences: {
+      nodeIntegration: false,
     }
   });
   _win.on('closed', () => _win = null)
@@ -102,12 +105,28 @@ function concatUrl(params) {
 }
 
 var listen;
+let port = 8080;
 function openListen() {
+  if (listen != null) {
+    return;
+  }
   listen = http.createServer((rq, rs) => {
     console.log(rq.url);
-    rs.end('');
+    if (login != null) {
+      login.webContents.send('oauth', rq.url);
+    }
+    rs.end('<head><meta charset="utf-8"/></head><p>현재 창을 닫아주세요.</p>');
+    (kakao != null) && kakao.close() || (kakao = null);
+    (google != null) && google.close() || (google = null);
     listen.close();
-  }).listen(8080);
+  });
+  listen.on('error', e => {
+    console.log(port + ' port already used');
+    port++;
+    listen = null;
+    openListen();
+  });
+  listen.listen(port);
 }
 function closeListen() {
   if (listen != null)
@@ -116,6 +135,7 @@ function closeListen() {
 }
 var google = null, kakao = null;
 ipcMain.on('googleLogin', (e, c) => {
+  if (google != null) return;
   google = createOAuthWindow();
   openListen();
   const param = {
@@ -123,7 +143,7 @@ ipcMain.on('googleLogin', (e, c) => {
     access_type: 'offline',
     include_granted_scopes: true,
     state: 'state_parameter_passthrough_value',
-    redirect_uri: 'http://localhost:8080/user/google-login',
+    redirect_uri: 'http://localhost:' + port + '/user/google-login',
     client_id: '764349256353-a3ik370k7ig28979cqls8igp9mt9g5h9.apps.googleusercontent.com',
     response_type: 'code',
     prompt: 'select_account',
@@ -139,11 +159,12 @@ ipcMain.on('googleLogin', (e, c) => {
 })
 
 ipcMain.on('kakaoLogin', (e, c) => {
+  if (kakao != null) return;
   let kakao = createOAuthWindow();
   openListen();
   const param = {
     client_id: '276ef22491e2971006db8f2ce046d690',
-    redirect_uri: 'http://localhost:8080/user/kakao-login',
+    redirect_uri: 'http://localhost:' + port + '/user/kakao-login',
     response_type: 'code'
   };
   kakao.on('closed', () => {
@@ -178,12 +199,13 @@ function createCloudWindow() {
     height: 700,
     show: true,
     frame: false,
+    alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true
     }
   });
   cloudWindow.on('closed', () => cloudWindow = null);
-  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname);
+  cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname + "&" + userData.userId);
   cloudWindow.openDevTools();
 }
 
@@ -216,12 +238,13 @@ function createShareWindow(id) {
     height: 700,
     show: true,
     frame: false,
+    alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true
     }
   });
   shareWindow.on('closed', () => shareWindow = null);
-  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id);
+  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id + "&" + userData.userId);
   shareWindow.openDevTools();
 }
 ipcMain.on('requestShare', (e, a) => {
@@ -235,7 +258,15 @@ ipcMain.on('closeShare', () => {
 
 
 function showDialog(args, buttons) {
-  return dialog.showMessageBoxSync(win, {
+  let vwin = BrowserWindow.getFocusedWindow() || win;
+  switch (args.from) {
+    case "login": vwin = login;
+      break;
+    case "cloud": vwin = cloudWindow;
+      break;
+    case "share": vwin = shareWindow;
+  }
+  return dialog.showMessageBoxSync(vwin, {
     type: 'question',
     buttons: buttons,
     title: args.title || "TAW",
@@ -245,11 +276,11 @@ function showDialog(args, buttons) {
 }
 ipcMain.on('alert', (e, args) => {
   if (args == undefined) args = {};
-  e.returnValue = showDialog(args, ['Ok']);
+  e.returnValue = showDialog(args, ['Ok'], e.sender);
 });
 ipcMain.on('yesorno', (e, args) => {
   if (args == undefined) args = {};
-  e.returnValue = showDialog(args, ['Yes', 'No']);
+  e.returnValue = showDialog(args, ['Yes', 'No'], e.sender);
 });
 
 ipcMain.on('savepath', (e, args) => {

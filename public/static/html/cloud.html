@@ -150,6 +150,8 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
+    const [_uname, uid] = window.location.hash.substr(1).split('&');
+    const uname = decodeURI(_uname);
     function setList(data) {
       let obj = document.getElementById('list');
       obj.innerHTML = '';
@@ -157,14 +159,14 @@
         // let str = row.status ? 'class="green"' : '';
         // console.log(str);
         obj.innerHTML += `<div class="row">
-          <div class="left">
+          <div class="left" onclick="fileSelected('${row.key}', '${row.name}')">
             <p>${row.name}</p>
             <p>${row.owner}</p>
           </div>
           
           <div class="right">
-            <img onclick="share("${row.key}")" class="exit_button" src="../img/cloud/cloud_${(row.owner == window.location.hash.substr(1) ? "" : "un")}available.svg" />
-            <img onclick="delete("${row.key}")" class="exit_button" src="../img/cloud/cloud_delete.svg" />
+            <img onclick="share('${(row.owner == uname ? row.key : "")}')" class="exit_button" src="../img/cloud/cloud_${(row.owner == uname ? "" : "un")}available.svg" />
+            <img onclick="deleteFile('${row.key}', '${uname}')" class="exit_button" src="../img/cloud/cloud_delete.svg" />
           </div>
         </div>`;
       });
@@ -186,8 +188,25 @@
     function fileSelected(key, name) {
       ipcRenderer.send('cloudSelected', [key, name]);
     }
+
+    function share(key) {
+      if (key != null && key != "")
+        ipcRenderer.send('requestShare', { id: key });
+    }
+
+    function deleteFile(key, name) {
+      let fetchURL = "http://13.125.214.132:4000/?user=" + name + "&hash=" + key;
+      console.log(fetchURL);
+      fetch(fetchURL, { method: "DELETE" }).then(r => r.text()).then(text => {
+        ipcRenderer.send('alert', { title: "성공", message: "삭제되었습니다." });
+        fetchData();
+      }).catch(e => {
+        ipcRenderer.send('alert', { title: "실패", message: "에러가 발생했습니다." });
+      });
+    }
+
     function fetchData() {
-      let fetchURL = 'http://13.125.214.132:4000/?user=' + window.location.hash.substr(1);
+      let fetchURL = 'http://13.125.214.132:4000/?user=' + uname;
       console.log(fetchURL);
       fetch(fetchURL).then(r => r.json()).then(json => {
         console.log('fetch : ');
@@ -202,7 +221,6 @@
     };
     fetchData();
     // setList(dummy());
-    console.log(window.location.hash.substr(1));
   </script>
 </body>
 

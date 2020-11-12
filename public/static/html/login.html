@@ -209,7 +209,7 @@
 
     .hover {
       width: 100vw;
-      height: 100px;
+      height: 70px;
       position: fixed;
       top: 0;
       left: 0;
@@ -222,6 +222,7 @@
       width: 100%;
       text-align: center;
       line-height: 110px;
+      height: 70px;
     }
 
     .exit {
@@ -289,7 +290,7 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
-    const base = "http://dam.esllo.com:8080/";
+    const base = "http://taw.esllo.com:8080/";
     function toggle() {
       document.querySelectorAll('.box').forEach(e => { e.classList.toggle('on'); });
     }
@@ -340,7 +341,7 @@
         }).then(r => r.json()).then(r => {
           if (r.status == 200) {
             if (r.message != "로그인 성공") {
-              ipcRenderer.sendSync('alert', { title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
+              ipcRenderer.sendSync('alert', { from: "login", title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
               overOff();
             } else {
               console.log("overoff");
@@ -350,14 +351,42 @@
               });
             }
           } else {
-            ipcRenderer.sendSync('alert', { title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
+            ipcRenderer.sendSync('alert', { from: "login", title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
             overOff();
           }
         }).catch(e => {
           console.error(e);
+          ipcRenderer.send('alert', { from: "login", title: "에러", message: "에러가 발생했습니다." });
           overOff();
         })
     }
+    ipcRenderer.on('oauth', (e, a) => {
+      let url = base + a;
+      while (url.indexOf('//') != -1) url = url.replace('//', '/');
+      fetch(url).then(r => r.text()).then(r => {
+        console.log(r);
+        r = JSON.parse(r);
+        if (r.status == 200) {
+          if (r.message != "로그인 성공") {
+            ipcRenderer.sendSync('alert', { from: "login", title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
+            overOff();
+          } else {
+            console.log("overoff");
+            console.log(r);
+            overOff(() => {
+              ipcRenderer.send('loginSuccess', r.data); console.log('called')
+            });
+          }
+        } else {
+          ipcRenderer.sendSync('alert', { from: "login", title: "알림", message: (r.message || "로그인 할 수 없습니다.") });
+          overOff();
+        }
+      }).catch(e => {
+        console.error(e);
+        ipcRenderer.send('alert', { from: "login", title: "에러", message: "에러가 발생했습니다." });
+        overOff();
+      })
+    });
     document.getElementById('register').onclick = () => {
       let nick = document.getElementById('r_nick').value.trim();
       let email = document.getElementById('r_email').value.trim();
@@ -377,10 +406,19 @@
             password: pass,
             passwordConfirm: repass
           })
-        }).then(r => r.json()).then(r => {
+        }).then(r => r.text()).then(r => {
           console.log(r);
+          r = JSON.parse(r);
+          if (r.status == 200) {
+            ipcRenderer.send('alert', { from: "login", title: "알림", message: r.message || "처리되었습니다." });
+            toggle();
+          }
           overOff();
-        }).catch(e => console.error(e));
+        }).catch(e => {
+          console.error(e);
+          ipcRenderer.send('alert', { from: "login", title: "에러", message: "에러가 발생했습니다." });
+          overOff();
+        });
     }
   </script>
 </body>

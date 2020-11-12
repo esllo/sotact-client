@@ -1,3 +1,4 @@
+
 // file selected
 let input = byQuery('[type=file]');
 if (input != null) {
@@ -187,9 +188,11 @@ function upload(name) {
 byQuery('.exit_box').onclick = () => ipcRenderer.sendSync('yesorno', { title: '프로젝트를 닫으시겠습니까?', message: '프로젝트를 닫으시겠습니까? 변경된 내용은 저장되지 않습니다.' }) == 0 && Tool.clear();
 
 let wrap = document.querySelector('.wrap_panel');
+let acc_info = document.querySelector('.account_info');
 byID('login').onclick = (e) => {
   if (e.target.classList.contains('on')) {
     wrap.classList.add('on');
+    acc_info.classList.add('on');
   } else { ipcRenderer.send('loginRequest', null); }
 };
 document.getElementById('logout').onclick = () => {
@@ -197,9 +200,11 @@ document.getElementById('logout').onclick = () => {
   byID('login').textContent = "Login";
   byID('login').classList.remove('on');
   wrap.classList.remove('on')
+  acc_info.classList.remove('on');
   ipcRenderer.send('logout');
 };
-document.querySelector('.account_exit').onclick = () => wrap.classList.remove('on');
+document.querySelector('.account_exit').onclick = () => wrap.classList.remove('on') ||
+  acc_info.classList.remove('on');
 
 function valueChanged(fn) {
   return function (e) {
@@ -239,9 +244,87 @@ addOnOccured(() => {
 });
 
 
-byID('menu_open').onclick = () => {
-  ipcRenderer.send('requestCloud');
-};
-byID('menu_save');
+byID('menu_open').onclick = () => openSo(true);
+
+// {
+//   ipcRenderer.send('requestCloud');
+// };
+byID('menu_save').onclick = () => openSo(false);
 byID('menu_share');
 byID('menu_render');
+
+let _so_title = document.querySelector('.so_title');
+let _so = document.querySelector('.so');
+let _so_local = document.getElementById('so_local');
+let _so_cloud = document.getElementById('so_cloud');
+let _so_from = document.querySelector('.so_from');
+let _so_input = document.querySelector('.so_input');
+let _sv_input = document.getElementById('save_input');
+let _sv_button = document.getElementById('save_cloud');
+
+const releaseSo = () => {
+  wrap.classList.remove('on');
+  _so.classList.remove('on');
+  _so_from.classList.remove('off');
+  _so_input.classList.add('off');
+}
+
+function openSo(flag) {
+  let text = flag ? "Open" : "Save";
+  _so_title.textContent = text;
+  wrap.classList.add('on');
+  _so.classList.add('on');
+  _so_local.onclick = () => {
+    flag ? byQuery('input[type=file]').click() : saveLocal();
+    releaseSo();
+  }
+  _so_cloud.onclick = () => {
+    flag ? (ipcRenderer.send('requestCloud') || releaseSo())
+      : (() => {
+        if (userData == null) {
+          ipcRenderer.send('alert', { title: "로그인 필요", message: "로그인이 필요합니다." });
+          return;
+        }
+        _so_from.classList.add('off');
+        _so_input.classList.remove('off');
+      })();
+  }
+}
+
+_sv_button.onclick = () => {
+  let value = _sv_input.value.trim();
+  if (value != "" && value != null) {
+    _sv_input.value = "";
+    if (userData != null) {
+      Tool.save('.', 'tmp', upload(value));
+      releaseSo();
+    }
+  } else {
+    ipcRenderer.send('alert', { title: "경고", message: "유효하지 않은 파일명입니다." });
+  }
+}
+
+document.querySelector('.so_exit').onclick = releaseSo;
+
+const saveLocal = () => {
+  let savePath = ipcRenderer.sendSync('savepath', {
+    title: '프로젝트 저장',
+    message: '저장할 경로를 선택하세요',
+  });
+  if (savePath != undefined) {
+    //save locally
+    let index = savePath.match(/([^\\\/]*\.taw)/).index;
+    let path = savePath.substr(0, index);
+    let name = savePath.substr(index);
+    name = name.substr(0, name.length - 4);
+    Tool.save(path, name);
+  }
+}
+
+const l = () => {
+  TAW.initFromTool();
+  Tool.setCurrentTAW(TAW);
+  if (Tool.session() != null && Tool.session().isConnected()) {
+    Tool.session().send('save');
+  } 
+}

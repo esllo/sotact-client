@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 41.56 41.56" style="enable-background:new 0 0 41.56 41.56;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{fill:#90FF00;}
+	.st2{font-family:'Helvetica';}
+	.st3{font-size:7px;}
+	.st4{stroke:#000000;stroke-width:0.51;stroke-miterlimit:10;}
+</style>
+<g id="로컬드라이브">
+	<path class="st1" d="M37.52,41.56H4.04C1.81,41.56,0,39.75,0,37.52V4.04C0,1.81,1.81,0,4.04,0h33.47c2.23,0,4.04,1.81,4.04,4.04
+		v33.47C41.56,39.75,39.75,41.56,37.52,41.56z"/>
+	<g>
+		<text transform="matrix(1 0 0 1 3.9744 34.6526)" class="st2 st3">Local Drive</text>
+		<g transform="translate(0,-952.36218)">
+			<path class="st4" d="M12.12,962.41c-0.09,0.02-0.17,0.11-0.17,0.21v13.13c0,0.11,0.1,0.21,0.21,0.21H29.4
+				c0.11,0,0.21-0.1,0.21-0.21v-10.26c0-0.11-0.1-0.21-0.21-0.21h-8.32l-2.61-2.81c-0.04-0.04-0.09-0.06-0.15-0.06H12.12z
+				 M12.37,962.82h5.87l2.6,2.8c0.04,0.04,0.09,0.07,0.15,0.07h8.21v9.85H12.37V962.82z M20.78,967.54c-0.11,0-0.21,0.09-0.21,0.21
+				V973l-1.7-1.71c-0.08-0.08-0.21-0.08-0.29,0c-0.08,0.08-0.07,0.22,0,0.29l2.04,2.03c0.05,0.05,0.09,0.08,0.16,0.08
+				s0.11-0.04,0.16-0.08l2.04-2.03c0.07-0.08,0.08-0.21,0-0.29c-0.08-0.08-0.21-0.08-0.29,0l-1.7,1.71v-5.25
+				C20.99,967.63,20.89,967.54,20.78,967.54z"/>
+		</g>
+	</g>
+</g>
+</svg>

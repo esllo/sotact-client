@@ -34,7 +34,7 @@ const Tool = (() => {
     if (_psd === undefined) return ctx;
     ctx = _psd;
   };
-
+ 
   // tool objects
   let ls = null;
   let ms = null;
@@ -92,10 +92,7 @@ const Tool = (() => {
       item.id(id);
       console.log(id);
       let color = rainbow(Math.floor(Math.random() * 1000));
-      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">
-        ${item.name()}
-        <p class="tl_name_color" style="background: ${color}"></p>
-      </div>`;
+      copyToLine(did, id, item.name());
       data[did] = {
         src: id,
         timeline: {
@@ -110,7 +107,6 @@ const Tool = (() => {
             data: data[did].timeline['t0']
           });
       }
-      _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
       copyItemToTimeline(did, item);
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
       setPoint(did, 0);
@@ -152,11 +148,7 @@ const Tool = (() => {
       copyItemToTimeline(d, i);
 
       let color = rainbow(Math.floor(Math.random() * 1000));
-      _tns.innerHTML += `<div class="tl_name" did="${d}" uid="${dt.src}" droppable="false" onclick="Tool.selectNode(this)">
-        ${i.name()}
-        <p class="tl_name_color" style="background: ${color}"></p>
-      </div>`;
-      _tps.innerHTML += `<div class="tl_prop" did="${d}" uid="${dt.src}"></div>`;
+      copyToLine(d, dt.src, i.name());
       for (let ind = 0; ind < Math.min(dt.time.length, dt.data.length); ind++) {
         let tm = dt.time[ind];
         let tmb = 't' + tm;
@@ -168,6 +160,23 @@ const Tool = (() => {
       data.push(tl);
     });
     TAW.initFromTool();
+  }
+
+  function copyToLine(did, uid, name) {
+    _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${uid}" droppable="false" onclick="Tool.selectNode(this)">
+      ${name}
+      <p class="tl_name_color"></p>
+    </div>`;
+    let caps = createCaps();
+    _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${uid}">${caps}</div>`;
+  }
+
+  function createCaps() {
+    let body = ``;
+    for (let i = 0; i < 101; i++) {
+      body += `<div class="cap cap-${i}"></div>`;
+    }
+    return body;
   }
 
   function createTlData(item) {
@@ -214,17 +223,43 @@ const Tool = (() => {
     redrawAll();
   }
 
+  function checkPoint(did, progress) {
+    let d = byQuery(`div.tl_prop[did="${did}"]`);
+    if (d != null) {
+      let cap = d.querySelector('.cap-' + progress);
+      let p = cap.previousElementSibling;
+      if (p != null) {
+        if (!p.classList.contains('cap')) {
+          p.parentElement.removeChild(p);
+        }
+      }
+      return cap;
+    }
+    return null;
+  }
+
   function setPoint(did, progress) {
-    let d = byQuery(`div[udid="${did}"][progress="${progress}"]`);
-    if (d == null) {
-      d = createElem('div');
-      d.setAttribute('udid', did);
-      d.setAttribute('progress', progress);
-      d.className = 'tl_point';
-      d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
-      byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
+    let cap = checkPoint(did, progress);
+    if (cap != null) {
+      let p = document.createElement('div');
+      p.className = 'point';
+      p.setAttribute('udid', did);
+      p.setAttribute('progress', progress);
+      cap.parentElement.insertBefore(p, cap);
     }
   }
+
+  // function setPoint(did, progress) {
+  //   let d = byQuery(`div[udid="${did}"][progress="${progress}"]`);
+  //   if (d == null) {
+  //     d = createElem('div');
+  //     d.setAttribute('udid', did);
+  //     d.setAttribute('progress', progress);
+  //     d.className = 'tl_point';
+  //     d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
+  //     byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
+  //   }
+  // }
 
   function changeLastTr(fn, v) {
     if (lastTr != null) {
@@ -300,17 +335,13 @@ const Tool = (() => {
       i.id(id);
 
       let color = rainbow(Math.floor(Math.random() * 1000));
-      _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${id}" droppable="false" onclick="Tool.selectNode(this)">
-        ${i.name()}
-        <p class="tl_name_color" style="background: ${color}"></p>
-      </div>`;
+      copyToLine(did, id, i.name())
       data[did] = {
         src: id,
         timeline: {
           t0: createTlData(i),
         },
       };
-      _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${id}"></div>`;
       copyItemToTimeline(did, i);
       setPoint(did, 0);
     }
@@ -518,19 +549,19 @@ const Tool = (() => {
 
   const CALIB_CNT = 11;
   function addTimebodyCalib() {
-    _tbh.style.width = bsize + TB_PAD * 2 + 'px';
-    const dist = bsize / (CALIB_CNT - 1);
-    // 10 = calib count
-    for (let i = 0; i < CALIB_CNT; i++) {
-      const u = createElem('p');
-      u.className = 'time_calib_unit';
-      u.textContent = i * 10 + '%';
-      const d = createElem('div');
-      d.className = 'time_calib';
-      u.style.left = d.style.left = TB_PAD + dist * i + 'px';
-      _tbh.appendChild(u);
-      _tbh.appendChild(d);
-    }
+    // _tbh.style.width = bsize + TB_PAD * 2 + 'px';
+    // const dist = bsize / (CALIB_CNT - 1);
+    // // 10 = calib count
+    // for (let i = 0; i < CALIB_CNT; i++) {
+    //   const u = createElem('p');
+    //   u.className = 'time_calib_unit';
+    //   u.textContent = i * 10 + '%';
+    //   const d = createElem('div');
+    //   d.className = 'time_calib';
+    //   u.style.left = d.style.left = TB_PAD + dist * i + 'px';
+    //   _tbh.appendChild(u);
+    //   _tbh.appendChild(d);
+    // }
   }
 
   const size = (s) => (sz = s || sz);
