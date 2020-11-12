@@ -159,7 +159,28 @@ const Home = (props) => {
                   <Split dir="vertical"></Split>
                   <FlexBox className="timeline_body" weight={1} style={{ position: 'relative' }}>
                     <div className="timebar"></div>
-                    <div id="timebody_head"></div>
+                    <div id="timebody_head">
+                      <div className="unit_vals">
+                        {(new Array(21).fill(0)).map((e, i) => {
+                          if (i % 2 == 0) {
+                            return <div className={['val', `val-${i}`].join(' ')}>{parseInt(i / 2) * 10}%</div>
+                          } else {
+                            return <div className={['val-sp']}></div>
+                          }
+                        })};
+                      </div>
+                      <div className="unit_caps">
+                        {(new Array(201).fill(0)).map((e, i) => {
+                          if (i % 2 == 0) {
+                            let cls = ['ucap'];
+                            (i % 10 == 0) && cls.push('ucap-high');
+                            return <div className={cls.join(' ')}></div>
+                          } else {
+                            return <div className={"ucap-sp"}></div>
+                          }
+                        })}
+                      </div>
+                    </div>
                     <div id="tl_props" className="nsb"></div>
                   </FlexBox>
                 </FlexBox>
@@ -179,9 +200,23 @@ const Home = (props) => {
               <img src="./out/static/img/cloud/cloud_X.svg" />
             </div>
           </div>
+          <div className="so">
+            <h2 className="so_title">Open</h2>
+            <div class="so_from">
+              <img id="so_local" />
+              <img id="so_cloud" />
+            </div>
+            <div class="so_input off">
+              <input id="save_input" placeholder="프로젝트의 제목을 입력하세요." />
+              <button id="save_cloud">저장</button>
+            </div>
+            <div class="so_exit">
+              <img src="./out/static/img/cloud/cloud_X.svg" />
+            </div>
+          </div>
         </div>
       </main>
-    </div>
+    </div >
   );
 };
 

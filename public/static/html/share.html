@@ -13,6 +13,10 @@
       overflow: hidden;
     }
 
+    body {
+      background: #232323;
+    }
+
     .share {
       background: #232323;
       overflow: hidden;
@@ -32,13 +36,14 @@
       flex-direction: column;
       flex: 1;
       transition: all .3s ease-in;
-    }
-
-    .tab:last-of-type {
       transform: translateX(100%);
     }
 
-    .tab:last-of-type.on {
+    .tab:first-of-type {
+      transform: translateX(-100%);
+    }
+
+    .tab.on {
       transform: translateX(0%);
     }
 
@@ -166,7 +171,7 @@
 
     .row>p {
       flex: 1;
-      padding: 30px;
+      padding: 0 30px;
       font-size: 18px;
       color: #706e6e;
     }
@@ -203,12 +208,25 @@
       border-radius: 12px;
       box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
     }
+
+    .accept {
+      width: 92px;
+      padding: 8px;
+      border: none;
+      margin: 4px;
+      border-radius: 8px;
+      background: #504f4f;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 18px;
+      color: #eee;
+    }
   </style>
 </head>
 
 <body>
   <div class="share">
-    <div class="tab">
+    <div class="tab on">
       <div class="title">
         <h2>Share</h2>
       </div>
@@ -229,15 +247,26 @@
         <h2>친구추가</h2>
       </div>
       <div class="search">
-        <input class="searchbar" placeholder="이름으로 검색" />
+        <input id="searchbar" class="searchbar" placeholder="이름으로 검색" />
         <img src="../img/etc/etc_zoom.svg" />
       </div>
       <div id="add_list" class="list">
 
       </div>
       <div class="buttons">
-        <button id="apply">완료</button>
-        <button id="previous">취소</button>
+        <button id="apply">추가</button>
+        <button id="previous">뒤로</button>
+      </div>
+    </div>
+    <div class="tab">
+      <div class="title">
+        <h2>친구요청</h2>
+      </div>
+      <div id="req_list" class="list">
+
+      </div>
+      <div class="buttons">
+        <button id="previousReq">뒤로</button>
       </div>
     </div>
   </div>
@@ -247,33 +276,116 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
+    const [_uname, hash, uid] = window.location.hash.substr(1).split('&');
+    const uname = decodeURI(_uname);
+    console.log(uname);
+    console.log(hash);
     document.getElementById('cancel').onclick = () => ipcRenderer.send('closeShare');
     let add = document.querySelector('.exit');
-    let right = document.getElementsByClassName('tab')[1];
+    let [left, center, right] = [...document.getElementsByClassName('tab')];
     add.onclick = (e) => {
-      right.classList.add('on');
-      add.style.display = 'none';
+      if (center.classList.contains('on')) {
+        getRequests();
+        add.style.display = 'none';
+        center.classList.remove('on');
+        right.classList.add('on');
+      } else {
+        left.classList.remove('on');
+        center.classList.add('on');
+      }
     };
-    const release = () => { add.style.display = 'block'; right.classList.remove('on') };
+    const release = () => { center.classList.remove('on'); left.classList.add('on'); getFriends() };
+    const releaseReq = () => {
+      center.classList.add('on');
+      right.classList.remove('on');
+      add.style.display = 'block';
+    }
+    let fr_tout = null;
 
-    document.getElementById('apply').onclick = release;
+    document.getElementById('apply').onclick = () => {
+      let elems = [...document.querySelectorAll('#add_list > div.on')];
+      elems.forEach(e => {
+        let formData = new FormData();
+        formData.append('fromUserId', uid);
+        formData.append('toUserId', e.id || 0);
+        console.log(formData);
+        fetch("http://taw.esllo.com:8080/friendRequest", {
+          method: "POST",
+          body: formData,
+        }).then(r => r.text()).then(text => {
+          let json = JSON.parse(text);
+          if (json.status == 200) {
+            if (fr_tout != null) clearTimeout(fr_tout);
+            fr_tout = setTimeout(() => {
+              ipcRenderer.send('alert', { title: "알림", message: "친구요청을 보냈습니다." });
+            }, 1000);
+          }
+        }).catch(e => {
+          console.log(e);
+          alertError()
+        })
+      });
+      // release();
+    };
     document.getElementById('previous').onclick = release;
+    document.getElementById('previousReq').onclick = releaseReq;
 
     function clicked(o) {
       o.classList.toggle('on');
     }
+
     const _list = document.getElementById('share_list');
+    const _adds = document.getElementById('add_list');
+    const _reqs = document.getElementById('req_list');
     function setList(list) {
       _list.innerHTML = '';
-      list.forEach(e => {
-        _list.innerHTML += `
+      if (list == null || list.length == 0) {
+        _list.innerHTML = "<div class='row'><p>친구가 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          _list.innerHTML += `
         <div class="row" id="${e.id}" onclick="clicked(this)">
           <img class="profile" src="../img/share/share_profile.svg" />
           <p>${e.name}</p>
           <img class="check" />
         </div>`;
-      });
+        });
+      }
     }
+
+    function setFList(list) {
+      _adds.innerHTML = '';
+      if (list == null || list.length == 0) {
+        _adds.innerHTML = "<div class='row'><p>결과가 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          ((e.email != "") && (e.email = "<br/>" + e.email))
+          _adds.innerHTML += `
+        <div class="row" id="${e.id}" onclick="clicked(this)">
+          <img class="profile" src="../img/share/share_profile.svg" />
+          <p>${e.name}${e.email}</p>
+          <img class="check" />
+        </div>`;
+        });
+      }
+    }
+
+    function setRList(list) {
+      _reqs.innerHTML = '';
+      if (list == null || list.length == 0) {
+        _reqs.innerHTML = "<div class='row'><p>요청이 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          _reqs.innerHTML += `
+        <div class="row" id="${e.id}" onclick="clicked(this)">
+          <img class="profile" src="../img/share/share_profile.svg" />
+          <p>${e.name}</p>
+          <button class="accept" onclick="acceptRequest(${e.id})">수락</button>
+        </div>`;
+        });
+      }
+    }
+
     function getChecked() {
       let ids = Array.from(document.querySelectorAll('.row.on')).map(e => e.id);
       return ids || [];
@@ -285,6 +397,106 @@
         d.push({ id: "id" + i, name: "name" + i });
       return d;
     }
+
+    function getFriends() {
+      let fetchURL = "http://taw.esllo.com:8080/friend?userId=" + uid;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        console.log(json);
+        if (json.status == "200") {
+          let data = (JSON.parse(json.data) || [null])[0]
+          if (data != null && Array.isArray(data)) {
+            let refined = data.map(e => ({ id: e.friendId || "", name: e.nickname || "" }));
+            setList(refined);
+            return;
+          }
+        }
+        setList([]);
+        throw "error occred";
+      }).catch(e => {
+        console.error(e);
+        alertError()
+      });
+    }
+
+    const sb = document.getElementById('searchbar');
+    let search_tout = null;
+    sb.onkeyup = () => {
+      if (search_tout != null) clearTimeout(search_tout);
+      search_tout = setTimeout(findFriends, 700);
+    }
+    function findFriends() {
+      let value = sb.value.trim();
+      if (value == null || value.length < 3) {
+        return;
+      }
+      let fetchURL = "http://taw.esllo.com:8080/user/search?keyword=" + value;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        console.log(json);
+        if (json != null && Array.isArray(json)) {
+          setFList(json.map(e => ({ id: e.userId || "", name: e.nickname || "", email: e.email || "" })));
+          return;
+        }
+        setFList([]);
+        throw "error occured";
+      }).catch(e => {
+        console.error(e);
+        alertError()
+      })
+    }
+
+    function getRequests() {
+      let fetchURL = "http://taw.esllo.com:8080/friendRequest?userId=" + uid;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        if (json != null && json.status == 200 && json.data != null) {
+          let data = JSON.parse(json.data);
+          console.log('fetch requests');
+          if (data != null) {
+            setRList(data.map(e => ({ id: e.friendId, name: e.nickname })));
+            return;
+          }
+        }
+        setRList([]);
+        throw "error occured";
+      }).catch(e => {
+        console.log(e);
+        alertError()
+      })
+    }
+
+    function alertError() {
+      ipcRenderer.send('alert', { title: "에러", message: "서버에 문제가 발생했습니다." });
+    }
+
+    let acc_tout = null;
+    function acceptRequest(to) {
+      let fetchURL = "http://taw.esllo.com:8080/friend";
+
+      let formData = new FormData();
+      formData.append('fromUserId', uid);
+      formData.append('toUserId', to || 0);
+      formData.append('acceptStatus', "OK");
+      console.log(formData);
+      fetch(fetchURL, {
+        method: "POST",
+        body: formData,
+      }).then(r => r.text()).then(text => {
+        let json = JSON.parse(text);
+        if (json.status == 200) {
+          if (acc_tout != null) clearTimeout(acc_tout);
+          acc_tout = setTimeout(() => {
+            ipcRenderer.send('alert', { title: "알림", message: "친구요청을 수락했습니다." });
+          }, 1000);
+          return;
+        }
+        throw 'error occured';
+      }).catch(e => {
+        console.log(e);
+        alertError()
+      })
+
+    }
+
+    getFriends();
   </script>
 </body>
 
