@@ -74,11 +74,11 @@ const TAW = (() => {
   const getFlow = () => flow;
 
   function initFromTool() {
+    Tool.setCurrentTAW(TAW);
     setStage(Tool.getStage());
     setLayer(Tool.getPLayer());
     Tool.sortData();
     applyData(Tool.getData());
-    Tool.setCurrentTAW(TAW);
   }
   return {
     initFromTool: initFromTool,

@@ -58,7 +58,6 @@ const Tool = (() => {
     data = [];
     nodes = [];
     lastTr = tr = currentTAW = null;
-    dragged = false;
     lastX = lastL = -1;
     _tps.innerHTML = _tns.innerHTML = '';
     blRect.width(0);
@@ -134,6 +133,7 @@ const Tool = (() => {
     initTr();
     initBar();
     initProp();
+    TAW.initFromTool();
   }
 
   function initPresets() {
@@ -239,6 +239,7 @@ const Tool = (() => {
     img.setAttr('did', d);
     img.on('mousedown', moveSelectListener);
     img.on('mouseup', moveReleaseListener);
+    img.on('dragmove', moveListener);
     nodes.push(img);
     addTl(img);
     redrawAll();
@@ -274,7 +275,7 @@ const Tool = (() => {
             let udid = p.getAttribute('udid');
             delete data[udid].timeline['t' + progress];
             p.parentElement.removeChild(p);
-            (currentTAW != null) && currentTAW.applyData(data);
+            (currentTAW != null) && TAW.applyData(data);
           }
         }
       }
@@ -315,11 +316,12 @@ const Tool = (() => {
       borderDash: [5, 5],
       centerScaling: true,
     });
-    const evv = (a) => {
-      // console.log(a);
+    console.log(tr);
+    const evv = (e) => {
+      if (e.type == "transformstart") ms = tr.node();
+
+      if (e.type == "transformend") { updateSel(); (ms = null) };
     };
-    tr.on('mousedown', evv);
-    tr.on('dragmove', evv);
     tr.on('transform', evv);
     tr.on('transformend', evv);
     tr.on('transformstart', evv);
@@ -329,13 +331,12 @@ const Tool = (() => {
   function selectNode(obj) {
     const node = nodes[parseInt(obj.getAttribute('did'))];
     ms = node;
-    updateSel();
+    updateProp();
     ms = null;
     selectItem(node, false);
   }
 
   function selectItem(e, fe = true) {
-    console.log(e.currentTarget || e);
     let target = e.currentTarget || e;
     if (lastTr != target) {
       lastTr = target;
@@ -347,17 +348,27 @@ const Tool = (() => {
     tr.zIndex(tl.children.length - 1);
     tl.batchDraw();
     if (fe) {
-      Object.keys(data).forEach(e => data[e].src == target.id() && nameSelected(document.querySelector(`.tl_name[did="${e}"]`)))
+      let tg = getDidByID(target.id());
+      if (tg != null) nameSelected(tg);
     }
   }
 
-  let dragged = false;
+  function getDidByID(id) {
+    let target = null;
+    Object.keys(data).forEach(e => data[e].src == id && (target = document.querySelector(`.tl_name[did="${e}"]`)))
+    return target;
+  }
+
   function moveSelectListener(e) {
     ms = e.currentTarget;
-    dragged = false;
     if (si != null) clearInterval(si);
     si = setInterval(updateSel, 100);
     selectItem(e);
+  }
+
+  function moveListener(e) {
+    let t = e.currentTarget;
+    if (lastTr == null) selectItem(e);
   }
 
   function attrChange(pk) {
@@ -392,7 +403,12 @@ const Tool = (() => {
     tl.draw();
   }
 
+  function refineUpdate(o) {
+    ['x', 'y', 'scaleX', 'scaleY', 'rotation'].forEach(e => o[e](parseInt(o[e]() * 100) / 100));
+  }
+
   function applyUpdate(o) {
+    refineUpdate(o);
     let dat = data[o.getAttr('did')];
     let tm = getTimebar();
     let tmb = 't' + tm;
@@ -413,10 +429,8 @@ const Tool = (() => {
     TAW.initFromTool();
   }
 
-  function updateSel() {
+  function updateProp() {
     if (ms != null) {
-      dragged = true;
-      applyUpdate(ms);
       _nv.textContent = ms.name();
       _xv.value = ms.x();
       _yv.value = ms.y();
@@ -426,6 +440,22 @@ const Tool = (() => {
       _syv.value = ms.scaleY();
       _vv.value = ms.visible();
       _cv.value = ms.globalCompositeOperation();
+    }
+  }
+
+  function needUpdate() {
+    if (ms == null) return false;
+    return (_xv.value != ms.x()) || (_yv.value != ms.y()) || (_rv.value != ms.rotation()) ||
+      (_ov.value != (ms.opacity() * 100)) || (_sxv.value != ms.scaleX()) || (_syv.value != ms.scaleY()) ||
+      (_vv.value != ms.visible()) || (_cv.value != ms.globalCompositeOperation());
+  }
+
+  function updateSel() {
+    if (ms != null) {
+      if (needUpdate()) {
+        applyUpdate(ms);
+        updateProp();
+      }
     }
   }
 
