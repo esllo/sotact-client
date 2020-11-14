@@ -57,7 +57,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
-  color:#efefef;
+  color: #efefef;
+}
+.tl_name.on {
+  background: #191919;
 }
 .tl_name_color {
   width: 5px;
@@ -72,18 +75,18 @@ body {
   height: 32px;
   border-bottom: 1px solid #333;
   position: relative;
-  display:flex;
+  display: flex;
   flex-direction: row;
 }
-.cap{
+.cap {
   flex: 1;
 }
-.cap-100{
+.cap-100 {
   width: 0;
   flex: 0;
 }
 
-.point{
+.point {
   width: 7px;
   height: 7px;
   border-radius: 3px;
@@ -109,7 +112,7 @@ body {
   height: 100%;
 }
 #timebody_head {
-  display:flex;
+  display: flex;
   flex-direction: column;
 }
 .time_calib_unit {
@@ -133,36 +136,38 @@ body {
   color: #eee;
 }
 
-.unit_vals, .unit_caps{
+.unit_vals,
+.unit_caps {
   height: 22px;
-  display:flex;
+  display: flex;
   flex-direction: row;
-  color:#919293;
+  color: #919293;
   font-size: 13px;
   padding: 0 20px;
   line-height: 22px;
 }
 
-.unit_caps{
+.unit_caps {
   height: 8px;
 }
 
-.val{
+.val {
   width: 24px;
   margin: 0 -12px;
   text-align: center;
 }
 
-.val-sp, .ucap-sp{
+.val-sp,
+.ucap-sp {
   flex: 1;
 }
 
-.ucap{
+.ucap {
   background: #919293;
   width: 1px;
   margin: 3px -1px 0 0px;
 }
 
-.ucap-high{
+.ucap-high {
   margin: 0 -1px 0 0;
 }

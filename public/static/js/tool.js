@@ -179,12 +179,18 @@ const Tool = (() => {
   }
 
   function copyToLine(did, uid, name) {
-    _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${uid}" droppable="false" onclick="Tool.selectNode(this)">
+    _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${uid}" droppable="false" onclick="Tool.nameSelected(this);Tool.selectNode(this);">
       ${name}
       <p class="tl_name_color"></p>
     </div>`;
     let caps = createCaps();
     _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${uid}">${caps}</div>`;
+  }
+
+  function nameSelected(o) {
+    let names = document.querySelectorAll('.tl_name');
+    Array.from(names).forEach(e => e != o && e.classList.contains('on') && e.classList.remove('on'));
+    o.classList.contains('on') ? o.classList.remove('on') : o.classList.add('on');
   }
 
   function createCaps() {
@@ -233,7 +239,6 @@ const Tool = (() => {
     img.setAttr('did', d);
     img.on('mousedown', moveSelectListener);
     img.on('mouseup', moveReleaseListener);
-    img.on('click', selectItem);
     nodes.push(img);
     addTl(img);
     redrawAll();
@@ -326,11 +331,11 @@ const Tool = (() => {
     ms = node;
     updateSel();
     ms = null;
-    selectItem(node);
+    selectItem(node, false);
   }
 
-  function selectItem(e) {
-    console.log('curTarget:' + e.currentTarget);
+  function selectItem(e, fe = true) {
+    console.log(e.currentTarget || e);
     let target = e.currentTarget || e;
     if (lastTr != target) {
       lastTr = target;
@@ -341,17 +346,18 @@ const Tool = (() => {
     }
     tr.zIndex(tl.children.length - 1);
     tl.batchDraw();
+    if (fe) {
+      Object.keys(data).forEach(e => data[e].src == target.id() && nameSelected(document.querySelector(`.tl_name[did="${e}"]`)))
+    }
   }
 
   let dragged = false;
   function moveSelectListener(e) {
-    lastTr = ms = e.currentTarget;
-    tr.nodes([lastTr]);
-    tr.zIndex(tl.children.length - 1);
-    tl.batchDraw();
+    ms = e.currentTarget;
     dragged = false;
     if (si != null) clearInterval(si);
     si = setInterval(updateSel, 100);
+    selectItem(e);
   }
 
   function attrChange(pk) {
@@ -424,7 +430,6 @@ const Tool = (() => {
   }
 
   function moveReleaseListener(e) {
-    if (!dragged) lastTr = null;
     updateSel();
     ms = null;
     clearInterval(si);
@@ -659,6 +664,7 @@ const Tool = (() => {
     attrChange: attrChange,
     session: session,
     sessionCreated: sessionCreated,
-    clear: clear
+    clear: clear,
+    nameSelected: nameSelected
   };
 })();
