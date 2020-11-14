@@ -29,12 +29,13 @@ const Tool = (() => {
   let stg = null;
   let pl = null;
   let tl = null;
+  let bl = null;
   let ctx = null;
   const psd = (_psd) => {
     if (_psd === undefined) return ctx;
     ctx = _psd;
   };
- 
+
   // tool objects
   let ls = null;
   let ms = null;
@@ -42,6 +43,7 @@ const Tool = (() => {
   let ti = null;
   let time = 0;
   let sz = 0;
+  let blRect = null;
 
   function clear() {
     if (_session != null) {
@@ -59,6 +61,9 @@ const Tool = (() => {
     dragged = false;
     lastX = lastL = -1;
     _tps.innerHTML = _tns.innerHTML = '';
+    blRect.width(0);
+    blRect.height(0);
+    bl.batchDraw();
     applyLayer();
     redrawAll();
     initTr();
@@ -78,7 +83,18 @@ const Tool = (() => {
     stg = new Konva.Stage({ container: 'container' });
     pl = new Konva.Layer();
     tl = new Konva.Layer();
+    bl = new Konva.Layer();
+    blRect = new Konva.Rect({
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+      fill: "#fff",
+      shadowBlur: 4
+    });
+    bl.add(blRect);
     tl.hide();
+    stg.add(bl);
     stg.add(pl);
     stg.add(tl);
     rebsize(stg, _p.offsetWidth, _p.offsetHeight);
@@ -245,6 +261,18 @@ const Tool = (() => {
       p.className = 'point';
       p.setAttribute('udid', did);
       p.setAttribute('progress', progress);
+      p.oncontextmenu = (e) => {
+        let progress = p.getAttribute('progress');
+        if (progress != 0) {
+          let result = ipcRenderer.sendSync('yesorno', { title: "알림", message: "삭제 하시겠습니까?" });
+          if (result == 0) {
+            let udid = p.getAttribute('udid');
+            delete data[udid].timeline['t' + progress];
+            p.parentElement.removeChild(p);
+            (currentTAW != null) && currentTAW.applyData(data);
+          }
+        }
+      }
       cap.parentElement.insertBefore(p, cap);
     }
   }
@@ -256,7 +284,7 @@ const Tool = (() => {
   //     d.setAttribute('udid', did);
   //     d.setAttribute('progress', progress);
   //     d.className = 'tl_point';
-  //     d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
+  //     d.style.left = (bsize() * progress) / TIME_TICK + TB_PAD - 2 + 'px';
   //     byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
   //   }
   // }
@@ -276,7 +304,7 @@ const Tool = (() => {
 
   function initTr() {
     tr = new Konva.Transformer({
-      anchorbsize: 10,
+      anchorSize: 10,
       anchorStrokeWidth: 1,
       anchorCornerRadius: 5,
       borderDash: [5, 5],
@@ -402,7 +430,18 @@ const Tool = (() => {
     clearInterval(si);
   }
 
-  const addPr = (obj) => pl.add(obj);
+  const addPr = (obj) => {
+    pl.add(obj);
+    // let ww = blRect.width(), hh = blRect.height();
+    // (obj.children != null) && obj.children.forEach(e => {
+    //   console.log(e);
+    //   console.log(e.attrs);
+    //   let [x, y] = e.position();
+    //   let [w, h] = e.size();
+    //   (x + w > ww) && (ww = x + w) || bl.batchDraw();
+    //   (y + h > hh) && (hh = y + h) || bl.batchDraw();
+    // });
+  };
   const addTl = (obj) => tl.add(obj);
 
   const toggleLayer = (bool) => {
@@ -445,6 +484,7 @@ const Tool = (() => {
   const getParent = () => _p;
 
   const redrawAll = () => {
+    bl.batchDraw();
     pl.batchDraw();
     tl.batchDraw();
     // stg.batchDraw();
@@ -489,15 +529,16 @@ const Tool = (() => {
   }
 
   const TB_PAD = 20;
-  const TIME_TICK = 1000;
+  const TIME_TICK = 100;
   const TICK_RATE = 16;
   var currentTAW = null;
   const setCurrentTAW = (taw) => (currentTAW = taw);
-  const moveTimebar = (o) => {
+  const moveTimebar = (o, t = false) => {
     _b.style.left = TB_PAD + o + 'px';
+    t && arrangeTimebar();
     if (getTimebar() >= TIME_TICK) {
       stopTimebar();
-      _b.style.left = TB_PAD + bsize + 'px';
+      _b.style.left = TB_PAD + bsize() + 'px';
     } else if (getTimebar() <= 0) {
       _b.style.left = TB_PAD + 'px';
     }
@@ -505,29 +546,33 @@ const Tool = (() => {
       let ret = currentTAW.setProgress(getTimebar());
     }
   };
+  const arrangeTimebar = () => {
+    let per = getTimebar();
+    _b.style.left = TB_PAD + per * (bsize() / 100) + 'px';
+  }
   function startTimebar() {
     if (ti != null) clearInterval(ti);
     ti = setInterval(tickTime, TICK_RATE);
   }
   const updateTb = (v) => tb_v = v / 100000;
   let tb_v = 0.0002;
-  const stopTimebar = () => clearInterval(ti);
+  const stopTimebar = () => { clearInterval(ti); arrangeTimebar() };
   const resetTimebar = () => moveTimebar(0);
   const tickTime = () =>
-    moveTimebar(parseInt(computedStyle(_b).left) + bsize * tb_v);
+    moveTimebar(parseInt(computedStyle(_b).left) + bsize() * tb_v);
   const getTimebar = () =>
     Math.round(
-      ((parseInt(computedStyle(_b).left) - TB_PAD) / bsize) * TIME_TICK
+      ((parseInt(computedStyle(_b).left) - TB_PAD) / bsize()) * TIME_TICK
     );
 
   let lastX = -1;
   let lastL = -1;
-  const bsize = parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
+  const bsize = () => parseInt(computedStyle(_tbh).width) - TB_PAD * 2;
   function initBar() {
     _tb.onmousemove = (e) => {
       let dist = lastL + e.x - lastX;
-      if (lastX != -1 && dist >= 0 && dist <= bsize) {
-        moveTimebar(dist);
+      if (lastX != -1 && dist >= 0 && dist <= bsize()) {
+        moveTimebar(dist, true);
       }
     };
     _b.onmousedown = (e) => {
@@ -537,11 +582,11 @@ const Tool = (() => {
     _tb.onmouseleave = _tb.onmouseup = (e) => (lastX = lastL = -1);
     addTimebodyCalib();
     _tbh.onclick = (e) => {
-      const pos = Math.round((e.offsetX - TB_PAD / bsize) * TIME_TICK);
-      moveTimebar(e.offsetX - TB_PAD);
+      const pos = Math.round((e.offsetX - TB_PAD / bsize()) * TIME_TICK);
+      moveTimebar(e.offsetX - TB_PAD, true);
     };
     _tbh.onmousedown = (e) => {
-      moveTimebar(e.offsetX - TB_PAD);
+      moveTimebar(e.offsetX - TB_PAD, true);
       lastL = e.offsetX - TB_PAD;
       lastX = e.x;
     };
@@ -549,8 +594,8 @@ const Tool = (() => {
 
   const CALIB_CNT = 11;
   function addTimebodyCalib() {
-    // _tbh.style.width = bsize + TB_PAD * 2 + 'px';
-    // const dist = bsize / (CALIB_CNT - 1);
+    // _tbh.style.width = bsize() + TB_PAD * 2 + 'px';
+    // const dist = bsize() / (CALIB_CNT - 1);
     // // 10 = calib count
     // for (let i = 0; i < CALIB_CNT; i++) {
     //   const u = createElem('p');
@@ -564,7 +609,12 @@ const Tool = (() => {
     // }
   }
 
-  const size = (s) => (sz = s || sz);
+  const size = (s) => {
+    if (s != undefined) sz = s;
+    blRect.size(sz);
+    bl.batchDraw();
+    return sz;
+  }
 
   const save = (n, h, cb) => {
     moveTimebar(0);
