@@ -226,7 +226,7 @@ ipcMain.on('cloudSelected', (e, args) => {
 })
 
 let shareWindow = null;
-function createShareWindow(id) {
+function createShareWindow(id, fonly = false) {
   if (shareWindow != null) return;
   if (userData == null) {
     showDialog({ title: "로그인 필요", message: "로그인이 필요합니다." }, ['Ok'])
@@ -244,12 +244,16 @@ function createShareWindow(id) {
     }
   });
   shareWindow.on('closed', () => shareWindow = null);
-  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id + "&" + userData.userId);
+  shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id + "&" + userData.userId + "&" + fonly);
   shareWindow.openDevTools();
 }
 ipcMain.on('requestShare', (e, a) => {
   createShareWindow(a.id);
 })
+
+ipcMain.on('requestFriend', (e, a) => {
+  createShareWindow('', true);
+});
 
 ipcMain.on('closeShare', () => {
   shareWindow.close();

@@ -1,4 +1,3 @@
-
 // file selected
 let input = byQuery('[type=file]');
 if (input != null) {
@@ -251,7 +250,9 @@ byID('menu_open').onclick = () => openSo(true);
 // };
 byID('menu_save').onclick = () => openSo(false);
 byID('menu_share');
-byID('menu_render');
+byID('menu_friend').onclick = () => {
+  ipcRenderer.send('requestFriend', null);
+};
 
 let _so_title = document.querySelector('.so_title');
 let _so = document.querySelector('.so');
