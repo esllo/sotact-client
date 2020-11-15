@@ -348,12 +348,12 @@ const Tool = (() => {
     tr.zIndex(tl.children.length - 1);
     tl.batchDraw();
     if (fe) {
-      let tg = getDidByID(target.id());
+      let tg = getDidObjByID(target.id());
       if (tg != null) nameSelected(tg);
     }
   }
 
-  function getDidByID(id) {
+  function getDidObjByID(id) {
     let target = null;
     Object.keys(data).forEach(e => data[e].src == id && (target = document.querySelector(`.tl_name[did="${e}"]`)))
     return target;
@@ -401,6 +401,7 @@ const Tool = (() => {
     });
     setPoint(did, pk.time);
     tl.draw();
+    TAW.initFromTool();
   }
 
   function refineUpdate(o) {
@@ -427,6 +428,27 @@ const Tool = (() => {
     }
 
     TAW.initFromTool();
+  }
+
+  function applyPreset(o) {
+    if (lastTr != null) {
+      console.log('preset');
+      let offset = getTimebar();
+      let dist = (100 - offset) / (o.length - 1);
+      console.log('lasttr');
+      console.log(lastTr);
+      let did = getDidObjByID(lastTr.id()).getAttribute('did');
+      console.log('did : ' + did);
+      o.forEach((e, i) => {
+        let attrs = {};
+        _props.forEach(p => attrs[p] = lastTr[p]());
+        Object.keys(e).forEach(k => attrs[k] += e[k]);
+        let tm = parseInt(offset + (dist * i));
+        data[did].timeline['t' + tm] = attrs;
+        setPoint(did, tm);
+      });
+      TAW.initFromTool();
+    }
   }
 
   function updateProp() {
@@ -586,6 +608,7 @@ const Tool = (() => {
     _b.style.left = TB_PAD + per * (bsize() / 100) + 'px';
   }
   function startTimebar() {
+    TAW.initFromTool();
     if (ti != null) clearInterval(ti);
     ti = setInterval(tickTime, TICK_RATE);
   }
@@ -695,6 +718,7 @@ const Tool = (() => {
     session: session,
     sessionCreated: sessionCreated,
     clear: clear,
-    nameSelected: nameSelected
+    nameSelected: nameSelected,
+    applyPreset: applyPreset
   };
 })();

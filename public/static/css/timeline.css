@@ -85,12 +85,28 @@ body {
   width: 0;
   flex: 0;
 }
-
+.tl_prop:nth-child(6n-5) > .point {
+  background: #c85360;
+}
+.tl_prop:nth-child(6n-4) > .point {
+  background: #6d4ece;
+}
+.tl_prop:nth-child(6n-3) > .point {
+  background: #cac14c;
+}
+.tl_prop:nth-child(6n-2) > .point {
+  background: #aaa9ca;
+}
+.tl_prop:nth-child(6n-1) > .point {
+  background: #f21afe;
+}
+.tl_prop:nth-child(6n) > .point {
+  background: #ea7f1a;
+}
 .point {
   width: 7px;
   height: 7px;
   border-radius: 3px;
-  background: rgb(216, 24, 24);
   margin: auto -4px auto -3px;
   z-index: 99;
 }

@@ -14,7 +14,7 @@ const Presets = (() => {
       let to = FuncObjs.Linear(ang, dst);
       let ret = [from];
       for (let i = 0; i < cnt; i++) {
-        ret.push(to);
+        ret.push(to[1]);
         ret.push(from);
       }
       return ret;
@@ -120,6 +120,7 @@ const Presets = (() => {
     console.log(this);
     if (length == values.length) {
       let ret = FuncObjs[func].apply(null, values);
+      Tool.applyPreset(ret);
       console.log(ret);
     } else {
       ipcRenderer.send('alert', { title: "알림", message: "유효하지 않은 값입니다." });
