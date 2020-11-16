@@ -514,7 +514,17 @@ const Tool = (() => {
       o.forEach((e, i) => {
         let attrs = {};
         _props.forEach(p => attrs[p] = lastTr[p]());
-        Object.keys(e).forEach(k => attrs[k] += e[k]);
+        Object.keys(e).forEach(k => {
+          switch (k) {
+            case 'x':
+            case 'y':
+              attrs[k] += e[k];
+              break;
+            case 'rotation':
+            case 'opacity':
+              attrs[k] = e[k];
+          }
+        });
         let tm = parseInt(offset + (dist * i));
         data[did].timeline['t' + tm] = attrs;
         setPoint(did, tm);

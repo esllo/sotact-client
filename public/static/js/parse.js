@@ -11,6 +11,7 @@ const parser = (() => {
     cvs.width = width;
     cvs.height = height;
     ctx.clearRect(0, 0, width, height);
+    console.log(width + " / " + height);
     let img = ctx.createImageData(width, height);
     img.data.set(png.data);
     ctx.putImageData(img, 0, 0);
@@ -101,12 +102,14 @@ const parser = (() => {
         let l = child.left;
         let w = child.width;
         let h = child.height;
-        let o = lay.opacity / 255;
-        let v = lay.visible;
-        let png = lay.image.toPng();
-        let imageURL = parseImage(png, w, h);
-        let image = convertImage(imageURL, l, t, n, o, v);
-        group.add(image);
+        if (w != 0 && h != 0) {
+          let o = lay.opacity / 255;
+          let v = lay.visible;
+          let png = lay.image.toPng();
+          let imageURL = parseImage(png, w, h);
+          let image = convertImage(imageURL, l, t, n, o, v);
+          group.add(image);
+        }
       }
     }
     return group;
