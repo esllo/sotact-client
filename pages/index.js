@@ -189,6 +189,7 @@ const Home = (props) => {
           </FlexBox>
         </FlexBox>
         <input style={{ display: 'none' }} type="file" id="folder" webkitdirectory directory />
+        <div className="alert_box"></div>
         <div className="wrap_panel">
           <div className="account_info">
             <h2>Account</h2>

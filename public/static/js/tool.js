@@ -66,6 +66,7 @@ const Tool = (() => {
     applyLayer();
     redrawAll();
     initTr();
+    key(null);
   }
 
   // session
@@ -106,8 +107,6 @@ const Tool = (() => {
       let did = nextUDID();
       item.id(id);
       console.log(id);
-      let color = rainbow(Math.floor(Math.random() * 1000));
-      copyToLine(did, id, item.name());
       data[did] = {
         src: id,
         timeline: {
@@ -123,6 +122,7 @@ const Tool = (() => {
           });
       }
       copyItemToTimeline(did, item);
+      copyToLine(did, id, item.name());
       maxDist = computedStyle(_tns).height + 26 - computedStyle(_th).height;
       setPoint(did, 0);
       e.preventDefault();
@@ -163,8 +163,6 @@ const Tool = (() => {
       let d = nextUDID();
       copyItemToTimeline(d, i);
 
-      let color = rainbow(Math.floor(Math.random() * 1000));
-      copyToLine(d, dt.src, i.name());
       for (let ind = 0; ind < Math.min(dt.time.length, dt.data.length); ind++) {
         let tm = dt.time[ind];
         let tmb = 't' + tm;
@@ -173,18 +171,93 @@ const Tool = (() => {
         }
         tl.timeline[tmb] = dt.data[ind];
       }
+      copyToLine(d, dt.src, i.name());
       data.push(tl);
     });
     TAW.initFromTool();
   }
 
   function copyToLine(did, uid, name) {
+    Presets.closeAll();
     _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${uid}" droppable="false" onclick="Tool.nameSelected(this);Tool.selectNode(this);">
       ${name}
-      <p class="tl_name_color"></p>
+      <p class="tl_name_color" onclick="Tool.toggleBase(event, this)"></p>
+      <p class="tl_name_clear" onclick="Tool.clearPoint(event, this)"></p>
     </div>`;
     let caps = createCaps();
     _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${uid}">${caps}</div>`;
+    setTimeout(() => {
+      recomm(name);
+      let selfNOde = document.querySelector(`.tl_name[did="${did}"]`);
+      nameSelected(selfNOde);
+      selectNode(selfNOde);
+    }, 500);
+  }
+
+  function toggleBase(e, o) {
+    e.stopPropagation();
+    o.classList.toggle('time');
+  }
+
+  function clearPoint(e, o) {
+    e.stopPropagation();
+    let res = ipcRenderer.sendSync('yesorno', { title: '알림', message: '모든 속성을 삭제하시겠습니까?' });
+    if (res != 0) return;
+    let did = o.parentElement.getAttribute('did');
+    let points = Array.from(document.querySelectorAll(`.tl_prop[did="${did}"] > .point`));
+    Object.keys(data[did].timeline).forEach((v, i) => {
+      (i != 0) && delete data[did].timeline[v];
+
+    });
+    points.forEach((el, i) => (i != 0) && el.parentElement.removeChild(el));
+  }
+
+  function reloadPoint() {
+    let points = document.querySelectorAll('.point');
+    Array.from(points).forEach(p => p.parentElement.removeChild(p));
+    data.forEach(dat => {
+      let did = getDidObjByID(dat.src).getAttribute('did');
+      Object.keys(dat.timeline).forEach(k => {
+        k = k.substr(1);
+        console.log('point set ' + did + " / " + k);
+        setPoint(did, k);
+      });
+    });
+  }
+
+  function recomm(name) {
+    name = name.replace(/[0-9]/g, '');
+    fetch('http://52.78.1.107:8081/?' + encodeURI(name)).then(r => r.text()).then(text => {
+      let json = JSON.parse(text);
+      if (json.recom) {
+        console.log(json.recom)
+        let recom = parseInt(json.recom);
+        let presets = document.querySelectorAll('.preset-title');
+        if (recom >= 0 && recom < presets.length) {
+          Presets.togglePreset(document.querySelectorAll('.preset-title')[recom]);
+          toast(`[${name}]에 프리셋이 추천되었습니다.`);
+          return;
+        }
+      }
+      throw 'e';
+    }).catch(e => {
+      console.log(e);
+      toast(`추천된 프리셋이 없습니다.`);
+    });
+  }
+
+  const toast_box = document.querySelector('.alert_box');
+  let toast_count = 0;
+  function toast(msg) {
+    let line = document.createElement('div');
+    line.className = 'alert_line';
+    line.textContent = msg;
+    toast_box.appendChild(line);
+    setTimeout(() => line.classList.add('on'), 50);
+    setTimeout(() => {
+      line.classList.add('offn');
+      setTimeout(() => { line.parentElement.removeChild(line); }, 450)
+    }, 2500)
   }
 
   function nameSelected(o) {
@@ -379,8 +452,6 @@ const Tool = (() => {
       let did = nextUDID();
       i.id(id);
 
-      let color = rainbow(Math.floor(Math.random() * 1000));
-      copyToLine(did, id, i.name())
       data[did] = {
         src: id,
         timeline: {
@@ -388,6 +459,7 @@ const Tool = (() => {
         },
       };
       copyItemToTimeline(did, i);
+      copyToLine(did, id, i.name())
       setPoint(did, 0);
     }
     item = tl.find('#' + pk.src)
@@ -681,6 +753,9 @@ const Tool = (() => {
     SAVE.save(p, f, size(), n, h, cb);
   };
 
+  let lastKey = null;
+  const key = (key) => lastKey = (key == undefined ? lastKey : key)
+
   return {
     init: init,
     initPresets: initPresets,
@@ -719,6 +794,10 @@ const Tool = (() => {
     sessionCreated: sessionCreated,
     clear: clear,
     nameSelected: nameSelected,
-    applyPreset: applyPreset
+    applyPreset: applyPreset,
+    key: key,
+    toggleBase: toggleBase,
+    clearPoint: clearPoint,
+    reloadPoint: reloadPoint
   };
 })();

@@ -86,6 +86,7 @@ if (input != null) {
                   Tool.applyLayer();
                   Tool.redrawAll();
                   SAVE.recurDelete(dir);
+                  Tool.reloadPoint();
                 })
               } else {
                 ipcRenderer.send('alert', { message: "유효하지 않은 파일입니다." });
@@ -249,7 +250,13 @@ byID('menu_open').onclick = () => openSo(true);
 //   ipcRenderer.send('requestCloud');
 // };
 byID('menu_save').onclick = () => openSo(false);
-byID('menu_share');
+byID('menu_share').onclick = () => {
+  if (Tool.key()) {
+    ipcRenderer.send('requestShare', { id: Tool.key() });
+  } else {
+    ipcRenderer.send('alert', { title: "알림", message: "열려있는 클라우드 파일이 없습니다." });
+  }
+};
 byID('menu_friend').onclick = () => {
   ipcRenderer.send('requestFriend', null);
 };
@@ -327,5 +334,5 @@ const l = () => {
   Tool.setCurrentTAW(TAW);
   if (Tool.session() != null && Tool.session().isConnected()) {
     Tool.session().send('save');
-  } 
+  }
 }

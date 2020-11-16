@@ -127,6 +127,10 @@ const Presets = (() => {
     }
   }
 
-  return { getHTML: getHTML, togglePreset: togglePreset, getPreset: getPreset };
+  function closeAll(){
+    Array.from(document.querySelectorAll('.preset > *')).forEach(e => e.classList.remove('on'));
+  }
+
+  return { getHTML: getHTML, togglePreset: togglePreset, getPreset: getPreset, closeAll: closeAll };
 })();
 addOnOccured(() => { Tool.initPresets() });

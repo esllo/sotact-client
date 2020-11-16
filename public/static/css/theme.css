@@ -140,7 +140,7 @@ label > input {
   max-height: 0px;
   overflow: hidden;
   transition: all 0.5s;
-  text-align:right;
+  text-align: right;
 }
 .preset > div > label {
   padding: 4px 8px;
@@ -166,10 +166,10 @@ label > input {
   border-radius: 8px;
   background: #8cff00;
   width: 80px;
-  color:black;
+  color: black;
   height: 28px;
   line-height: 28px;
-  border:none;
+  border: none;
   font-weight: bold;
   margin: 4px 10px;
 }
@@ -470,4 +470,38 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.alert_box {
+  z-index: 999;
+  position: fixed;
+  right: 286px;
+  bottom: 246px;
+  width: 360px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.alert_line {
+  transition: all 0.5s ease-out;
+  margin-top: 2px;
+  color: white;
+  padding: 0 8px;
+  background: #191818;
+  height: 0;
+  font-size: 16px;
+  line-height: 28px;
+  border-bottom: 1px solid #000;
+  overflow: hidden;
+  opacity: 1;
+  max-height: 28px;
+}
+
+.alert_line.on {
+  height: 28px;
+}
+
+.alert_line.offn {
+  opacity: 0;
+  height: 0;
 }

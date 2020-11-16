@@ -83,7 +83,8 @@ const parser = (() => {
     let i = 0;
     let group = grp || new Konva.Group();
     // const p = confirm('Parse Group as one layer?');
-    p = true;
+    let p = ipcRenderer.sendSync('yesorno', { title: '알림', message: '그룹을 하나의 레이어로 가져오시겠습니까?' });
+    p = (p == 0);
     group.name(escape(from.name) || '이름없음');
 
     for (const child of childs.reverse()) {

@@ -51,7 +51,7 @@ body {
 .tl_name {
   height: 32px;
   line-height: 32px;
-  padding: 0 16px;
+  padding: 0 32px;
   border-bottom: 1px solid #333;
   white-space: nowrap;
   overflow: hidden;
@@ -62,12 +62,25 @@ body {
 .tl_name.on {
   background: #191919;
 }
-.tl_name_color {
-  width: 5px;
+.tl_name_color,
+.tl_name_clear {
+  width: 20px;
   height: 20px;
   position: absolute;
-  left: 6px;
   top: 6px;
+}
+.tl_name_color {
+  background: url('../img/etc/scroll_base.svg');
+  background-size: 100% 100% !important;
+  left: 6px;
+}
+.tl_name_color.time {
+  background: url('../img/etc/time_base.svg');
+}
+.tl_name_clear {
+  right: 7px;
+  background: url('../img/etc/clear_point.svg');
+  background-size: 100% 100%;
 }
 .tl_prop {
   width: calc(100% - 40px);
