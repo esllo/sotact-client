@@ -86,6 +86,7 @@ ipcRenderer.on('cloudSelected', (e, args) => {
               Tool.session().connect();
               console.log('load finish');
               Tool.key(args[0]);
+              Tool.reloadPoint();
             })
           } else {
             ipcRenderer.send('alert', { message: "유효하지 않은 파일입니다." });

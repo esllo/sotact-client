@@ -76,7 +76,7 @@ const Tool = (() => {
     return _session != null && _session.socket().connected;
   }
   function sessionCreated() {
-
+    
   }
 
   function init() {
