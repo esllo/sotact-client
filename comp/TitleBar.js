@@ -142,7 +142,7 @@ const TitleBar = (props) => {
         <p id="menu_open">Open</p>
         <p id="menu_save">Save</p>
         <p id="menu_share">Share</p>
-        <p id="menu_render">Rendering</p>
+        <p id="menu_friend">Friend</p>
       </Menubar>
       <div style={{ flex: 1 }} css={draggable}></div>
       <Title>{props.title || ""}</Title>

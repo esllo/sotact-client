@@ -1,6 +1,8 @@
 
 const Presets = (() => {
   const from = { x: 0, y: 0 };
+  const fromR = { rotation: 0 };
+  const fromO = { opacity: 0 };
   const FuncObjs = {
     Linear: function (ang, dst) {
       let to = { x: dst * cos(ang), y: dst * sin(ang) };
@@ -8,13 +10,13 @@ const Presets = (() => {
     },
     Rotate: function (ang) {
       let to = { rotation: ang };
-      return [from, to];
+      return [fromR, to];
     },
     Wdgd: function (ang, dst, cnt) { // 왔다갔다
       let to = FuncObjs.Linear(ang, dst);
       let ret = [from];
       for (let i = 0; i < cnt; i++) {
-        ret.push(to);
+        ret.push(to[1]);
         ret.push(from);
       }
       return ret;
@@ -29,7 +31,7 @@ const Presets = (() => {
       }
       return ret;
     }
-    , Zigzag: function (dir, cnt, ang, dst, flp) {
+    , Zigzag: function (dir, cnt, ang, dst, flp = false) {
       let index = 0;
       let lsx = dst * cos(dir), lsy = dst * sin(dir);
       let rsx = dst * cos(180 + ang - dir), rsy = dst * sin(180 + ang - dir);
@@ -42,6 +44,21 @@ const Presets = (() => {
         ret.push({ x: fx += trig ? lsx : rsx, y: fy += trig ? lsy : rsy });
       }
       return ret;
+    }, LoopRotation: function (ang, cnt) {
+      let ret = [fromR];
+      for (let i = 0; i < cnt; i++) {
+        ret.push({ rotation: ang }, { rotation: -ang });
+      }
+      ret.push(fromR);
+      return ret;
+    }, ShowAndHide: function (dur) {
+      let ret = [fromO];
+      let dist = 100 / dur;
+      for (let i = 0; i < dist - 1; i++) {
+        ret.push({opacity: 1});
+      }
+      ret.push({opacity: 0});
+      return ret;
     }
   }
 
@@ -53,7 +70,7 @@ const Presets = (() => {
       name: '선형 이동',
       type: {
         ang: 0,
-        dst: 0
+        dst: [0, 10]
       }
     },
     Rotate: {
@@ -67,24 +84,36 @@ const Presets = (() => {
       type: {
         ang: 0,
         dst: 0,
-        cnt: 0,
+        cnt: [3, 1],
       }
     },
     Spinout: {
       name: '밖으로 회전',
       type: {
-        dst: 0,
-        cnt: 0
+        dst: [0, 10],
+        cnt: [3, 1]
       }
     },
     Zigzag: {
       name: '지그재그 이동',
       type: {
         dir: 0,
-        cnt: 0,
+        cnt: [3, 1],
         ang: 0,
-        dst: 0,
-        flp: 0,
+        dst: [0, 10],
+      }
+    },
+    LoopRotation: {
+      name: '반복 회전',
+      type: {
+        ang: 0,
+        cnt: [3, 1]
+      }
+    },
+    ShowAndHide:{
+      name: '보였다 숨기기',
+      type:{
+        dur: [20, 5]
       }
     }
   };
@@ -92,7 +121,11 @@ const Presets = (() => {
   function getPresetHTML(func, name, type) {
     let struct = `<div class="preset" id="preset-${func}">`;
     struct += `<p onclick="Presets.togglePreset(this)" class="preset-title"><img/>${name}</p><div>`;
-    Object.keys(type).forEach(key => { struct += `<label><span>${key}</span><input type="number" step="10" value="0" /></label>`; });
+    Object.keys(type).forEach(key => {
+      let v = Array.isArray(type[key]) ? type[key][0] : type[key];
+      let step = Array.isArray(type[key]) ? type[key][1] : 5;
+      struct += `<label><span>${key}</span><input type="number" step="${step}" value="${v}" /></label>`;
+    });
     struct += `<button onclick="Presets.getPreset(this)">적용</button></div></div>`;
     return struct;
   }
@@ -120,12 +153,17 @@ const Presets = (() => {
     console.log(this);
     if (length == values.length) {
       let ret = FuncObjs[func].apply(null, values);
+      Tool.applyPreset(ret);
       console.log(ret);
     } else {
       ipcRenderer.send('alert', { title: "알림", message: "유효하지 않은 값입니다." });
     }
   }
 
-  return { getHTML: getHTML, togglePreset: togglePreset, getPreset: getPreset };
+  function closeAll() {
+    Array.from(document.querySelectorAll('.preset > *')).forEach(e => e.classList.remove('on'));
+  }
+
+  return { getHTML: getHTML, togglePreset: togglePreset, getPreset: getPreset, closeAll: closeAll };
 })();
 addOnOccured(() => { Tool.initPresets() });

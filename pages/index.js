@@ -38,7 +38,7 @@ const Home = (props) => {
             <div className="profile_box">
               <img src="./out/static/img/etc/etc_profile.svg" />
               <h4 id="login" className="profile_name" style={{ flex: 1 }}>Login</h4>
-              <h4 className="profile_share">+ 0</h4>
+              <h4 className="profile_share">-</h4>
             </div>
             <div className="control_box">
               <img id="tb0" src="./out/static/img/etc/etc_play.svg" />
@@ -189,6 +189,7 @@ const Home = (props) => {
           </FlexBox>
         </FlexBox>
         <input style={{ display: 'none' }} type="file" id="folder" webkitdirectory directory />
+        <div className="alert_box"></div>
         <div className="wrap_panel">
           <div className="account_info">
             <h2>Account</h2>

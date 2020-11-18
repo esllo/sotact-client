@@ -51,20 +51,36 @@ body {
 .tl_name {
   height: 32px;
   line-height: 32px;
-  padding: 0 16px;
+  padding: 0 32px;
   border-bottom: 1px solid #333;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
-  color:#efefef;
+  color: #efefef;
 }
-.tl_name_color {
-  width: 5px;
+.tl_name.on {
+  background: #191919;
+}
+.tl_name_color,
+.tl_name_clear {
+  width: 20px;
   height: 20px;
   position: absolute;
-  left: 6px;
   top: 6px;
+}
+.tl_name_color {
+  background: url('../img/etc/scroll_base.svg');
+  background-size: 100% 100% !important;
+  left: 6px;
+}
+.tl_name_color.time {
+  background: url('../img/etc/time_base.svg');
+}
+.tl_name_clear {
+  right: 7px;
+  background: url('../img/etc/clear_point.svg');
+  background-size: 100% 100%;
 }
 .tl_prop {
   width: calc(100% - 40px);
@@ -72,6 +88,7 @@ body {
   height: 32px;
   border-bottom: 1px solid #333;
   position: relative;
+<<<<<<< HEAD
   display:flex;
   flex-direction: row;
 }
@@ -88,6 +105,40 @@ body {
   height: 7px;
   border-radius: 3px;
   background: rgb(216, 24, 24);
+=======
+  display: flex;
+  flex-direction: row;
+}
+.cap {
+  flex: 1;
+}
+.cap-100 {
+  width: 0;
+  flex: 0;
+}
+.tl_prop:nth-child(6n-5) > .point {
+  background: #c85360;
+}
+.tl_prop:nth-child(6n-4) > .point {
+  background: #6d4ece;
+}
+.tl_prop:nth-child(6n-3) > .point {
+  background: #cac14c;
+}
+.tl_prop:nth-child(6n-2) > .point {
+  background: #aaa9ca;
+}
+.tl_prop:nth-child(6n-1) > .point {
+  background: #f21afe;
+}
+.tl_prop:nth-child(6n) > .point {
+  background: #ea7f1a;
+}
+.point {
+  width: 7px;
+  height: 7px;
+  border-radius: 3px;
+>>>>>>> develop
   margin: auto -4px auto -3px;
   z-index: 99;
 }
@@ -109,7 +160,11 @@ body {
   height: 100%;
 }
 #timebody_head {
+<<<<<<< HEAD
   display:flex;
+=======
+  display: flex;
+>>>>>>> develop
   flex-direction: column;
 }
 .time_calib_unit {
@@ -133,36 +188,68 @@ body {
   color: #eee;
 }
 
+<<<<<<< HEAD
 .unit_vals, .unit_caps{
   height: 22px;
   display:flex;
   flex-direction: row;
   color:#919293;
+=======
+.unit_vals,
+.unit_caps {
+  height: 22px;
+  display: flex;
+  flex-direction: row;
+  color: #919293;
+>>>>>>> develop
   font-size: 13px;
   padding: 0 20px;
   line-height: 22px;
 }
 
+<<<<<<< HEAD
 .unit_caps{
   height: 8px;
 }
 
 .val{
+=======
+.unit_caps {
+  height: 8px;
+}
+
+.val {
+>>>>>>> develop
   width: 24px;
   margin: 0 -12px;
   text-align: center;
 }
 
+<<<<<<< HEAD
 .val-sp, .ucap-sp{
   flex: 1;
 }
 
 .ucap{
+=======
+.val-sp,
+.ucap-sp {
+  flex: 1;
+}
+
+.ucap {
+>>>>>>> develop
   background: #919293;
   width: 1px;
   margin: 3px -1px 0 0px;
 }
 
+<<<<<<< HEAD
 .ucap-high{
   margin: 0 -1px 0 0;
 }
+=======
+.ucap-high {
+  margin: 0 -1px 0 0;
+}
+>>>>>>> develop

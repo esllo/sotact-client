@@ -11,6 +11,7 @@ const parser = (() => {
     cvs.width = width;
     cvs.height = height;
     ctx.clearRect(0, 0, width, height);
+    console.log(width + " / " + height);
     let img = ctx.createImageData(width, height);
     img.data.set(png.data);
     ctx.putImageData(img, 0, 0);
@@ -83,7 +84,8 @@ const parser = (() => {
     let i = 0;
     let group = grp || new Konva.Group();
     // const p = confirm('Parse Group as one layer?');
-    p = true;
+    let p = ipcRenderer.sendSync('yesorno', { title: '알림', message: '그룹을 하나의 레이어로 가져오시겠습니까?' });
+    p = (p == 0);
     group.name(escape(from.name) || '이름없음');
 
     for (const child of childs.reverse()) {
@@ -100,12 +102,14 @@ const parser = (() => {
         let l = child.left;
         let w = child.width;
         let h = child.height;
-        let o = lay.opacity / 255;
-        let v = lay.visible;
-        let png = lay.image.toPng();
-        let imageURL = parseImage(png, w, h);
-        let image = convertImage(imageURL, l, t, n, o, v);
-        group.add(image);
+        if (w != 0 && h != 0) {
+          let o = lay.opacity / 255;
+          let v = lay.visible;
+          let png = lay.image.toPng();
+          let imageURL = parseImage(png, w, h);
+          let image = convertImage(imageURL, l, t, n, o, v);
+          group.add(image);
+        }
       }
     }
     return group;

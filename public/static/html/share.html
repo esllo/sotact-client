@@ -226,7 +226,11 @@
 
 <body>
   <div class="share">
+<<<<<<< HEAD
     <div class="tab on">
+=======
+    <div class="tab on fonly-hide">
+>>>>>>> develop
       <div class="title">
         <h2>Share</h2>
       </div>
@@ -244,7 +248,7 @@
     </div>
     <div class="tab">
       <div class="title">
-        <h2>친구추가</h2>
+        <h2 id="ftitle">친구추가</h2>
       </div>
       <div class="search">
         <input id="searchbar" class="searchbar" placeholder="이름으로 검색" />
@@ -254,7 +258,11 @@
 
       </div>
       <div class="buttons">
+<<<<<<< HEAD
         <button id="apply">추가</button>
+=======
+        <button id="apply" class="fonly-hide">추가</button>
+>>>>>>> develop
         <button id="previous">뒤로</button>
       </div>
     </div>
@@ -276,7 +284,11 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
+<<<<<<< HEAD
     const [_uname, hash, uid] = window.location.hash.substr(1).split('&');
+=======
+    const [_uname, hash, uid, fonly] = window.location.hash.substr(1).split('&');
+>>>>>>> develop
     const uname = decodeURI(_uname);
     console.log(uname);
     console.log(hash);
@@ -496,6 +508,50 @@
 
     }
 
+<<<<<<< HEAD
+=======
+    let share_tout = null;
+    let share_success = [];
+    let share_failed = [];
+
+    document.getElementById('share').onclick = () => {
+      let selected = document.querySelectorAll('#share_list > .row.on > p');
+      let ids = Array.from(selected).map(e => {
+        let to = e.textContent;
+        fetch(`http://13.125.214.132:4000?user=${encodeURI(uname)}&hash=${encodeURI(hash)}&share=${encodeURI(to)}`).then(r => r.text()).then(text => {
+          share_success.push(to);
+          shareAlert();
+        }).catch(e => {
+          share_failed.push(to);
+          shareAlert();
+        })
+      });
+    }
+
+    function shareAlert() {
+      if (share_tout != null) clearTimeout(share_tout);
+      share_tout = setTimeout(() => {
+        let msg = share_success.join(', ') + "님에게 공유하였습니다.";
+        if (share_failed.length > 0) {
+          msg += share_failed.join(', ') + "님에게 공유하지 못했습니다.";
+        }
+        share_failed = [];
+        share_success = [];
+        ipcRenderer.send('alert', { title: '알림', message: msg });
+      }, 1000);
+    }
+
+    if (fonly == "true") {
+      document.getElementById('ftitle').textContent = '친구목록';
+      left.classList.remove('on');
+      center.classList.add('on');
+      Array.from(document.querySelectorAll('.fonly-hide')).forEach(e => e.style.display = 'none');
+      let p = document.getElementById('previous');
+      p.onclick = () => ipcRenderer.send('closeShare');
+      p.textContent = "닫기";
+    }
+
+>>>>>>> develop
     getFriends();
   </script>
 </body>
