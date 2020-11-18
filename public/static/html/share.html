@@ -284,11 +284,7 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
-<<<<<<< HEAD
-    const [_uname, hash, uid] = window.location.hash.substr(1).split('&');
-=======
     const [_uname, hash, uid, fonly] = window.location.hash.substr(1).split('&');
->>>>>>> develop
     const uname = decodeURI(_uname);
     console.log(uname);
     console.log(hash);
@@ -508,8 +504,6 @@
 
     }
 
-<<<<<<< HEAD
-=======
     let share_tout = null;
     let share_success = [];
     let share_failed = [];
@@ -551,7 +545,6 @@
       p.textContent = "닫기";
     }
 
->>>>>>> develop
     getFriends();
   </script>
 </body>

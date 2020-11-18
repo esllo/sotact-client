@@ -88,24 +88,6 @@ body {
   height: 32px;
   border-bottom: 1px solid #333;
   position: relative;
-<<<<<<< HEAD
-  display:flex;
-  flex-direction: row;
-}
-.cap{
-  flex: 1;
-}
-.cap-100{
-  width: 0;
-  flex: 0;
-}
-
-.point{
-  width: 7px;
-  height: 7px;
-  border-radius: 3px;
-  background: rgb(216, 24, 24);
-=======
   display: flex;
   flex-direction: row;
 }
@@ -138,7 +120,6 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 3px;
->>>>>>> develop
   margin: auto -4px auto -3px;
   z-index: 99;
 }
@@ -160,11 +141,7 @@ body {
   height: 100%;
 }
 #timebody_head {
-<<<<<<< HEAD
-  display:flex;
-=======
   display: flex;
->>>>>>> develop
   flex-direction: column;
 }
 .time_calib_unit {
@@ -188,68 +165,38 @@ body {
   color: #eee;
 }
 
-<<<<<<< HEAD
-.unit_vals, .unit_caps{
-  height: 22px;
-  display:flex;
-  flex-direction: row;
-  color:#919293;
-=======
 .unit_vals,
 .unit_caps {
   height: 22px;
   display: flex;
   flex-direction: row;
   color: #919293;
->>>>>>> develop
   font-size: 13px;
   padding: 0 20px;
   line-height: 22px;
 }
 
-<<<<<<< HEAD
-.unit_caps{
-  height: 8px;
-}
-
-.val{
-=======
 .unit_caps {
   height: 8px;
 }
 
 .val {
->>>>>>> develop
   width: 24px;
   margin: 0 -12px;
   text-align: center;
 }
 
-<<<<<<< HEAD
-.val-sp, .ucap-sp{
-  flex: 1;
-}
-
-.ucap{
-=======
 .val-sp,
 .ucap-sp {
   flex: 1;
 }
 
 .ucap {
->>>>>>> develop
   background: #919293;
   width: 1px;
   margin: 3px -1px 0 0px;
 }
 
-<<<<<<< HEAD
-.ucap-high{
-  margin: 0 -1px 0 0;
-}
-=======
 .ucap-high {
   margin: 0 -1px 0 0;
 }
->>>>>>> develop
