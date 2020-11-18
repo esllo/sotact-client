@@ -108,11 +108,6 @@ const Tool = (() => {
       let did = nextUDID();
       item.id(id);
       console.log(id);
-<<<<<<< HEAD
-      let color = rainbow(Math.floor(Math.random() * 1000));
-      copyToLine(did, id, item.name());
-=======
->>>>>>> develop
       data[did] = {
         src: id,
         timeline: {
@@ -169,11 +164,6 @@ const Tool = (() => {
       let d = nextUDID();
       copyItemToTimeline(d, i);
 
-<<<<<<< HEAD
-      let color = rainbow(Math.floor(Math.random() * 1000));
-      copyToLine(d, dt.src, i.name());
-=======
->>>>>>> develop
       for (let ind = 0; ind < Math.min(dt.time.length, dt.data.length); ind++) {
         let tm = dt.time[ind];
         let tmb = 't' + tm;
@@ -189,14 +179,6 @@ const Tool = (() => {
   }
 
   function copyToLine(did, uid, name) {
-<<<<<<< HEAD
-    _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${uid}" droppable="false" onclick="Tool.selectNode(this)">
-      ${name}
-      <p class="tl_name_color"></p>
-    </div>`;
-    let caps = createCaps();
-    _tps.innerHTML += `<div class="tl_prop" did="${did}" uid="${uid}">${caps}</div>`;
-=======
     Presets.closeAll();
     _tns.innerHTML += `<div class="tl_name" did="${did}" uid="${uid}" droppable="false" onclick="Tool.nameSelected(this);Tool.selectNode(this);">
       ${name}
@@ -283,7 +265,6 @@ const Tool = (() => {
     let names = document.querySelectorAll('.tl_name');
     Array.from(names).forEach(e => e != o && e.classList.contains('on') && e.classList.remove('on'));
     o.classList.contains('on') ? o.classList.remove('on') : o.classList.add('on');
->>>>>>> develop
   }
 
   function createCaps() {
@@ -360,8 +341,6 @@ const Tool = (() => {
       p.className = 'point';
       p.setAttribute('udid', did);
       p.setAttribute('progress', progress);
-<<<<<<< HEAD
-=======
       p.oncontextmenu = (e) => {
         let progress = p.getAttribute('progress');
         if (progress != 0) {
@@ -374,7 +353,6 @@ const Tool = (() => {
           }
         }
       }
->>>>>>> develop
       cap.parentElement.insertBefore(p, cap);
     }
   }
@@ -386,11 +364,7 @@ const Tool = (() => {
   //     d.setAttribute('udid', did);
   //     d.setAttribute('progress', progress);
   //     d.className = 'tl_point';
-<<<<<<< HEAD
-  //     d.style.left = (bsize * progress) / TIME_TICK + TB_PAD - 2 + 'px';
-=======
   //     d.style.left = (bsize() * progress) / TIME_TICK + TB_PAD - 2 + 'px';
->>>>>>> develop
   //     byQuery(`div[did="${did}"]:not([droppable=false])`).appendChild(d);
   //   }
   // }
@@ -491,11 +465,6 @@ const Tool = (() => {
       let did = nextUDID();
       i.id(id);
 
-<<<<<<< HEAD
-      let color = rainbow(Math.floor(Math.random() * 1000));
-      copyToLine(did, id, i.name())
-=======
->>>>>>> develop
       data[did] = {
         src: id,
         timeline: {
@@ -787,13 +756,8 @@ const Tool = (() => {
 
   const CALIB_CNT = 11;
   function addTimebodyCalib() {
-<<<<<<< HEAD
-    // _tbh.style.width = bsize + TB_PAD * 2 + 'px';
-    // const dist = bsize / (CALIB_CNT - 1);
-=======
     // _tbh.style.width = bsize() + TB_PAD * 2 + 'px';
     // const dist = bsize() / (CALIB_CNT - 1);
->>>>>>> develop
     // // 10 = calib count
     // for (let i = 0; i < CALIB_CNT; i++) {
     //   const u = createElem('p');
