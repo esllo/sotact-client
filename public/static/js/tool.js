@@ -67,6 +67,7 @@ const Tool = (() => {
     redrawAll();
     initTr();
     key(null);
+    document.querySelector('.profile_share').textContent = '-';
   }
 
   // session
@@ -76,7 +77,7 @@ const Tool = (() => {
     return _session != null && _session.socket().connected;
   }
   function sessionCreated() {
-    
+
   }
 
   function init() {
@@ -435,13 +436,25 @@ const Tool = (() => {
   function moveSelectListener(e) {
     ms = e.currentTarget;
     if (si != null) clearInterval(si);
-    si = setInterval(updateSel, 100);
+    // si = setInterval(updateSel, 100);
     selectItem(e);
   }
 
+  let lastTime = (new Date()).getTime();
   function moveListener(e) {
+    let tm = (new Date()).getTime();
+    if (tm - lastTime < 40) return;
+    lastTime = tm;
     let t = e.currentTarget;
     if (lastTr == null) selectItem(e);
+    updateSel();
+  }
+
+  function reqInfo() {
+    _session.send('sendInfo',
+      {
+        name: (userData || { nickname: '' }).nickname
+      });
   }
 
   function attrChange(pk) {
@@ -528,6 +541,14 @@ const Tool = (() => {
         let tm = parseInt(offset + (dist * i));
         data[did].timeline['t' + tm] = attrs;
         setPoint(did, tm);
+        if(isValidSession()){
+        _session.send('attrChange',
+          {
+            src: lastTr.id(),
+            time: tm,
+            data: attrs
+          });
+        }
       });
       TAW.initFromTool();
     }
@@ -559,6 +580,7 @@ const Tool = (() => {
       if (needUpdate()) {
         applyUpdate(ms);
         updateProp();
+        console.log('update sel');
       }
     }
   }
@@ -566,7 +588,7 @@ const Tool = (() => {
   function moveReleaseListener(e) {
     updateSel();
     ms = null;
-    clearInterval(si);
+    console.log('release');
   }
 
   const addPr = (obj) => {
@@ -808,6 +830,8 @@ const Tool = (() => {
     key: key,
     toggleBase: toggleBase,
     clearPoint: clearPoint,
-    reloadPoint: reloadPoint
+    reloadPoint: reloadPoint,
+    reqInfo: reqInfo,
+    toast: toast
   };
 })();

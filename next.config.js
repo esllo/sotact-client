@@ -1,3 +1,6 @@
 module.exports = {
-  assetPrefix: './out'
+  assetPrefix: './out',
+  generateBuildId: async () => {
+    return 'taw-build'
+  }
 }

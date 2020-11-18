@@ -18,7 +18,7 @@ function createWindow() {
       enableRemoteModule: true
     },
   });
-  _win.webContents.openDevTools();
+  // _win.webContents.openDevTools();
   return _win;
 }
 
@@ -34,7 +34,7 @@ function createLoginWindow() {
     }
   });
   _win.setMenu(null);
-  _win.webContents.openDevTools();
+  // _win.webContents.openDevTools();
   _win.on('closed', () => _win = null)
 
   return _win;
@@ -209,7 +209,7 @@ function createCloudWindow() {
   });
   cloudWindow.on('closed', () => cloudWindow = null);
   cloudWindow.loadURL(`file://${__dirname}/out/static/html/cloud.html#` + userData.nickname + "&" + userData.userId);
-  cloudWindow.openDevTools();
+  // cloudWindow.openDevTools();
 }
 
 ipcMain.on('requestCloud', (e) => {
@@ -249,7 +249,7 @@ function createShareWindow(id, fonly = false) {
   });
   shareWindow.on('closed', () => shareWindow = null);
   shareWindow.loadURL(`file://${__dirname}/out/static/html/share.html#` + userData.nickname + "&" + id + "&" + userData.userId + "&" + fonly);
-  shareWindow.openDevTools();
+  // shareWindow.openDevTools();
 }
 ipcMain.on('requestShare', (e, a) => {
   createShareWindow(a.id);

@@ -3,6 +3,7 @@ const io = require('socket.io-client');
 const Conn = (() => {
   const reqAddr = "http://13.125.218.2:5500/";
   const map = new Map();
+  const connCntView = document.querySelector('.profile_share');
   function requestAddr(key, cb) {
     fetch(reqAddr, {
       method: 'POST',
@@ -28,7 +29,7 @@ const Conn = (() => {
       phase: 0,
       failed: false,
     };
-    function initListener(socket){
+    function initListener(socket) {
       socket.on('lockDeny', (pk) => {
         // pk = src;
       });
@@ -45,6 +46,19 @@ const Conn = (() => {
       socket.on('attrChange', (pk) => {
         Tool.attrChange(pk);
       });
+      socket.on('reqInfo', (pk) => {
+        Tool.reqInfo();
+      });
+      socket.on('receiveInfo', (pk) => {
+        Tool.toast(pk.name + '님이 참여하였습니다.');
+      });
+      socket.on('reduceInfo', (pk) => {
+        Tool.toast('다른 클라이언트가 퇴장하였습니다.');
+      });
+      socket.on('clientCount', pk => {
+        connCntView.textContent = '+ ' + (pk.count - 1);
+        console.log(pk);
+      })
     }
     function send(pk, d) {
       console.log('send packet');
