@@ -1,0 +1,202 @@
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.nsb::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.nsb {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.timebar {
+  width: 3px;
+  margin: 0 0 0 -1px;
+  height: 100%;
+  background: #99ca3c;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  opacity: 0.8;
+  cursor: col-resize;
+  z-index: 9999;
+}
+#timebody_scroll {
+  /* overflow-x: scroll; */
+  height: 100%;
+}
+#flexbox-9 > div {
+  position: relative;
+}
+#timehead_head,
+#timebody_head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #3d3d3d;
+  border-bottom: 1px solid #191818;
+}
+#tl_names,
+#tl_props {
+  width: 100%;
+  height: 100%;
+  margin-top: 31px;
+  overflow-y: auto;
+}
+.tl_name {
+  height: 32px;
+  line-height: 32px;
+  padding: 0 32px;
+  border-bottom: 1px solid #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  color: #efefef;
+}
+.tl_name.on {
+  background: #191919;
+}
+.tl_name_color,
+.tl_name_clear {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 6px;
+}
+.tl_name_color {
+  background: url('../img/etc/scroll_base.svg');
+  background-size: 100% 100% !important;
+  left: 6px;
+}
+.tl_name_color.time {
+  background: url('../img/etc/time_base.svg');
+}
+.tl_name_clear {
+  right: 7px;
+  background: url('../img/etc/clear_point.svg');
+  background-size: 100% 100%;
+}
+.tl_prop {
+  width: calc(100% - 40px);
+  padding: 0 20px;
+  height: 32px;
+  border-bottom: 1px solid #333;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+.cap {
+  flex: 1;
+}
+.cap-100 {
+  width: 0;
+  flex: 0;
+}
+.tl_prop:nth-child(6n-5) > .point {
+  background: #c85360;
+}
+.tl_prop:nth-child(6n-4) > .point {
+  background: #6d4ece;
+}
+.tl_prop:nth-child(6n-3) > .point {
+  background: #cac14c;
+}
+.tl_prop:nth-child(6n-2) > .point {
+  background: #aaa9ca;
+}
+.tl_prop:nth-child(6n-1) > .point {
+  background: #f21afe;
+}
+.tl_prop:nth-child(6n) > .point {
+  background: #ea7f1a;
+}
+.point {
+  width: 7px;
+  height: 7px;
+  border-radius: 3px;
+  margin: auto -4px auto -3px;
+  z-index: 99;
+}
+.tl_point {
+  width: 4px;
+  height: 8px;
+  border: 1px solid #151515;
+  background: #333;
+  border-radius: 3px;
+  position: absolute;
+  top: 11px;
+}
+.tl_point:hover {
+  background: #222;
+}
+#timehead_head {
+}
+#timehead_head > input {
+  height: 100%;
+}
+#timebody_head {
+  display: flex;
+  flex-direction: column;
+}
+.time_calib_unit {
+  height: 16px;
+  width: 36px;
+  position: absolute;
+  top: 0;
+  margin-left: -18px;
+  font-size: 12px;
+  text-align: center;
+}
+.time_calib {
+  height: 10px;
+  width: 2px;
+  background: #1b1b1b;
+  position: absolute;
+  top: 16px;
+}
+
+.top > input {
+  color: #eee;
+}
+
+.unit_vals,
+.unit_caps {
+  height: 22px;
+  display: flex;
+  flex-direction: row;
+  color: #919293;
+  font-size: 13px;
+  padding: 0 20px;
+  line-height: 22px;
+}
+
+.unit_caps {
+  height: 8px;
+}
+
+.val {
+  width: 24px;
+  margin: 0 -12px;
+  text-align: center;
+}
+
+.val-sp,
+.ucap-sp {
+  flex: 1;
+}
+
+.ucap {
+  background: #919293;
+  width: 1px;
+  margin: 3px -1px 0 0px;
+}
+
+.ucap-high {
+  margin: 0 -1px 0 0;
+}

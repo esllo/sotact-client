@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    body {
+      background: #232323;
+    }
+
+    .share {
+      background: #232323;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tab {
+      background: #232323;
+      padding: 16px;
+      width: calc(100vw - 32px);
+      height: calc(100vh - 32px);
+      display: flex;
+      position: absolute;
+      left: 0;
+      top: 0;
+      flex-direction: column;
+      flex: 1;
+      transition: all .3s ease-in;
+      transform: translateX(100%);
+    }
+
+    .tab:first-of-type {
+      transform: translateX(-100%);
+    }
+
+    .tab.on {
+      transform: translateX(0%);
+    }
+
+    .exit {
+      width: 26px;
+      height: 26px;
+      border-radius: 13px;
+      position: fixed;
+      right: 26px;
+      top: 26px;
+      box-shadow: 0px 0px 14px 4px;
+      z-index: 1000;
+      -webkit-app-region: no-drag;
+    }
+
+    .exit_button {
+      width: 26px;
+    }
+
+    .drag {
+      width: calc(100vw - 40px);
+      height: 60px;
+      -webkit-app-region: drag;
+      user-select: none;
+      position: fixed;
+      left: 0;
+      top: 0;
+    }
+
+    .title {
+      height: 60px;
+    }
+
+    .title>h2 {
+      line-height: 45px;
+      text-align: center;
+      font-size: 20px;
+      color: white;
+    }
+
+    .search {
+      position: relative;
+      border-radius: 12px;
+      border: 1px solid #504f4f;
+      display: flex;
+      padding-left: 40px;
+      background: #1b1b1b;
+    }
+
+    .search>img {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 24px;
+    }
+
+    .searchbar {
+      background: transparent;
+      height: 40px;
+      border: none;
+      flex: 1;
+      outline: none;
+      color: white;
+      font-size: 16px;
+    }
+
+    .list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: flex-end;
+    }
+
+    .buttons>button:nth-child(2) {
+      background: #504f4f;
+      color: white;
+    }
+
+    .buttons>button {
+      width: 92px;
+      padding: 8px;
+      border: none;
+      margin: 4px;
+      border-radius: 8px;
+      background: #8cff00;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 18px;
+    }
+
+    .check {
+      content: url('../img/share/share_radio_box.svg');
+      width: 20px;
+    }
+
+    .row.on>.check {
+      content: url('../img/share/share_radio_checked.svg');
+    }
+
+    .row>* {
+      transition: all .5s;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 40px;
+      padding: 20px 4px;
+      border-bottom: 1px solid #706e6e;
+    }
+
+    .row:last-of-type {
+      border: none;
+    }
+
+    .profile {
+      width: 40px;
+      margin-left: 8px;
+    }
+
+    .row>p {
+      flex: 1;
+      padding: 0 30px;
+      font-size: 18px;
+      color: #706e6e;
+    }
+
+    .row.on>p {
+      color: #eee;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+      /* border: 3px solid #fff; */
+      border-radius: 12px;
+    }
+
+    ::-webkit-scrollbar-button:start:decrement,
+    ::-webkit-scrollbar-button:end:increment {
+      display: block;
+      height: 0px;
+      background: #efefef;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1b1b1b;
+      border-radius: 12px;
+      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+      padding: 4px 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      height: 50px;
+      width: 50px;
+      background: #2d2d2d;
+      border-radius: 12px;
+      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .accept {
+      width: 92px;
+      padding: 8px;
+      border: none;
+      margin: 4px;
+      border-radius: 8px;
+      background: #504f4f;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 18px;
+      color: #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="share">
+<<<<<<< HEAD
+    <div class="tab on">
+=======
+    <div class="tab on fonly-hide">
+>>>>>>> develop
+      <div class="title">
+        <h2>Share</h2>
+      </div>
+      <div class="search">
+        <input class="searchbar" placeholder="이름으로 검색" />
+        <img src="../img/etc/etc_zoom.svg" />
+      </div>
+      <div id="share_list" class="list">
+
+      </div>
+      <div class="buttons">
+        <button id="share">공유</button>
+        <button id="cancel">취소</button>
+      </div>
+    </div>
+    <div class="tab">
+      <div class="title">
+        <h2 id="ftitle">친구추가</h2>
+      </div>
+      <div class="search">
+        <input id="searchbar" class="searchbar" placeholder="이름으로 검색" />
+        <img src="../img/etc/etc_zoom.svg" />
+      </div>
+      <div id="add_list" class="list">
+
+      </div>
+      <div class="buttons">
+<<<<<<< HEAD
+        <button id="apply">추가</button>
+=======
+        <button id="apply" class="fonly-hide">추가</button>
+>>>>>>> develop
+        <button id="previous">뒤로</button>
+      </div>
+    </div>
+    <div class="tab">
+      <div class="title">
+        <h2>친구요청</h2>
+      </div>
+      <div id="req_list" class="list">
+
+      </div>
+      <div class="buttons">
+        <button id="previousReq">뒤로</button>
+      </div>
+    </div>
+  </div>
+  <div class="drag"></div>
+  <div class="exit">
+    <img class="exit_button" src="../img/share/share_+button.svg" />
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    const [_uname, hash, uid, fonly] = window.location.hash.substr(1).split('&');
+    const uname = decodeURI(_uname);
+    console.log(uname);
+    console.log(hash);
+    document.getElementById('cancel').onclick = () => ipcRenderer.send('closeShare');
+    let add = document.querySelector('.exit');
+    let [left, center, right] = [...document.getElementsByClassName('tab')];
+    add.onclick = (e) => {
+      if (center.classList.contains('on')) {
+        getRequests();
+        add.style.display = 'none';
+        center.classList.remove('on');
+        right.classList.add('on');
+      } else {
+        left.classList.remove('on');
+        center.classList.add('on');
+      }
+    };
+    const release = () => { center.classList.remove('on'); left.classList.add('on'); getFriends() };
+    const releaseReq = () => {
+      center.classList.add('on');
+      right.classList.remove('on');
+      add.style.display = 'block';
+    }
+    let fr_tout = null;
+
+    document.getElementById('apply').onclick = () => {
+      let elems = [...document.querySelectorAll('#add_list > div.on')];
+      elems.forEach(e => {
+        let formData = new FormData();
+        formData.append('fromUserId', uid);
+        formData.append('toUserId', e.id || 0);
+        console.log(formData);
+        fetch("http://taw.esllo.com:8080/friendRequest", {
+          method: "POST",
+          body: formData,
+        }).then(r => r.text()).then(text => {
+          let json = JSON.parse(text);
+          if (json.status == 200) {
+            if (fr_tout != null) clearTimeout(fr_tout);
+            fr_tout = setTimeout(() => {
+              ipcRenderer.send('alert', { title: "알림", message: "친구요청을 보냈습니다." });
+            }, 1000);
+          }
+        }).catch(e => {
+          console.log(e);
+          alertError()
+        })
+      });
+      // release();
+    };
+    document.getElementById('previous').onclick = release;
+    document.getElementById('previousReq').onclick = releaseReq;
+
+    function clicked(o) {
+      o.classList.toggle('on');
+    }
+
+    const _list = document.getElementById('share_list');
+    const _adds = document.getElementById('add_list');
+    const _reqs = document.getElementById('req_list');
+    function setList(list) {
+      _list.innerHTML = '';
+      if (list == null || list.length == 0) {
+        _list.innerHTML = "<div class='row'><p>친구가 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          _list.innerHTML += `
+        <div class="row" id="${e.id}" onclick="clicked(this)">
+          <img class="profile" src="../img/share/share_profile.svg" />
+          <p>${e.name}</p>
+          <img class="check" />
+        </div>`;
+        });
+      }
+    }
+
+    function setFList(list) {
+      _adds.innerHTML = '';
+      if (list == null || list.length == 0) {
+        _adds.innerHTML = "<div class='row'><p>결과가 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          ((e.email != "") && (e.email = "<br/>" + e.email))
+          _adds.innerHTML += `
+        <div class="row" id="${e.id}" onclick="clicked(this)">
+          <img class="profile" src="../img/share/share_profile.svg" />
+          <p>${e.name}${e.email}</p>
+          <img class="check" />
+        </div>`;
+        });
+      }
+    }
+
+    function setRList(list) {
+      _reqs.innerHTML = '';
+      if (list == null || list.length == 0) {
+        _reqs.innerHTML = "<div class='row'><p>요청이 없습니다.</p></div>";
+      } else {
+        list.forEach(e => {
+          _reqs.innerHTML += `
+        <div class="row" id="${e.id}" onclick="clicked(this)">
+          <img class="profile" src="../img/share/share_profile.svg" />
+          <p>${e.name}</p>
+          <button class="accept" onclick="acceptRequest(${e.id})">수락</button>
+        </div>`;
+        });
+      }
+    }
+
+    function getChecked() {
+      let ids = Array.from(document.querySelectorAll('.row.on')).map(e => e.id);
+      return ids || [];
+    }
+
+    function dummy() {
+      let d = [];
+      for (i = 0; i < 8; i++)
+        d.push({ id: "id" + i, name: "name" + i });
+      return d;
+    }
+
+    function getFriends() {
+      let fetchURL = "http://taw.esllo.com:8080/friend?userId=" + uid;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        console.log(json);
+        if (json.status == "200") {
+          let data = (JSON.parse(json.data) || [null])[0]
+          if (data != null && Array.isArray(data)) {
+            let refined = data.map(e => ({ id: e.friendId || "", name: e.nickname || "" }));
+            setList(refined);
+            return;
+          }
+        }
+        setList([]);
+        throw "error occred";
+      }).catch(e => {
+        console.error(e);
+        alertError()
+      });
+    }
+
+    const sb = document.getElementById('searchbar');
+    let search_tout = null;
+    sb.onkeyup = () => {
+      if (search_tout != null) clearTimeout(search_tout);
+      search_tout = setTimeout(findFriends, 700);
+    }
+    function findFriends() {
+      let value = sb.value.trim();
+      if (value == null || value.length < 3) {
+        return;
+      }
+      let fetchURL = "http://taw.esllo.com:8080/user/search?keyword=" + value;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        console.log(json);
+        if (json != null && Array.isArray(json)) {
+          setFList(json.map(e => ({ id: e.userId || "", name: e.nickname || "", email: e.email || "" })));
+          return;
+        }
+        setFList([]);
+        throw "error occured";
+      }).catch(e => {
+        console.error(e);
+        alertError()
+      })
+    }
+
+    function getRequests() {
+      let fetchURL = "http://taw.esllo.com:8080/friendRequest?userId=" + uid;
+      fetch(fetchURL).then(r => r.json()).then(json => {
+        if (json != null && json.status == 200 && json.data != null) {
+          let data = JSON.parse(json.data);
+          console.log('fetch requests');
+          if (data != null) {
+            setRList(data.map(e => ({ id: e.friendId, name: e.nickname })));
+            return;
+          }
+        }
+        setRList([]);
+        throw "error occured";
+      }).catch(e => {
+        console.log(e);
+        alertError()
+      })
+    }
+
+    function alertError() {
+      ipcRenderer.send('alert', { title: "에러", message: "서버에 문제가 발생했습니다." });
+    }
+
+    let acc_tout = null;
+    function acceptRequest(to) {
+      let fetchURL = "http://taw.esllo.com:8080/friend";
+
+      let formData = new FormData();
+      formData.append('fromUserId', uid);
+      formData.append('toUserId', to || 0);
+      formData.append('acceptStatus', "OK");
+      console.log(formData);
+      fetch(fetchURL, {
+        method: "POST",
+        body: formData,
+      }).then(r => r.text()).then(text => {
+        let json = JSON.parse(text);
+        if (json.status == 200) {
+          if (acc_tout != null) clearTimeout(acc_tout);
+          acc_tout = setTimeout(() => {
+            ipcRenderer.send('alert', { title: "알림", message: "친구요청을 수락했습니다." });
+          }, 1000);
+          return;
+        }
+        throw 'error occured';
+      }).catch(e => {
+        console.log(e);
+        alertError()
+      })
+
+    }
+
+    let share_tout = null;
+    let share_success = [];
+    let share_failed = [];
+
+    document.getElementById('share').onclick = () => {
+      let selected = document.querySelectorAll('#share_list > .row.on > p');
+      let ids = Array.from(selected).map(e => {
+        let to = e.textContent;
+        fetch(`http://13.125.214.132:4000?user=${encodeURI(uname)}&hash=${encodeURI(hash)}&share=${encodeURI(to)}`).then(r => r.text()).then(text => {
+          share_success.push(to);
+          shareAlert();
+        }).catch(e => {
+          share_failed.push(to);
+          shareAlert();
+        })
+      });
+    }
+
+    function shareAlert() {
+      if (share_tout != null) clearTimeout(share_tout);
+      share_tout = setTimeout(() => {
+        let msg = share_success.join(', ') + "님에게 공유하였습니다.";
+        if (share_failed.length > 0) {
+          msg += share_failed.join(', ') + "님에게 공유하지 못했습니다.";
+        }
+        share_failed = [];
+        share_success = [];
+        ipcRenderer.send('alert', { title: '알림', message: msg });
+      }, 1000);
+    }
+
+    if (fonly == "true") {
+      document.getElementById('ftitle').textContent = '친구목록';
+      left.classList.remove('on');
+      center.classList.add('on');
+      Array.from(document.querySelectorAll('.fonly-hide')).forEach(e => e.style.display = 'none');
+      let p = document.getElementById('previous');
+      p.onclick = () => ipcRenderer.send('closeShare');
+      p.textContent = "닫기";
+    }
+
+    getFriends();
+  </script>
+</body>
+
+</html>
